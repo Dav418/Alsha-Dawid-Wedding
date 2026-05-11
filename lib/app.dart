@@ -1,7 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'router/app_router_provider.dart';
+import 'theme/app_theme.dart';
 
 class WeddingInvoiceApp extends ConsumerWidget {
   const WeddingInvoiceApp({super.key});
@@ -13,11 +15,14 @@ class WeddingInvoiceApp extends ConsumerWidget {
     return MaterialApp.router(
       title: 'Wedding Invoice',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF6B4E71)),
-        useMaterial3: true,
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      themeMode: ThemeMode.system,
+      routerConfig: router.config(
+        navigatorObservers: () => [
+          AutoRouteObserver(),
+        ],
       ),
-      routerConfig: router.config(),
     );
   }
 }

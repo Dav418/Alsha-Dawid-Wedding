@@ -13,9 +13,15 @@ dependencies:
   flutter_riverpod: ^2.6.1
   riverpod_annotation: ^2.6.1
 
-  auto_route: ^10.3.0
+  # 10.3.0+ uses Flutter APIs (e.g. MediaQuery.heightOf) not in older SDKs — pin below 10.3
+  # until IDE Flutter matches a recent stable, or upgrade Flutter and bump this.
+  auto_route: ">=10.2.0 <10.3.0"
 
   freezed_annotation: ^2.4.4
+
+  google_fonts: ^6.2.1
+  # 0.21.3+1 requires Flutter >=3.32; keep ^0.21.2 until the SDK is upgraded.
+  flutter_hooks: ^0.21.2
 
 dev_dependencies:
   flutter_test:
@@ -29,3 +35,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - lib/assets/home/

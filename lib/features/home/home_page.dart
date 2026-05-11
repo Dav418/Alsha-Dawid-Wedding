@@ -1,72 +1,192 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-import '../../domain/invoice_line.dart';
-import '../../providers/counter_provider.dart';
+import '../../assets/home/home_decor_assets.dart';
+import '../../widgets/wedding_hero_invite_card.dart';
 
 @RoutePage()
-class HomePage extends ConsumerWidget {
+class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final count = ref.watch(counterProvider);
-    const demoLine = InvoiceLine(
-      description: 'Venue deposit',
-      amount: 2500,
-    );
-
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Wedding invoice')),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                'Riverpod + Freezed + AutoRoute',
-                style: Theme.of(context).textTheme.titleMedium,
+      body: Builder(
+        builder: (scaffoldContext) {
+          return Center(
+            child: WeddingHeroInviteCard(
+              imageAssetPath: HomeDecorAssets.monogramAdWreath,
+              child: _HomeInviteContent(
+                onEnter: () => Scaffold.maybeOf(scaffoldContext)?.openDrawer(),
               ),
-              const SizedBox(height: 16),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Sample line (freezed)',
-                        style: Theme.of(context).textTheme.labelLarge,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(demoLine.description),
-                      Text(
-                        '\$${demoLine.amount.toStringAsFixed(2)}',
-                        style: Theme.of(context).textTheme.headlineSmall,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              Text(
-                'Counter (Riverpod): $count',
-                style: Theme.of(context).textTheme.titleLarge,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 12),
-              FilledButton.icon(
-                onPressed: () =>
-                    ref.read(counterProvider.notifier).increment(),
-                icon: const Icon(Icons.add),
-                label: const Text('Increment'),
-              ),
-            ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _HomeInviteContent extends StatelessWidget {
+  const _HomeInviteContent({required this.onEnter});
+
+  final VoidCallback onEnter;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(height: 10),
+        Text(
+          'TOGETHER WITH THEIR FAMILIES',
+          textAlign: TextAlign.center,
+          style: GoogleFonts.playfairDisplay(
+            fontSize: 12,
+            height: 1.25,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 2.6,
+            color: scheme.onSurfaceVariant,
           ),
         ),
-      ),
+        const SizedBox(height: 14),
+        Text(
+          'Alisha Fernandes',
+          textAlign: TextAlign.center,
+          style: GoogleFonts.greatVibes(
+            fontSize: 44,
+            height: 1,
+            color: scheme.primary,
+          ),
+        ),
+        Text(
+          '&',
+          textAlign: TextAlign.center,
+          style: GoogleFonts.greatVibes(
+            fontSize: 36,
+            height: 1,
+            color: scheme.primary,
+          ),
+        ),
+        Text(
+          'Dawid Gorski',
+          textAlign: TextAlign.center,
+          style: GoogleFonts.greatVibes(
+            fontSize: 44,
+            height: 1,
+            color: scheme.primary,
+          ),
+        ),
+        const SizedBox(height: 16),
+        _GoldHeartRule(scheme: scheme),
+        const SizedBox(height: 16),
+        Text(
+          '17 OCTOBER 2026',
+          textAlign: TextAlign.center,
+          style: GoogleFonts.playfairDisplay(
+            fontSize: 16,
+            height: 1.2,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 2,
+            color: scheme.primary,
+          ),
+        ),
+        const SizedBox(height: 10),
+        _SingleGoldHeart(scheme: scheme),
+        const SizedBox(height: 10),
+        Text(
+          'RICKMANSWORTH, UK',
+          textAlign: TextAlign.center,
+          style: GoogleFonts.playfairDisplay(
+            fontSize: 12,
+            height: 1.25,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 2.6,
+            color: scheme.primary,
+          ),
+        ),
+        const SizedBox(height: 22),
+        SizedBox(
+          width: 174,
+          height: 44,
+          child: FilledButton(
+            onPressed: onEnter,
+            style: FilledButton.styleFrom(
+              elevation: 3,
+              shadowColor: scheme.shadow.withValues(alpha: 0.22),
+              padding: EdgeInsets.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: Text(
+              'ENTER OUR WEDDING',
+              style: GoogleFonts.playfairDisplay(
+                fontSize: 12.5,
+                height: 1,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 1.6,
+                color: scheme.onSecondary,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _GoldHeartRule extends StatelessWidget {
+  const _GoldHeartRule({required this.scheme});
+
+  final ColorScheme scheme;
+
+  @override
+  Widget build(BuildContext context) {
+    final gold = scheme.tertiary;
+
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            height: 1,
+            color: gold.withValues(alpha: 0.55),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Icon(
+            Icons.favorite_rounded,
+            size: 10,
+            color: gold,
+          ),
+        ),
+        Expanded(
+          child: Container(
+            height: 1,
+            color: gold.withValues(alpha: 0.55),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SingleGoldHeart extends StatelessWidget {
+  const _SingleGoldHeart({required this.scheme});
+
+  final ColorScheme scheme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Icon(
+      Icons.favorite_rounded,
+      size: 11,
+      color: scheme.tertiary,
     );
   }
 }
