@@ -16,8 +16,7 @@ class WeddingInvoiceApp extends ConsumerWidget {
       title: 'Wedding Invoice',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
-      darkTheme: AppTheme.dark,
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.light,
       routerConfig: router.config(
         navigatorObservers: () => [
           AutoRouteObserver(),
