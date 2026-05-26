@@ -51,6 +51,14 @@ const _polaroidLayouts = [
   PolaroidLayout(top: 350, left: 34, rotation: 0.06),
 ];
 
+/// Keeps copy readable on full-width browser windows.
+const _maxPageWidth = 920.0;
+
+/// Side-by-side only when the constrained column is wide enough.
+const _sideBySideBreakpoint = 680.0;
+
+const _basePolaroidWidth = 168.0;
+
 @RoutePage()
 class OurStoryPage extends StatelessWidget {
   const OurStoryPage({super.key});
@@ -62,33 +70,40 @@ class OurStoryPage extends StatelessWidget {
         SliverPadding(
           padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
           sliver: SliverToBoxAdapter(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                final sideBySide = constraints.maxWidth >= 640;
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: _maxPageWidth),
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final sideBySide =
+                        constraints.maxWidth >= _sideBySideBreakpoint;
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const _StoryHeader(),
-                    const SizedBox(height: 28),
-                    if (sideBySide)
-                      _StorySideBySide(
-                        photoUrls: _storyPhotoUrls,
-                        timeline: _storyTimeline,
-                      )
-                    else ...[
-                      _StoryPhotoStack(
-                        photoUrls: _storyPhotoUrls,
-                        compact: true,
-                      ),
-                      const SizedBox(height: 28),
-                      _StoryTimeline(entries: _storyTimeline),
-                    ],
-                    const SizedBox(height: 36),
-                    const _StoryFooter(),
-                  ],
-                );
-              },
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const _StoryHeader(),
+                        const SizedBox(height: 28),
+                        if (sideBySide)
+                          _StorySideBySide(
+                            photoUrls: _storyPhotoUrls,
+                            timeline: _storyTimeline,
+                          )
+                        else ...[
+                          _StoryPhotoStack(
+                            photoUrls: _storyPhotoUrls,
+                            compact: true,
+                          ),
+                          const SizedBox(height: 28),
+                          _StoryTimeline(entries: _storyTimeline),
+                        ],
+                        const SizedBox(height: 36),
+                        const _StoryFooter(),
+                      ],
+                    );
+                  },
+                ),
+              ),
             ),
           ),
         ),
@@ -140,9 +155,12 @@ class _StorySideBySide extends StatelessWidget {
       children: [
         Expanded(
           flex: 11,
-          child: _StoryPhotoStack(photoUrls: photoUrls),
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: _StoryPhotoStack(photoUrls: photoUrls),
+          ),
         ),
-        const SizedBox(width: 20),
+        const SizedBox(width: 28),
         Expanded(
           flex: 13,
           child: _StoryTimeline(entries: timeline),
@@ -198,27 +216,57 @@ class _StoryPhotoStack extends StatelessWidget {
       );
     }
 
-    final stackHeight = _PolaroidPhoto.stackHeight(
-      layouts: _polaroidLayouts.take(count).toList(),
-      width: 168,
-    );
-
-    return SizedBox(
-      height: stackHeight,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final columnWidth = constraints.maxWidth;
+        final photoWidth = columnWidth.isFinite && columnWidth > 0
+            ? (columnWidth * 0.58).clamp(_basePolaroidWidth, 210.0)
+            : _basePolaroidWidth;
+        final scale = photoWidth / _basePolaroidWidth;
+        final layouts = [
           for (var i = 0; i < count; i++)
-            Positioned(
-              top: _polaroidLayouts[i].top,
-              left: _polaroidLayouts[i].left,
-              child: _PolaroidPhoto(
-                imageUrl: photoUrls[i],
-                rotation: _polaroidLayouts[i].rotation,
+            PolaroidLayout(
+              top: _polaroidLayouts[i].top * scale,
+              left: _polaroidLayouts[i].left * scale,
+              rotation: _polaroidLayouts[i].rotation,
+            ),
+        ];
+        final stackHeight = _PolaroidPhoto.stackHeight(
+          layouts: layouts,
+          width: photoWidth,
+        );
+        final stackWidth = _PolaroidPhoto.stackWidth(
+          layouts: layouts,
+          width: photoWidth,
+        );
+
+        return SizedBox(
+          height: stackHeight,
+          width: double.infinity,
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: SizedBox(
+              width: stackWidth,
+              height: stackHeight,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  for (var i = 0; i < count; i++)
+                    Positioned(
+                      top: layouts[i].top,
+                      left: layouts[i].left,
+                      child: _PolaroidPhoto(
+                        imageUrl: photoUrls[i],
+                        rotation: layouts[i].rotation,
+                        width: photoWidth,
+                      ),
+                    ),
+                ],
               ),
             ),
-        ],
-      ),
+          ),
+        );
+      },
     );
   }
 }
@@ -270,6 +318,22 @@ class _PolaroidPhoto extends StatelessWidget {
       maxBottom = math.max(maxBottom, layout.top + bounds.height);
     }
     return maxBottom + 12;
+  }
+
+  static double stackWidth({
+    required List<PolaroidLayout> layouts,
+    required double width,
+  }) {
+    if (layouts.isEmpty) {
+      return 0;
+    }
+
+    var maxRight = 0.0;
+    for (final layout in layouts) {
+      final bounds = rotatedBounds(width: width, rotation: layout.rotation);
+      maxRight = math.max(maxRight, layout.left + bounds.width);
+    }
+    return maxRight + 12;
   }
 
   @override
@@ -404,10 +468,16 @@ class _StoryFooter extends StatelessWidget {
       children: [
         const StoryFooterFlourish(),
         const SizedBox(height: 22),
-        Text(
-          'From the moment we met, we knew our story was worth writing.',
-          textAlign: TextAlign.center,
-          style: AppTypography.scriptQuote(scheme),
+        Align(
+          alignment: Alignment.center,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 560),
+            child: Text(
+              'From the moment we met, we knew our story was worth writing.',
+              textAlign: TextAlign.center,
+              style: AppTypography.scriptQuote(scheme),
+            ),
+          ),
         ),
       ],
     );

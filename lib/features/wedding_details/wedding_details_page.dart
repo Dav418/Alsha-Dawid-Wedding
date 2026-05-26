@@ -65,7 +65,7 @@ class WeddingDetailsPage extends StatelessWidget {
                             title: 'TRANSPORT',
                             body:
                                 'Parking available on site. Rickmansworth Station is a 5 minute drive.',
-                            swatches: _transportSwatches,
+                            swatches: const [],
                           ),
                         ],
                       )
@@ -89,7 +89,7 @@ class WeddingDetailsPage extends StatelessWidget {
                               title: 'TRANSPORT',
                               body:
                                   'Parking available on site. Rickmansworth Station is a 5 minute drive.',
-                              swatches: _transportSwatches,
+                              swatches: const [],
                             ),
                           ),
                         ],
@@ -110,10 +110,6 @@ const _dressCodeSwatches = [
   AppColors.sageGreen,
   AppColors.deepForest,
   AppColors.burgundyAccent,
-];
-
-const _transportSwatches = [
-  AppColors.blushPeach,
 ];
 
 class _DetailsHeader extends StatelessWidget {
