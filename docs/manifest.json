@@ -1,0 +1,11 @@
+{
+  "name": "Wedding invoice",
+  "short_name": "Invoice",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f7f2fa",
+  "theme_color": "#6B4E71",
+  "description": "Wedding invoice",
+  "orientation": "portrait-primary",
+  "prefer_related_applications": false
+}
