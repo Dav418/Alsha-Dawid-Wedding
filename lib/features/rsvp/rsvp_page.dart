@@ -10,7 +10,7 @@ class RsvpPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const ScenicPageBackground(
+    return ScenicPageBackground.content(
       child: WeddingSectionPlaceholder(
       title: 'RSVP',
       subtitle: 'Form — attendance, guests, dietary, song request…',

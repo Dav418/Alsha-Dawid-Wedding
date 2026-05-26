@@ -10,7 +10,7 @@ class GalleryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const ScenicPageBackground(
+    return ScenicPageBackground.content(
       child: WeddingSectionPlaceholder(
       title: 'GALLERY',
       subtitle: 'Photo grid — filters: All, Engagement, Travel, Special…',

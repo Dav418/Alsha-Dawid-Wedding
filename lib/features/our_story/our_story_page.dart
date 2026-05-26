@@ -1,8 +1,55 @@
+import 'dart:math' as math;
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
-import '../placeholder_body.dart';
+import '../../domain/polaroid_layout.dart';
+import '../../domain/story_timeline_entry.dart';
+import '../../theme/app_colors.dart';
+import '../../theme/app_typography.dart';
+import '../../widgets/gold_heart_rule.dart';
 import '../../widgets/scenic_page_background.dart';
+import 'our_story_decorations.dart';
+
+/// Replace with your own photo URLs when ready.
+const _storyPhotoUrls = [
+  'https://placekittens.com/220/240',
+  'https://placekittens.com/220/240',
+  'https://placekittens.com/210/230',
+  'https://placekittens.com/215/235',
+];
+
+const _storyTimeline = [
+  StoryTimelineEntry(
+    title: 'HOW WE MET',
+    description:
+        'A chance meeting turned into a conversation that never ended.',
+  ),
+  StoryTimelineEntry(
+    title: 'FIRST DATE',
+    description: 'Good food, laughter and butterflies.',
+  ),
+  StoryTimelineEntry(
+    title: 'THE PROPOSAL',
+    description: 'The moment I said yes to forever.',
+  ),
+  StoryTimelineEntry(
+    title: 'FAVOURITE MEMORIES',
+    description: 'All the little moments that mean everything.',
+  ),
+  StoryTimelineEntry(
+    title: "WHAT WE'RE LOOKING FORWARD TO",
+    description:
+        'A lifetime of love, adventures and memories together.',
+  ),
+];
+
+const _polaroidLayouts = [
+  PolaroidLayout(top: 12, left: 8, rotation: -0.07),
+  PolaroidLayout(top: 130, left: 30, rotation: 0.05),
+  PolaroidLayout(top: 240, left: 10, rotation: -0.04),
+  PolaroidLayout(top: 350, left: 34, rotation: 0.06),
+];
 
 @RoutePage()
 class OurStoryPage extends StatelessWidget {
@@ -10,11 +57,359 @@ class OurStoryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const ScenicPageBackground(
-      child: WeddingSectionPlaceholder(
-      title: 'OUR STORY',
-      subtitle: 'Timeline — how we met, dates, proposal…',
+    return ScenicPageBackground(
+      slivers: [
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
+          sliver: SliverToBoxAdapter(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final sideBySide = constraints.maxWidth >= 640;
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const _StoryHeader(),
+                    const SizedBox(height: 28),
+                    if (sideBySide)
+                      _StorySideBySide(
+                        photoUrls: _storyPhotoUrls,
+                        timeline: _storyTimeline,
+                      )
+                    else ...[
+                      _StoryPhotoStack(
+                        photoUrls: _storyPhotoUrls,
+                        compact: true,
+                      ),
+                      const SizedBox(height: 28),
+                      _StoryTimeline(entries: _storyTimeline),
+                    ],
+                    const SizedBox(height: 36),
+                    const _StoryFooter(),
+                  ],
+                );
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _StoryHeader extends StatelessWidget {
+  const _StoryHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
+    return Column(
+      children: [
+        Text(
+          'Our Story',
+          textAlign: TextAlign.center,
+          style: AppTypography.scriptHero(scheme),
+        ),
+        const SizedBox(height: 10),
+        const SingleGoldHeart(),
+        const SizedBox(height: 10),
+        Text(
+          'A LITTLE BIT OF OUR JOURNEY',
+          textAlign: TextAlign.center,
+          style: AppTypography.capsLabel(scheme),
+        ),
+      ],
+    );
+  }
+}
+
+class _StorySideBySide extends StatelessWidget {
+  const _StorySideBySide({
+    required this.photoUrls,
+    required this.timeline,
+  });
+
+  final List<String> photoUrls;
+  final List<StoryTimelineEntry> timeline;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          flex: 11,
+          child: _StoryPhotoStack(photoUrls: photoUrls),
+        ),
+        const SizedBox(width: 20),
+        Expanded(
+          flex: 13,
+          child: _StoryTimeline(entries: timeline),
+        ),
+      ],
+    );
+  }
+}
+
+class _StoryPhotoStack extends StatelessWidget {
+  const _StoryPhotoStack({
+    required this.photoUrls,
+    this.compact = false,
+  });
+
+  final List<String> photoUrls;
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context) {
+    final count = photoUrls.length.clamp(0, _polaroidLayouts.length);
+
+    if (compact) {
+      const photoWidth = 150.0;
+      final slotSize = _PolaroidPhoto.rotatedBounds(
+        width: photoWidth,
+        rotation: 0.06,
+      );
+
+      return SizedBox(
+        height: slotSize.height,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          clipBehavior: Clip.none,
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          itemCount: count,
+          separatorBuilder: (_, __) => const SizedBox(width: 12),
+          itemBuilder: (context, index) {
+            final layout = _polaroidLayouts[index];
+            return SizedBox(
+              width: slotSize.width,
+              height: slotSize.height,
+              child: Center(
+                child: _PolaroidPhoto(
+                  imageUrl: photoUrls[index],
+                  rotation: layout.rotation,
+                  width: photoWidth,
+                ),
+              ),
+            );
+          },
+        ),
+      );
+    }
+
+    final stackHeight = _PolaroidPhoto.stackHeight(
+      layouts: _polaroidLayouts.take(count).toList(),
+      width: 168,
+    );
+
+    return SizedBox(
+      height: stackHeight,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          for (var i = 0; i < count; i++)
+            Positioned(
+              top: _polaroidLayouts[i].top,
+              left: _polaroidLayouts[i].left,
+              child: _PolaroidPhoto(
+                imageUrl: photoUrls[i],
+                rotation: _polaroidLayouts[i].rotation,
+              ),
+            ),
+        ],
       ),
+    );
+  }
+}
+
+class _PolaroidPhoto extends StatelessWidget {
+  const _PolaroidPhoto({
+    required this.imageUrl,
+    required this.rotation,
+    this.width = 168,
+  });
+
+  final String imageUrl;
+  final double rotation;
+  final double width;
+
+  static Size frameSize(double width) {
+    final imageHeight = width * 0.92;
+    return Size(width, 10 + imageHeight + width * 0.18 + 10);
+  }
+
+  static Size rotatedBounds({
+    required double width,
+    required double rotation,
+  }) {
+    final frame = frameSize(width);
+    const shadowPadding = 16.0;
+    final boundsWidth =
+        frame.width * math.cos(rotation).abs() +
+        frame.height * math.sin(rotation).abs() +
+        shadowPadding;
+    final boundsHeight =
+        frame.width * math.sin(rotation).abs() +
+        frame.height * math.cos(rotation).abs() +
+        shadowPadding;
+    return Size(boundsWidth, boundsHeight);
+  }
+
+  static double stackHeight({
+    required List<PolaroidLayout> layouts,
+    required double width,
+  }) {
+    if (layouts.isEmpty) {
+      return 0;
+    }
+
+    var maxBottom = 0.0;
+    for (final layout in layouts) {
+      final bounds = rotatedBounds(width: width, rotation: layout.rotation);
+      maxBottom = math.max(maxBottom, layout.top + bounds.height);
+    }
+    return maxBottom + 12;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final imageHeight = width * 0.92;
+
+    return Transform.rotate(
+      angle: rotation,
+      child: Container(
+        width: width,
+        decoration: BoxDecoration(
+          color: AppColors.polaroidWhite,
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.textCharcoal.withValues(alpha: 0.14),
+              blurRadius: 14,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        padding: EdgeInsets.fromLTRB(10, 10, 10, width * 0.18),
+        child: Image.network(
+          imageUrl,
+          width: width - 20,
+          height: imageHeight,
+          fit: BoxFit.cover,
+          loadingBuilder: (context, child, progress) {
+            if (progress == null) {
+              return child;
+            }
+            return Container(
+              width: width - 20,
+              height: imageHeight,
+              color: AppColors.creamBackground,
+              alignment: Alignment.center,
+              child: SizedBox(
+                width: 22,
+                height: 22,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: scheme.tertiary.withValues(alpha: 0.7),
+                ),
+              ),
+            );
+          },
+          errorBuilder: (_, __, ___) => Container(
+            width: width - 20,
+            height: imageHeight,
+            color: AppColors.dustyRose.withValues(alpha: 0.35),
+            alignment: Alignment.center,
+            child: Icon(
+              Icons.image_outlined,
+              color: scheme.primary.withValues(alpha: 0.45),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _StoryTimeline extends StatelessWidget {
+  const _StoryTimeline({required this.entries});
+
+  final List<StoryTimelineEntry> entries;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final gold = scheme.tertiary;
+
+    return Column(
+      children: [
+        for (var i = 0; i < entries.length; i++)
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 28,
+                  child: Column(
+                    children: [
+                      const SingleGoldHeart(),
+                      if (i < entries.length - 1)
+                        Expanded(
+                          child: Container(
+                            width: 1,
+                            margin: const EdgeInsets.symmetric(vertical: 4),
+                            color: gold.withValues(alpha: 0.5),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: i < entries.length - 1 ? 26 : 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          entries[i].title,
+                          style: AppTypography.timelineTitle(scheme),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          entries[i].description,
+                          style: AppTypography.timelineBody(scheme),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _StoryFooter extends StatelessWidget {
+  const _StoryFooter();
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
+    return Column(
+      children: [
+        const StoryFooterFlourish(),
+        const SizedBox(height: 22),
+        Text(
+          'From the moment we met, we knew our story was worth writing.',
+          textAlign: TextAlign.center,
+          style: AppTypography.scriptQuote(scheme),
+        ),
+      ],
     );
   }
 }

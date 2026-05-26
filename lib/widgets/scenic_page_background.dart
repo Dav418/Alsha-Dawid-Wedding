@@ -1,15 +1,35 @@
 import 'package:flutter/material.dart';
 
-/// Decoration layer behind [child]. Scroll/safe-area live in the page when needed.
+/// Scrollable page shell using slivers — decorations sit behind [CustomScrollView].
 class ScenicPageBackground extends StatelessWidget {
   const ScenicPageBackground({
     super.key,
-    required this.child,
+    required this.slivers,
     this.decorations = const [],
+    this.bottomPadding = 32,
   });
 
-  final Widget child;
+  /// Single content block with standard page padding.
+  ScenicPageBackground.content({
+    super.key,
+    required Widget child,
+    EdgeInsetsGeometry padding = const EdgeInsets.fromLTRB(24, 16, 24, 0),
+    this.decorations = const [],
+    this.bottomPadding = 32,
+  }) : slivers = [
+          SliverPadding(
+            padding: padding,
+            sliver: SliverToBoxAdapter(child: child),
+          ),
+        ];
+
+  final List<Widget> slivers;
   final List<Widget> decorations;
+  final double bottomPadding;
+
+  static const scrollPhysics = AlwaysScrollableScrollPhysics(
+    parent: BouncingScrollPhysics(),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +38,16 @@ class ScenicPageBackground extends StatelessWidget {
       fit: StackFit.expand,
       children: [
         ...decorations,
-        Positioned.fill(child: child),
+        CustomScrollView(
+          physics: scrollPhysics,
+          slivers: [
+            ...slivers,
+            SliverPadding(
+              padding: EdgeInsets.only(bottom: bottomPadding),
+              sliver: const SliverToBoxAdapter(child: SizedBox.shrink()),
+            ),
+          ],
+        ),
       ],
     );
   }

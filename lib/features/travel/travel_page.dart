@@ -10,7 +10,7 @@ class TravelPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const ScenicPageBackground(
+    return ScenicPageBackground.content(
       child: WeddingSectionPlaceholder(
       title: 'TRAVEL & ACCOMMODATION',
       subtitle: 'Getting here, airports, trains, hotels…',

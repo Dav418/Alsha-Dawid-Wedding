@@ -4,6 +4,8 @@ import 'dart:ui' as ui;
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
+import '../domain/invite_card_shape.dart';
+
 class WeddingHeroInviteCard extends StatefulWidget {
   const WeddingHeroInviteCard({
     required this.imageAssetPath,
@@ -30,7 +32,7 @@ class _WeddingHeroInviteCardState extends State<WeddingHeroInviteCard>
 
   int _animationToken = 0;
 
-  static const _shape = _InviteCardShape();
+  static const _shape = InviteCardShape();
 
   @override
   void initState() {
@@ -231,29 +233,6 @@ class _WeddingHeroInviteCardState extends State<WeddingHeroInviteCard>
   }
 }
 
-class _InviteCardShape {
-  const _InviteCardShape({
-    this.shoulderY = 70,
-    this.archWidth = 158,
-    this.archHeight = 42,
-    this.cornerRadius = 10,
-  });
-
-  final double shoulderY;
-  final double archWidth;
-  final double archHeight;
-  final double cornerRadius;
-
-  _InviteCardShape inset(double amount) {
-    return _InviteCardShape(
-      shoulderY: shoulderY,
-      archWidth: archWidth - amount * 2,
-      archHeight: archHeight - amount,
-      cornerRadius: cornerRadius - amount,
-    );
-  }
-}
-
 class _InviteCardPainter extends CustomPainter {
   const _InviteCardPainter({
     required this.shape,
@@ -263,7 +242,7 @@ class _InviteCardPainter extends CustomPainter {
     required this.cardShadow,
   });
 
-  final _InviteCardShape shape;
+  final InviteCardShape shape;
   final Color paperFill;
   final Color outerFrame;
   final Color innerFrame;
@@ -327,7 +306,7 @@ class _InviteCardPainter extends CustomPainter {
 class _InviteCardClipper extends CustomClipper<Path> {
   const _InviteCardClipper({required this.shape});
 
-  final _InviteCardShape shape;
+  final InviteCardShape shape;
 
   @override
   Path getClip(Size size) {
@@ -340,7 +319,7 @@ class _InviteCardClipper extends CustomClipper<Path> {
   }
 }
 
-Path _buildInvitePath(Size size, _InviteCardShape shape) {
+Path _buildInvitePath(Size size, InviteCardShape shape) {
   final w = size.width;
   final h = size.height;
   final r = shape.cornerRadius;

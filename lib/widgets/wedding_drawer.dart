@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
-import '../router/app_router.dart';
+import '../router/app_router.gr.dart';
 
 /// Side drawer with all sections — tuned for phones (large tap targets).
 ///

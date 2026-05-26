@@ -36,6 +36,10 @@ abstract final class AppTheme {
         centerTitle: false,
         elevation: 0,
         scrolledUnderElevation: 1,
+        surfaceTintColor: Colors.transparent,
+        shadowColor: brightness == Brightness.light
+            ? AppColors.textCharcoal.withValues(alpha: 0.14)
+            : Colors.black.withValues(alpha: 0.35),
         backgroundColor: brightness == Brightness.light
             ? AppColors.creamBackground
             : scheme.surface,

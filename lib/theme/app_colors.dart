@@ -29,4 +29,13 @@ abstract final class AppColors {
 
   /// Mauve from earlier iterations — keep if you need secondary UI accents.
   static const Color mauveLegacy = Color(0xFF6B4E71);
+
+  /// Deep forest green — dress-code palette swatch.
+  static const Color deepForest = Color(0xFF556B4A);
+
+  /// Soft blush peach — transport / accent swatch.
+  static const Color blushPeach = Color(0xFFE8D4C8);
+
+  /// Polaroid photo frame fill.
+  static const Color polaroidWhite = Color(0xFFFFFFFF);
 }

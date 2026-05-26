@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Shared skeleton section content — **no** scroll view; wrap with [ScenicPageBackground].
+/// Shared skeleton section content — wrap with [ScenicPageBackground.content].
 class WeddingSectionPlaceholder extends StatelessWidget {
   const WeddingSectionPlaceholder({
     super.key,
