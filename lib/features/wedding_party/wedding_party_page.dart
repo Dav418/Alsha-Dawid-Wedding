@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import '../../domain/party_member.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
+import '../../router/app_router.gr.dart';
 import '../../widgets/gold_heart_rule.dart';
-import '../../widgets/scenic_page_background.dart';
 
 const _bridesmaids = [
   PartyMember(firstName: 'Sonia', lastName: "D'Souza"),
@@ -48,41 +48,39 @@ const _parents = [
 class WeddingPartyPage extends StatelessWidget {
   const WeddingPartyPage({super.key});
 
+  static void push(BuildContext context) {
+    context.router.navigate(const WeddingPartyRoute());
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ScenicPageBackground(
-      slivers: [
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
-          sliver: SliverToBoxAdapter(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const _PartyHeader(),
-                const SizedBox(height: 28),
-                const _PartySection(
-                  title: 'BRIDESMAIDS',
-                  members: _bridesmaids,
-                ),
-                const SizedBox(height: 28),
-                const GoldHeartRule(),
-                const SizedBox(height: 28),
-                const _PartySection(
-                  title: 'GROOMSMEN',
-                  members: _groomsmen,
-                ),
-                const SizedBox(height: 28),
-                const GoldHeartRule(),
-                const SizedBox(height: 28),
-                const _PartySection(
-                  title: 'PARENTS',
-                  members: _parents,
-                ),
-              ],
-            ),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const _PartyHeader(),
+          const SizedBox(height: 28),
+          const _PartySection(
+            title: 'BRIDESMAIDS',
+            members: _bridesmaids,
           ),
-        ),
-      ],
+          const SizedBox(height: 28),
+          const GoldHeartRule(),
+          const SizedBox(height: 28),
+          const _PartySection(
+            title: 'GROOMSMEN',
+            members: _groomsmen,
+          ),
+          const SizedBox(height: 28),
+          const GoldHeartRule(),
+          const SizedBox(height: 28),
+          const _PartySection(
+            title: 'PARENTS',
+            members: _parents,
+          ),
+        ],
+      ),
     );
   }
 }

@@ -2,13 +2,12 @@ import 'dart:math' as math;
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-
 import '../../domain/polaroid_layout.dart';
 import '../../domain/story_timeline_entry.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
+import '../../router/app_router.gr.dart';
 import '../../widgets/gold_heart_rule.dart';
-import '../../widgets/scenic_page_background.dart';
 import 'our_story_decorations.dart';
 
 /// Replace with your own photo URLs when ready.
@@ -63,51 +62,49 @@ const _basePolaroidWidth = 168.0;
 class OurStoryPage extends StatelessWidget {
   const OurStoryPage({super.key});
 
+  static void push(BuildContext context) {
+    context.router.navigate(const OurStoryRoute());
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ScenicPageBackground(
-      slivers: [
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
-          sliver: SliverToBoxAdapter(
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: _maxPageWidth),
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    final sideBySide =
-                        constraints.maxWidth >= _sideBySideBreakpoint;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: _maxPageWidth),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final sideBySide =
+                  constraints.maxWidth >= _sideBySideBreakpoint;
 
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const _StoryHeader(),
-                        const SizedBox(height: 28),
-                        if (sideBySide)
-                          _StorySideBySide(
-                            photoUrls: _storyPhotoUrls,
-                            timeline: _storyTimeline,
-                          )
-                        else ...[
-                          _StoryPhotoStack(
-                            photoUrls: _storyPhotoUrls,
-                            compact: true,
-                          ),
-                          const SizedBox(height: 28),
-                          _StoryTimeline(entries: _storyTimeline),
-                        ],
-                        const SizedBox(height: 36),
-                        const _StoryFooter(),
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ),
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const _StoryHeader(),
+                  const SizedBox(height: 28),
+                  if (sideBySide)
+                    _StorySideBySide(
+                      photoUrls: _storyPhotoUrls,
+                      timeline: _storyTimeline,
+                    )
+                  else ...[
+                    _StoryPhotoStack(
+                      photoUrls: _storyPhotoUrls,
+                      compact: true,
+                    ),
+                    const SizedBox(height: 28),
+                    _StoryTimeline(entries: _storyTimeline),
+                  ],
+                  const SizedBox(height: 36),
+                  const _StoryFooter(),
+                ],
+              );
+            },
           ),
         ),
-      ],
+      ),
     );
   }
 }

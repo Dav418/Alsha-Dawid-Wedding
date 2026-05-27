@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Shared skeleton section content — wrap with [ScenicPageBackground.content].
+/// Shared skeleton section content for placeholder routes.
 class WeddingSectionPlaceholder extends StatelessWidget {
   const WeddingSectionPlaceholder({
     super.key,

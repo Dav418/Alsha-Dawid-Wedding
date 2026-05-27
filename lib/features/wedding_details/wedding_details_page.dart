@@ -3,104 +3,102 @@ import 'package:flutter/material.dart';
 
 import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
+import '../../router/app_router.gr.dart';
 import '../../widgets/gold_heart_rule.dart';
-import '../../widgets/scenic_page_background.dart';
 import 'wedding_details_icons.dart';
 
 @RoutePage()
 class WeddingDetailsPage extends StatelessWidget {
   const WeddingDetailsPage({super.key});
 
+  static void push(BuildContext context) {
+    context.router.navigate(const WeddingDetailsRoute());
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ScenicPageBackground(
-      slivers: [
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
-          sliver: SliverToBoxAdapter(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                final compact = constraints.maxWidth < 560;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final compact = constraints.maxWidth < 560;
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const _DetailsHeader(),
+              const SizedBox(height: 28),
+              const _VenueDetailCard(
+                icon: WeddingDetailsIconVariant.church,
+                title: 'CEREMONY',
+                time: '2:00 PM',
+                lines: [
+                  "St Mary's Church",
+                  'Church Street',
+                  'Rickmansworth WD3 1RR',
+                ],
+              ),
+              const SizedBox(height: 16),
+              const _VenueDetailCard(
+                icon: WeddingDetailsIconVariant.manor,
+                title: 'RECEPTION',
+                time: '4:00 PM',
+                lines: [
+                  'The Grove',
+                  'Chorleywood Road',
+                  'Rickmansworth WD3 5LQ',
+                ],
+              ),
+              const SizedBox(height: 16),
+              if (compact)
+                const Column(
                   children: [
-                    const _DetailsHeader(),
-                    const SizedBox(height: 28),
-                    const _VenueDetailCard(
-                      icon: WeddingDetailsIconVariant.church,
-                      title: 'CEREMONY',
-                      time: '2:00 PM',
-                      lines: [
-                        "St Mary's Church",
-                        'Church Street',
-                        'Rickmansworth WD3 1RR',
-                      ],
+                    _CompactDetailCard(
+                      icon: WeddingDetailsIconVariant.dress,
+                      title: 'DRESS CODE',
+                      body:
+                          'Formal / Black Tie Optional. Think romantic autumn elegance.',
+                      swatches: _dressCodeSwatches,
                     ),
-                    const SizedBox(height: 16),
-                    const _VenueDetailCard(
-                      icon: WeddingDetailsIconVariant.manor,
-                      title: 'RECEPTION',
-                      time: '4:00 PM',
-                      lines: [
-                        'The Grove',
-                        'Chorleywood Road',
-                        'Rickmansworth WD3 5LQ',
-                      ],
+                    SizedBox(height: 16),
+                    _CompactDetailCard(
+                      icon: WeddingDetailsIconVariant.car,
+                      title: 'TRANSPORT',
+                      body:
+                          'Parking available on site. Rickmansworth Station is a 5 minute drive.',
+                      swatches: [],
                     ),
-                    const SizedBox(height: 16),
-                    if (compact)
-                      const Column(
-                        children: [
-                          _CompactDetailCard(
-                            icon: WeddingDetailsIconVariant.dress,
-                            title: 'DRESS CODE',
-                            body:
-                                'Formal / Black Tie Optional. Think romantic autumn elegance.',
-                            swatches: _dressCodeSwatches,
-                          ),
-                          SizedBox(height: 16),
-                          _CompactDetailCard(
-                            icon: WeddingDetailsIconVariant.car,
-                            title: 'TRANSPORT',
-                            body:
-                                'Parking available on site. Rickmansworth Station is a 5 minute drive.',
-                            swatches: const [],
-                          ),
-                        ],
-                      )
-                    else
-                      const Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: _CompactDetailCard(
-                              icon: WeddingDetailsIconVariant.dress,
-                              title: 'DRESS CODE',
-                              body:
-                                  'Formal / Black Tie Optional. Think romantic autumn elegance.',
-                              swatches: _dressCodeSwatches,
-                            ),
-                          ),
-                          SizedBox(width: 16),
-                          Expanded(
-                            child: _CompactDetailCard(
-                              icon: WeddingDetailsIconVariant.car,
-                              title: 'TRANSPORT',
-                              body:
-                                  'Parking available on site. Rickmansworth Station is a 5 minute drive.',
-                              swatches: const [],
-                            ),
-                          ),
-                        ],
-                      ),
                   ],
-                );
-              },
-            ),
-          ),
-        ),
-      ],
+                )
+              else
+                const Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: _CompactDetailCard(
+                        icon: WeddingDetailsIconVariant.dress,
+                        title: 'DRESS CODE',
+                        body:
+                            'Formal / Black Tie Optional. Think romantic autumn elegance.',
+                        swatches: _dressCodeSwatches,
+                      ),
+                    ),
+                    SizedBox(width: 16),
+                    Expanded(
+                      child: _CompactDetailCard(
+                        icon: WeddingDetailsIconVariant.car,
+                        title: 'TRANSPORT',
+                        body:
+                            'Parking available on site. Rickmansworth Station is a 5 minute drive.',
+                        swatches: [],
+                      ),
+                    ),
+                  ],
+                ),
+            ],
+          );
+        },
+      ),
     );
   }
 }

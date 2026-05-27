@@ -7,8 +7,10 @@ import '../../router/app_router.gr.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
 import '../../widgets/gold_heart_rule.dart';
-import '../../widgets/scenic_page_background.dart';
 import '../../widgets/wedding_countdown.dart';
+import '../faq/faq_page.dart';
+import '../travel/travel_page.dart';
+import '../wedding_details/wedding_details_page.dart';
 import 'countdown_nav_icons.dart';
 
 const _navCards = [
@@ -40,39 +42,48 @@ const _contacts = [
 const _navCardSize = 112.0;
 const _navCardGap = 10.0;
 
+void _pushNavCard(BuildContext context, PageRouteInfo<void> route) {
+  switch (route.routeName) {
+    case WeddingDetailsRoute.name:
+      WeddingDetailsPage.push(context);
+    case TravelRoute.name:
+      TravelPage.push(context);
+    case FaqRoute.name:
+      FaqPage.push(context);
+  }
+}
+
 @RoutePage()
 class CountdownPage extends StatelessWidget {
   const CountdownPage({super.key});
 
+  static void push(BuildContext context) {
+    context.router.navigate(const CountdownRoute());
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ScenicPageBackground(
-      slivers: [
-        SliverToBoxAdapter(
-          child: Column(
-            children: [
-              const _CountdownScriptTitle(),
-              const WeddingCountdown(showTitle: false),
-            ],
-          ),
-        ),
-        SliverPadding(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const _CountdownScriptTitle(),
+        const WeddingCountdown(showTitle: false),
+        Padding(
           padding: const EdgeInsets.fromLTRB(24, 28, 24, 0),
-          sliver: SliverToBoxAdapter(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _NavCardsRow(maxWidth: constraints.maxWidth),
-                    const SizedBox(height: 28),
-                    const GoldHeartRule(),
-                    const SizedBox(height: 28),
-                    const _CountdownContactSection(),
-                  ],
-                );
-              },
-            ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _NavCardsRow(maxWidth: constraints.maxWidth),
+                  const SizedBox(height: 28),
+                  const GoldHeartRule(),
+                  const SizedBox(height: 28),
+                  const _CountdownContactSection(),
+                ],
+              );
+            },
           ),
         ),
       ],
@@ -189,7 +200,7 @@ class _CountdownNavCard extends StatelessWidget {
       ),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: () => context.router.navigate(data.route),
+        onTap: () => _pushNavCard(context, data.route),
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Column(

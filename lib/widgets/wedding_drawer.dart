@@ -1,6 +1,15 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
+import '../features/countdown/countdown_page.dart';
+import '../features/faq/faq_page.dart';
+import '../features/gallery/gallery_page.dart';
+import '../features/home/home_page.dart';
+import '../features/our_story/our_story_page.dart';
+import '../features/rsvp/rsvp_page.dart';
+import '../features/travel/travel_page.dart';
+import '../features/wedding_details/wedding_details_page.dart';
+import '../features/wedding_party/wedding_party_page.dart';
 import '../router/app_router.gr.dart';
 
 /// Side drawer with all sections — tuned for phones (large tap targets).
@@ -11,8 +20,8 @@ class WeddingDrawer extends StatelessWidget {
 
   final BuildContext routerContext;
 
-  void _go(BuildContext drawerContext, PageRouteInfo route) {
-    routerContext.router.navigate(route);
+  void _go(BuildContext drawerContext, void Function(BuildContext) push) {
+    push(routerContext);
     Navigator.of(drawerContext).pop();
   }
 
@@ -25,8 +34,8 @@ class WeddingDrawer extends StatelessWidget {
 
     Widget tile({
       required String label,
-      required PageRouteInfo route,
       required String routeName,
+      required void Function(BuildContext) push,
     }) {
       final selected = active == routeName;
       return ListTile(
@@ -39,7 +48,7 @@ class WeddingDrawer extends StatelessWidget {
             fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
           ),
         ),
-        onTap: () => _go(context, route),
+        onTap: () => _go(context, push),
       );
     }
 
@@ -70,28 +79,28 @@ class WeddingDrawer extends StatelessWidget {
             ),
             tile(
               label: 'HOME',
-              route: const HomeRoute(),
               routeName: HomeRoute.name,
+              push: HomePage.push,
             ),
             tile(
               label: 'OUR STORY',
-              route: const OurStoryRoute(),
               routeName: OurStoryRoute.name,
+              push: OurStoryPage.push,
             ),
             tile(
               label: 'DETAILS',
-              route: const WeddingDetailsRoute(),
               routeName: WeddingDetailsRoute.name,
+              push: WeddingDetailsPage.push,
             ),
             tile(
               label: 'RSVP',
-              route: const RsvpRoute(),
               routeName: RsvpRoute.name,
+              push: RsvpPage.push,
             ),
             tile(
               label: 'TRAVEL',
-              route: const TravelRoute(),
               routeName: TravelRoute.name,
+              push: TravelPage.push,
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
@@ -106,23 +115,23 @@ class WeddingDrawer extends StatelessWidget {
             ),
             tile(
               label: 'GALLERY',
-              route: const GalleryRoute(),
               routeName: GalleryRoute.name,
+              push: GalleryPage.push,
             ),
             tile(
               label: 'WEDDING PARTY',
-              route: const WeddingPartyRoute(),
               routeName: WeddingPartyRoute.name,
+              push: WeddingPartyPage.push,
             ),
             tile(
               label: 'FAQ',
-              route: const FaqRoute(),
               routeName: FaqRoute.name,
+              push: FaqPage.push,
             ),
             tile(
               label: 'COUNTDOWN',
-              route: const CountdownRoute(),
               routeName: CountdownRoute.name,
+              push: CountdownPage.push,
             ),
           ],
         ),

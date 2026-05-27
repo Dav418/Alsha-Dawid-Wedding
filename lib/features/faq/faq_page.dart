@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import '../../domain/faq_item.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
+import '../../router/app_router.gr.dart';
 import '../../widgets/gold_heart_rule.dart';
-import '../../widgets/scenic_page_background.dart';
 
 const _faqs = [
   FaqItem(
@@ -54,31 +54,29 @@ const _faqs = [
 class FaqPage extends StatelessWidget {
   const FaqPage({super.key});
 
+  static void push(BuildContext context) {
+    context.router.navigate(const FaqRoute());
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ScenicPageBackground(
-      slivers: [
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
-          sliver: SliverToBoxAdapter(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const _FaqHeader(),
-                const SizedBox(height: 22),
-                const GoldHeartRule(),
-                const SizedBox(height: 22),
-                for (var i = 0; i < _faqs.length; i++) ...[
-                  _FaqAccordionTile(item: _faqs[i]),
-                  if (i < _faqs.length - 1) const SizedBox(height: 12),
-                ],
-                const SizedBox(height: 32),
-                const _FaqContactSection(),
-              ],
-            ),
-          ),
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const _FaqHeader(),
+          const SizedBox(height: 22),
+          const GoldHeartRule(),
+          const SizedBox(height: 22),
+          for (var i = 0; i < _faqs.length; i++) ...[
+            _FaqAccordionTile(item: _faqs[i]),
+            if (i < _faqs.length - 1) const SizedBox(height: 12),
+          ],
+          const SizedBox(height: 32),
+          const _FaqContactSection(),
+        ],
+      ),
     );
   }
 }

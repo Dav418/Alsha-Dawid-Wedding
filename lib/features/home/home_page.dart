@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../../assets/home/home_decor_assets.dart';
 import '../../theme/app_typography.dart';
+import '../../router/app_router.gr.dart';
 import '../../widgets/gold_heart_rule.dart';
-import '../../widgets/scenic_page_background.dart';
 import '../../widgets/wedding_countdown.dart';
 import '../../widgets/wedding_hero_invite_card.dart';
 
@@ -12,18 +12,21 @@ import '../../widgets/wedding_hero_invite_card.dart';
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
+  static void push(BuildContext context) {
+    context.router.navigate(const HomeRoute());
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ScenicPageBackground(
-      slivers: [
-        SliverToBoxAdapter(
-          child: WeddingHeroInviteCard(
-            imageAssetPath: HomeDecorAssets.monogramAdWreath,
-            child: const _HomeInviteContent(),
-          ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        WeddingHeroInviteCard(
+          imageAssetPath: HomeDecorAssets.monogramAdWreath,
+          child: const _HomeInviteContent(),
         ),
-        const SliverToBoxAdapter(child: WeddingCountdown()),
-        const SliverToBoxAdapter(child: _HomeWelcomeSection()),
+        const WeddingCountdown(),
+        const _HomeWelcomeSection(),
       ],
     );
   }
