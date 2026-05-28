@@ -6,13 +6,20 @@ import 'app.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Avoid FOUT: home hero (and theme) use these families before first paint.
+
+  // Avoid font swaps during layout/animation on Flutter web.
+  // Preload the exact families + weights used by AppTypography.
   await GoogleFonts.pendingFonts([
-    GoogleFonts.playfairDisplay(),
-    GoogleFonts.greatVibes(),
-    GoogleFonts.montserrat(),
     GoogleFonts.alexBrush(),
-    GoogleFonts.cormorantGaramond(),
+    GoogleFonts.greatVibes(),
+    GoogleFonts.montserrat(fontWeight: FontWeight.w400),
+    GoogleFonts.montserrat(fontWeight: FontWeight.w500),
+    GoogleFonts.montserrat(fontWeight: FontWeight.w600),
+    GoogleFonts.montserrat(fontWeight: FontWeight.w700),
+    GoogleFonts.playfairDisplay(fontWeight: FontWeight.w400),
+    GoogleFonts.playfairDisplay(fontWeight: FontWeight.w500),
+    GoogleFonts.playfairDisplay(fontWeight: FontWeight.w600),
   ]);
+
   runApp(const ProviderScope(child: WeddingInvoiceApp()));
 }

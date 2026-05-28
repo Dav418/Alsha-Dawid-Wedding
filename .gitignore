@@ -32,3 +32,8 @@ doc/api/
 *.gr.dart
 *.config.dart
 *.mocks.dart
+
+# Cursor — share project rules, ignore local IDE state
+.cursor/*
+!.cursor/rules/
+!.cursor/rules/**

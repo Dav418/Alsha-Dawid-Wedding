@@ -16,13 +16,23 @@ import '../router/app_router.gr.dart';
 ///
 /// [routerContext] must come from [AutoRouter]'s `builder` (nested stack scope).
 class WeddingDrawer extends StatelessWidget {
-  const WeddingDrawer({super.key, required this.routerContext});
+  const WeddingDrawer({
+    required this.routerContext,
+    required this.onNavigate,
+    super.key,
+  });
 
   final BuildContext routerContext;
+  final void Function(String routeName) onNavigate;
 
-  void _go(BuildContext drawerContext, void Function(BuildContext) push) {
+  void _go({
+    required BuildContext drawerContext,
+    required String routeName,
+    required void Function(BuildContext) push,
+  }) {
     push(routerContext);
     Navigator.of(drawerContext).pop();
+    onNavigate(routeName);
   }
 
   @override
@@ -38,6 +48,7 @@ class WeddingDrawer extends StatelessWidget {
       required void Function(BuildContext) push,
     }) {
       final selected = active == routeName;
+
       return ListTile(
         selected: selected,
         selectedTileColor: scheme.primaryContainer.withValues(alpha: 0.35),
@@ -48,7 +59,11 @@ class WeddingDrawer extends StatelessWidget {
             fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
           ),
         ),
-        onTap: () => _go(context, push),
+        onTap: () => _go(
+          drawerContext: context,
+          routeName: routeName,
+          push: push,
+        ),
       );
     }
 
@@ -101,17 +116,6 @@ class WeddingDrawer extends StatelessWidget {
               label: 'TRAVEL',
               routeName: TravelRoute.name,
               push: TravelPage.push,
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
-              child: Text(
-                'MORE',
-                style: theme.textTheme.labelSmall?.copyWith(
-                  letterSpacing: 2,
-                  color: scheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
             ),
             tile(
               label: 'GALLERY',

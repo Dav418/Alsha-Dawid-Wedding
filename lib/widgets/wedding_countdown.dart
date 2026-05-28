@@ -1,14 +1,18 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../theme/app_colors.dart';
 import '../theme/app_typography.dart';
 import 'gold_heart_rule.dart';
 
 /// Full-width wedding countdown banner — counts down to 17 October 2026.
-class WeddingCountdown extends StatefulWidget {
-  const WeddingCountdown({super.key, this.showTitle = true});
+class WeddingCountdown extends HookWidget {
+  const WeddingCountdown({
+    super.key,
+    this.showTitle = true,
+  });
 
   /// When false, only the heart rules and timer are shown.
   final bool showTitle;
@@ -16,102 +20,95 @@ class WeddingCountdown extends StatefulWidget {
   static final DateTime _weddingDay = DateTime(2026, 10, 17);
 
   @override
-  State<WeddingCountdown> createState() => _WeddingCountdownState();
-}
-
-class _WeddingCountdownState extends State<WeddingCountdown> {
-  Timer? _timer;
-  Duration _remaining = Duration.zero;
-
-  @override
-  void initState() {
-    super.initState();
-    _tick();
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
-  }
-
-  void _tick() {
-    final now = DateTime.now();
-    final end = WeddingCountdown._weddingDay;
-    final diff = end.difference(now);
-    final next = diff.isNegative ? Duration.zero : diff;
-    if (next != _remaining) {
-      setState(() => _remaining = next);
-    }
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final remaining = useState(_remainingUntilWedding());
+
+    useEffect(
+      () {
+        final timer = Timer.periodic(
+          const Duration(seconds: 1),
+          (_) {
+            final next = _remainingUntilWedding();
+
+            if (next != remaining.value) {
+              remaining.value = next;
+            }
+          },
+        );
+
+        return timer.cancel;
+      },
+      const [],
+    );
+
     final scheme = Theme.of(context).colorScheme;
-    final days = _remaining.inDays;
-    final hours = _remaining.inHours.remainder(24);
-    final minutes = _remaining.inMinutes.remainder(60);
-    final seconds = _remaining.inSeconds.remainder(60);
+    final width = MediaQuery.sizeOf(context).width;
+    final compact = width < 360;
+    final numberSize = compact ? 34.0 : (width < 520 ? 42.0 : 48.0);
+    final labelSize = compact ? 9.0 : 10.0;
+    final titleSize = compact ? 11.0 : 12.5;
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final width = constraints.maxWidth;
-        final compact = width < 360;
-        final numberSize = compact ? 34.0 : (width < 520 ? 42.0 : 48.0);
-        final labelSize = compact ? 9.0 : 10.0;
-        final titleSize = compact ? 11.0 : 12.5;
+    final days = remaining.value.inDays;
+    final hours = remaining.value.inHours.remainder(24);
+    final minutes = remaining.value.inMinutes.remainder(60);
+    final seconds = remaining.value.inSeconds.remainder(60);
 
-        return DecoratedBox(
-          decoration: const BoxDecoration(
-            color: AppColors.creamBackground,
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        color: AppColors.creamBackground,
+      ),
+      child: SizedBox(
+        width: double.infinity,
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+            compact ? 16 : 28,
+            showTitle ? (compact ? 28 : 36) : (compact ? 16 : 20),
+            compact ? 16 : 28,
+            compact ? 28 : 36,
           ),
-          child: SizedBox(
-            width: double.infinity,
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(
-                compact ? 16 : 28,
-                widget.showTitle
-                    ? (compact ? 28 : 36)
-                    : (compact ? 16 : 20),
-                compact ? 16 : 28,
-                compact ? 28 : 36,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (widget.showTitle) ...[
-                    Text(
-                      'COUNTING DOWN TO FOREVER',
-                      textAlign: TextAlign.center,
-                      style: AppTypography.countdownBannerTitle(
-                        scheme,
-                        fontSize: titleSize,
-                        compact: compact,
-                      ),
-                    ),
-                    SizedBox(height: compact ? 18 : 22),
-                  ],
-                  const GoldHeartRule(),
-                  SizedBox(height: compact ? 20 : 26),
-                  _CountdownRow(
-                    days: days,
-                    hours: hours,
-                    minutes: minutes,
-                    seconds: seconds,
-                    numberSize: numberSize,
-                    labelSize: labelSize,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (showTitle) ...[
+                Text(
+                  'COUNTING DOWN TO FOREVER',
+                  textAlign: TextAlign.center,
+                  style: AppTypography.countdownBannerTitle(
+                    scheme,
+                    fontSize: titleSize,
                     compact: compact,
                   ),
-                  SizedBox(height: compact ? 20 : 26),
-                  const GoldHeartRule(),
-                ],
+                ),
+                SizedBox(height: compact ? 18 : 22),
+              ],
+              const GoldHeartRule(),
+              SizedBox(height: compact ? 20 : 26),
+              _CountdownRow(
+                days: days,
+                hours: hours,
+                minutes: minutes,
+                seconds: seconds,
+                numberSize: numberSize,
+                labelSize: labelSize,
+                compact: compact,
               ),
-            ),
+              SizedBox(height: compact ? 20 : 26),
+              const GoldHeartRule(),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
+  }
+
+  static Duration _remainingUntilWedding() {
+    final diff = _weddingDay.difference(DateTime.now());
+
+    if (diff.isNegative) {
+      return Duration.zero;
+    }
+
+    return diff;
   }
 }
 
@@ -147,43 +144,96 @@ class _CountdownRow extends StatelessWidget {
       fontSize: numberSize,
     );
 
-    Widget cell(String value, String label, {bool showDivider = true}) {
-      return Expanded(
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(value, style: numberStyle),
-                  SizedBox(height: compact ? 6 : 8),
-                  Text(label, style: unitStyle),
-                ],
-              ),
-            ),
-            if (showDivider)
-              Container(
-                width: 1,
-                height: compact ? 44 : 52,
-                color: scheme.tertiary.withValues(alpha: 0.45),
-              ),
-          ],
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        _CountdownCell(
+          value: '$days',
+          label: 'DAYS',
+          numberStyle: numberStyle,
+          unitStyle: unitStyle,
+          compact: compact,
         ),
-      );
-    }
-
-    return IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          cell('$days', 'DAYS'),
-          cell(_pad(hours), 'HRS'),
-          cell(_pad(minutes), 'MINS'),
-          cell(_pad(seconds), 'SECS', showDivider: false),
-        ],
-      ),
+        _CountdownDivider(compact: compact),
+        _CountdownCell(
+          value: _pad(hours),
+          label: 'HRS',
+          numberStyle: numberStyle,
+          unitStyle: unitStyle,
+          compact: compact,
+        ),
+        _CountdownDivider(compact: compact),
+        _CountdownCell(
+          value: _pad(minutes),
+          label: 'MINS',
+          numberStyle: numberStyle,
+          unitStyle: unitStyle,
+          compact: compact,
+        ),
+        _CountdownDivider(compact: compact),
+        _CountdownCell(
+          value: _pad(seconds),
+          label: 'SECS',
+          numberStyle: numberStyle,
+          unitStyle: unitStyle,
+          compact: compact,
+        ),
+      ],
     );
   }
 
   String _pad(int n) => n.toString().padLeft(2, '0');
+}
+
+class _CountdownCell extends StatelessWidget {
+  const _CountdownCell({
+    required this.value,
+    required this.label,
+    required this.numberStyle,
+    required this.unitStyle,
+    required this.compact,
+  });
+
+  final String value;
+  final String label;
+  final TextStyle numberStyle;
+  final TextStyle unitStyle;
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(value, style: numberStyle),
+          SizedBox(height: compact ? 6 : 8),
+          Text(label, style: unitStyle),
+        ],
+      ),
+    );
+  }
+}
+
+class _CountdownDivider extends StatelessWidget {
+  const _CountdownDivider({
+    required this.compact,
+  });
+
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
+    return SizedBox(
+      width: 1,
+      height: compact ? 44 : 52,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: scheme.tertiary.withValues(alpha: 0.45),
+        ),
+      ),
+    );
+  }
 }

@@ -3,134 +3,128 @@ import 'dart:ui' as ui;
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../domain/invite_card_shape.dart';
+import '../hooks/use_auto_route_aware.dart';
 
-class WeddingHeroInviteCard extends StatefulWidget {
+class WeddingHeroInviteCard extends HookWidget {
   const WeddingHeroInviteCard({
-    required this.imageAssetPath,
+    this.imageAssetPath,
     required this.child,
     super.key,
     this.maxWidth = 382,
     this.animateOnMount = true,
   });
 
-  final String imageAssetPath;
+  final String? imageAssetPath;
   final Widget child;
   final double maxWidth;
   final bool animateOnMount;
 
-  @override
-  State<WeddingHeroInviteCard> createState() => _WeddingHeroInviteCardState();
-}
-
-class _WeddingHeroInviteCardState extends State<WeddingHeroInviteCard>
-    with
-        SingleTickerProviderStateMixin,
-        AutoRouteAwareStateMixin<WeddingHeroInviteCard> {
-  late final AnimationController _controller;
-
-  int _animationToken = 0;
-
   static const _shape = InviteCardShape();
 
   @override
-  void initState() {
-    super.initState();
-
-    _controller = AnimationController(
-      vsync: this,
+  Widget build(BuildContext context) {
+    final controller = useAnimationController(
       duration: const Duration(milliseconds: 760),
     );
+    final animationToken = useRef(0);
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      unawaited(_playAnimation());
-    });
-  }
+    final hasImage = imageAssetPath != null && imageAssetPath!.isNotEmpty;
 
-  @override
-  void didUpdateWidget(covariant WeddingHeroInviteCard oldWidget) {
-    super.didUpdateWidget(oldWidget);
+    final playAnimationRef = useRef<Future<void> Function()>(() async {});
 
-    if (oldWidget.imageAssetPath != widget.imageAssetPath ||
-        oldWidget.animateOnMount != widget.animateOnMount) {
+    playAnimationRef.value = () async {
+      if (!context.mounted) {
+        return;
+      }
+
+      animationToken.value++;
+      final currentToken = animationToken.value;
+
+      if (!animateOnMount) {
+        controller.value = 1;
+        return;
+      }
+
+      controller
+        ..stop()
+        ..value = 0;
+
+      if (hasImage) {
+        try {
+          await precacheImage(
+            AssetImage(imageAssetPath!),
+            context,
+          );
+        } catch (_) {
+          // Still run the animation if the image fails to precache.
+        }
+      }
+
+      if (!context.mounted || currentToken != animationToken.value) {
+        return;
+      }
+
+      await controller.forward(from: 0);
+    };
+
+    void scheduleAnimation() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        unawaited(_playAnimation());
+        unawaited(playAnimationRef.value());
       });
     }
-  }
 
-  @override
-  void didPush() {
-    unawaited(_playAnimation());
-  }
+    final replayAnimation = useCallback(
+      scheduleAnimation,
+      const [],
+    );
 
-  @override
-  void didPopNext() {
-    unawaited(_playAnimation());
-  }
+    useEffect(
+      () {
+        scheduleAnimation();
 
-  @override
-  void didInitTabRoute(TabPageRoute? previousRoute) {
-    unawaited(_playAnimation());
-  }
+        return () => animationToken.value++;
+      },
+      const [],
+    );
 
-  @override
-  void didChangeTabRoute(TabPageRoute previousRoute) {
-    unawaited(_playAnimation());
-  }
+    useEffect(
+      () {
+        scheduleAnimation();
 
-  Future<void> _playAnimation() async {
-    if (!mounted) {
-      return;
-    }
+        return null;
+      },
+      [imageAssetPath, animateOnMount],
+    );
 
-    _animationToken++;
-    final currentToken = _animationToken;
+    final routeAware = useMemoized(
+      () => _ReplayAnimationRouteAware(onActivate: replayAnimation),
+      [replayAnimation],
+    );
 
-    if (!widget.animateOnMount) {
-      _controller.value = 1;
-      return;
-    }
+    useAutoRouteAware(routeAware);
 
-    _controller
-      ..stop()
-      ..value = 0;
-
-    try {
-      await precacheImage(
-        AssetImage(widget.imageAssetPath),
-        context,
-      );
-    } catch (_) {
-      // Still run the animation if the image fails to precache.
-    }
-
-    if (!mounted || currentToken != _animationToken) {
-      return;
-    }
-
-    await _controller.forward(from: 0);
-  }
-
-  @override
-  Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
 
     return AnimatedBuilder(
-      animation: _controller,
+      animation: controller,
       builder: (context, _) {
         final card = Padding(
           padding: const EdgeInsets.fromLTRB(20, 22, 20, 18),
           child: Center(
             child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: widget.maxWidth),
+              constraints: BoxConstraints(maxWidth: maxWidth),
               child: Stack(
                 clipBehavior: Clip.none,
                 children: [
                   Positioned.fill(
                     child: ClipPath(
-                      clipper: const _InviteCardClipper(shape: _shape),
+                      clipper: _InviteCardClipper(
+                        shape: _shape,
+                        withArch: hasImage,
+                      ),
                       child: BackdropFilter(
                         filter: ui.ImageFilter.blur(sigmaX: 1.2, sigmaY: 1.2),
                         child: const SizedBox.expand(),
@@ -141,6 +135,7 @@ class _WeddingHeroInviteCardState extends State<WeddingHeroInviteCard>
                     child: CustomPaint(
                       painter: _InviteCardPainter(
                         shape: _shape,
+                        withArch: hasImage,
                         paperFill: scheme.surface.withValues(alpha: 0.86),
                         outerFrame: scheme.outline.withValues(alpha: 0.95),
                         innerFrame:
@@ -149,20 +144,34 @@ class _WeddingHeroInviteCardState extends State<WeddingHeroInviteCard>
                       ),
                     ),
                   ),
-                  Positioned(
-                    top: 50,
-                    left: 0,
-                    right: 0,
-                    height: 100,
-                    child: Image.asset(
-                      widget.imageAssetPath,
-                      fit: BoxFit.contain,
-                      filterQuality: FilterQuality.high,
+                  if (hasImage)
+                    Positioned(
+                      top: 50,
+                      left: 0,
+                      right: 0,
+                      height: 100,
+                      child: Image.asset(
+                        imageAssetPath!,
+                        fit: BoxFit.contain,
+                        filterQuality: FilterQuality.high,
+                      ),
                     ),
-                  ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(36, 132, 36, 28),
-                    child: widget.child,
+                    padding: EdgeInsets.fromLTRB(
+                      36,
+                      hasImage ? 132 : 36,
+                      36,
+                      28,
+                    ),
+                    child: hasImage
+                        ? Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const SizedBox(height: 24),
+                              child,
+                            ],
+                          )
+                        : child,
                   ),
                 ],
               ),
@@ -170,11 +179,11 @@ class _WeddingHeroInviteCardState extends State<WeddingHeroInviteCard>
           ),
         );
 
-        if (!widget.animateOnMount || _controller.isCompleted) {
+        if (!animateOnMount || controller.isCompleted) {
           return card;
         }
 
-        final animationValue = _controller.value;
+        final animationValue = controller.value;
 
         final opacityProgress = (animationValue / 0.45).clamp(0.0, 1.0);
         final opacity = Curves.easeOut.transform(opacityProgress);
@@ -224,18 +233,30 @@ class _WeddingHeroInviteCardState extends State<WeddingHeroInviteCard>
       },
     );
   }
+}
+
+class _ReplayAnimationRouteAware with AutoRouteAware {
+  _ReplayAnimationRouteAware({required this.onActivate});
+
+  final VoidCallback onActivate;
 
   @override
-  void dispose() {
-    _animationToken++;
-    _controller.dispose();
-    super.dispose();
-  }
+  void didPush() => onActivate();
+
+  @override
+  void didPopNext() => onActivate();
+
+  @override
+  void didInitTabRoute(TabPageRoute? previousRoute) => onActivate();
+
+  @override
+  void didChangeTabRoute(TabPageRoute previousRoute) => onActivate();
 }
 
 class _InviteCardPainter extends CustomPainter {
   const _InviteCardPainter({
     required this.shape,
+    required this.withArch,
     required this.paperFill,
     required this.outerFrame,
     required this.innerFrame,
@@ -243,6 +264,7 @@ class _InviteCardPainter extends CustomPainter {
   });
 
   final InviteCardShape shape;
+  final bool withArch;
   final Color paperFill;
   final Color outerFrame;
   final Color innerFrame;
@@ -250,14 +272,19 @@ class _InviteCardPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final outerPath = _buildInvitePath(size, shape);
+    final outerPath = _buildCardPath(size, shape, withArch: withArch);
 
-    final innerInset = 3.2;
-    final innerShape = shape.inset(innerInset);
-    final innerPath = _buildInvitePath(
-      Size(size.width - innerInset * 2, size.height - innerInset * 2),
-      innerShape,
-    ).shift(Offset(innerInset, innerInset));
+    const innerInset = 3.2;
+    final innerPath = withArch
+        ? _buildCardPath(
+            Size(size.width - innerInset * 2, size.height - innerInset * 2),
+            shape.inset(innerInset),
+            withArch: true,
+          ).shift(const Offset(innerInset, innerInset))
+        : _buildRectPath(
+            Size(size.width - innerInset * 2, size.height - innerInset * 2),
+            shape.cornerRadius - innerInset,
+          ).shift(const Offset(innerInset, innerInset));
 
     canvas.drawShadow(
       outerPath,
@@ -296,6 +323,7 @@ class _InviteCardPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _InviteCardPainter oldDelegate) {
     return oldDelegate.shape != shape ||
+        oldDelegate.withArch != withArch ||
         oldDelegate.paperFill != paperFill ||
         oldDelegate.outerFrame != outerFrame ||
         oldDelegate.innerFrame != innerFrame ||
@@ -304,22 +332,56 @@ class _InviteCardPainter extends CustomPainter {
 }
 
 class _InviteCardClipper extends CustomClipper<Path> {
-  const _InviteCardClipper({required this.shape});
+  const _InviteCardClipper({
+    required this.shape,
+    required this.withArch,
+  });
 
   final InviteCardShape shape;
+  final bool withArch;
 
   @override
   Path getClip(Size size) {
-    return _buildInvitePath(size, shape);
+    return _buildCardPath(size, shape, withArch: withArch);
   }
 
   @override
   bool shouldReclip(covariant _InviteCardClipper oldClipper) {
-    return oldClipper.shape != shape;
+    return oldClipper.shape != shape || oldClipper.withArch != withArch;
   }
 }
 
-Path _buildInvitePath(Size size, InviteCardShape shape) {
+Path _buildCardPath(
+  Size size,
+  InviteCardShape shape, {
+  required bool withArch,
+}) {
+  if (!withArch) {
+    return _buildRectPath(size, shape.cornerRadius);
+  }
+
+  return _buildArchPath(size, shape);
+}
+
+Path _buildRectPath(Size size, double cornerRadius) {
+  final w = size.width;
+  final h = size.height;
+  final r = cornerRadius.clamp(0.0, w / 2).toDouble();
+
+  return Path()
+    ..moveTo(r, 0)
+    ..lineTo(w - r, 0)
+    ..quadraticBezierTo(w, 0, w, r)
+    ..lineTo(w, h - r)
+    ..quadraticBezierTo(w, h, w - r, h)
+    ..lineTo(r, h)
+    ..quadraticBezierTo(0, h, 0, h - r)
+    ..lineTo(0, r)
+    ..quadraticBezierTo(0, 0, r, 0)
+    ..close();
+}
+
+Path _buildArchPath(Size size, InviteCardShape shape) {
   final w = size.width;
   final h = size.height;
   final r = shape.cornerRadius;

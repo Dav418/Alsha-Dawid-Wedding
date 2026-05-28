@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../domain/faq_item.dart';
 import '../../theme/app_colors.dart';
@@ -21,7 +22,8 @@ const _faqs = [
   ),
   FaqItem(
     question: 'WHAT TIME SHOULD I ARRIVE?',
-    answer: 'Please arrive by 1:45 PM so everyone is seated before the ceremony at 2:00 PM.',
+    answer:
+        'Please arrive by 1:45 PM so everyone is seated before the ceremony at 2:00 PM.',
   ),
   FaqItem(
     question: 'IS PARKING AVAILABLE?',
@@ -109,20 +111,14 @@ class _FaqHeader extends StatelessWidget {
   }
 }
 
-class _FaqAccordionTile extends StatefulWidget {
+class _FaqAccordionTile extends HookWidget {
   const _FaqAccordionTile({required this.item});
 
   final FaqItem item;
 
   @override
-  State<_FaqAccordionTile> createState() => _FaqAccordionTileState();
-}
-
-class _FaqAccordionTileState extends State<_FaqAccordionTile> {
-  bool _expanded = false;
-
-  @override
   Widget build(BuildContext context) {
+    final expanded = useState(false);
     final scheme = Theme.of(context).colorScheme;
 
     return DecoratedBox(
@@ -148,7 +144,7 @@ class _FaqAccordionTileState extends State<_FaqAccordionTile> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               InkWell(
-                onTap: () => setState(() => _expanded = !_expanded),
+                onTap: () => expanded.value = !expanded.value,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(18, 16, 14, 16),
                   child: Row(
@@ -156,13 +152,13 @@ class _FaqAccordionTileState extends State<_FaqAccordionTile> {
                     children: [
                       Expanded(
                         child: Text(
-                          widget.item.question,
+                          item.question,
                           style: AppTypography.faqQuestion(scheme),
                         ),
                       ),
                       const SizedBox(width: 12),
                       AnimatedRotation(
-                        turns: _expanded ? 0.125 : 0,
+                        turns: expanded.value ? 0.125 : 0,
                         duration: const Duration(milliseconds: 200),
                         curve: Curves.easeOut,
                         child: Text(
@@ -178,11 +174,11 @@ class _FaqAccordionTileState extends State<_FaqAccordionTile> {
                 duration: const Duration(milliseconds: 220),
                 curve: Curves.easeOut,
                 alignment: Alignment.topCenter,
-                child: _expanded
+                child: expanded.value
                     ? Padding(
                         padding: const EdgeInsets.fromLTRB(18, 0, 18, 18),
                         child: Text(
-                          widget.item.answer,
+                          item.answer,
                           style: AppTypography.faqAnswer(scheme),
                         ),
                       )

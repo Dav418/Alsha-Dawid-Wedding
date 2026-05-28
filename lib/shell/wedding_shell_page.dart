@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../features/home/home_page.dart';
+import '../router/app_router.gr.dart';
 import '../widgets/wedding_app_bar.dart';
 import '../widgets/wedding_drawer.dart';
 
@@ -39,26 +40,62 @@ class _WeddingShellScaffold extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final scrollController = useScrollController();
+    final activeRouteName = routerContext.router.current.name;
+    final previousRouteName = useRef(activeRouteName);
 
-    void goHome() {
-      HomePage.push(routerContext);
+    void scrollToTop() {
       if (scrollController.hasClients) {
         scrollController.jumpTo(0);
       }
     }
 
+    void scrollToTopAfterFrame() {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        scrollToTop();
+      });
+    }
+
+    useEffect(
+      () {
+        if (previousRouteName.value != activeRouteName) {
+          previousRouteName.value = activeRouteName;
+          scrollToTopAfterFrame();
+        }
+
+        return null;
+      },
+      [activeRouteName],
+    );
+
+    void goHome() {
+      final isAlreadyHome = activeRouteName == HomeRoute.name;
+
+      HomePage.push(routerContext);
+
+      if (isAlreadyHome) {
+        scrollToTopAfterFrame();
+      }
+    }
+
+    void onNavigate(String routeName) {
+      if (activeRouteName == routeName) {
+        scrollToTopAfterFrame();
+      }
+    }
+
     return Scaffold(
-      drawer: WeddingDrawer(routerContext: routerContext),
+      drawer: WeddingDrawer(
+        routerContext: routerContext,
+        onNavigate: onNavigate,
+      ),
       body: CustomScrollView(
         controller: scrollController,
         physics: _scrollPhysics,
         slivers: [
           WeddingAppBar(onHomeTap: goHome),
           SliverToBoxAdapter(
-            child: UnconstrainedBox(
-              alignment: Alignment.topCenter,
-              constrainedAxis: Axis.horizontal,
-              clipBehavior: Clip.none,
+            child: _WeddingSectionTransition(
+              routeName: activeRouteName,
               child: child,
             ),
           ),
@@ -68,6 +105,50 @@ class _WeddingShellScaffold extends HookWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _WeddingSectionTransition extends HookWidget {
+  const _WeddingSectionTransition({
+    required this.routeName,
+    required this.child,
+  });
+
+  final String routeName;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = useAnimationController(
+      duration: const Duration(milliseconds: 220),
+      initialValue: 1,
+    );
+
+    final previousRouteName = useRef(routeName);
+
+    final fadeAnimation = useMemoized(
+      () => controller.drive(
+        CurveTween(curve: Curves.easeOutCubic),
+      ),
+      [controller],
+    );
+
+    useEffect(
+      () {
+        if (previousRouteName.value != routeName) {
+          previousRouteName.value = routeName;
+          controller.forward(from: 0);
+        }
+
+        return null;
+      },
+      [routeName],
+    );
+
+    return FadeTransition(
+      opacity: fadeAnimation,
+      child: child,
     );
   }
 }

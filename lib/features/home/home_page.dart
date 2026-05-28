@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:wedding_invoice/assets/home/home_decor_assets.dart';
 
-import '../../assets/home/home_decor_assets.dart';
 import '../../theme/app_typography.dart';
 import '../../router/app_router.gr.dart';
 import '../../widgets/gold_heart_rule.dart';
@@ -22,7 +22,6 @@ class HomePage extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         WeddingHeroInviteCard(
-          imageAssetPath: HomeDecorAssets.monogramAdWreath,
           child: const _HomeInviteContent(),
         ),
         const WeddingCountdown(),
@@ -42,7 +41,6 @@ class _HomeInviteContent extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const SizedBox(height: 10),
         Text(
           'TOGETHER WITH THEIR FAMILIES',
           textAlign: TextAlign.center,
