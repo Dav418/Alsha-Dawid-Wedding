@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 
 import '../domain/countdown_nav_card.dart';
 import '../features/countdown/countdown_nav_icons.dart';
-import '../features/live_updates/live_updates_page.dart';
 import '../features/wedding_details/wedding_details_page.dart';
 import '../router/app_router.gr.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_typography.dart';
+import '../utils/open_live_updates.dart';
 import '../utils/open_venue_map.dart';
 
 const weddingFooterNavItems = [
@@ -35,8 +35,6 @@ void pushWeddingFooterRoute(BuildContext context, PageRouteInfo<void> route) {
   switch (route.routeName) {
     case WeddingDetailsRoute.name:
       WeddingDetailsPage.push(context);
-    case LiveUpdatesRoute.name:
-      LiveUpdatesPage.push(context);
   }
 }
 
@@ -93,6 +91,11 @@ class WeddingFooter extends StatelessWidget {
 
                           if (item.icon == CountdownNavIconVariant.mapPin) {
                             await openVenueMap();
+                            return;
+                          }
+
+                          if (item.icon == CountdownNavIconVariant.megaphone) {
+                            await openLiveUpdatesInNewTab();
                             return;
                           }
 

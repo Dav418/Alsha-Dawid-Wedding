@@ -5,6 +5,7 @@ import '../features/countdown/countdown_page.dart';
 import '../features/faq/faq_page.dart';
 import '../features/gallery/gallery_page.dart';
 import '../features/home/home_page.dart';
+import '../features/live_updates/live_updates_page.dart';
 import '../features/our_story/our_story_page.dart';
 import '../features/rsvp/rsvp_page.dart';
 import '../features/travel/travel_page.dart';
@@ -131,6 +132,11 @@ class WeddingDrawer extends StatelessWidget {
               label: 'FAQ',
               routeName: FaqRoute.name,
               push: FaqPage.push,
+            ),
+            tile(
+              label: 'LIVE UPDATES',
+              routeName: LiveUpdatesRoute.name,
+              push: LiveUpdatesPage.push,
             ),
             tile(
               label: 'COUNTDOWN',
