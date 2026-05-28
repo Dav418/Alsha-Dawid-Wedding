@@ -2,56 +2,15 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
 import '../../domain/countdown_contact.dart';
-import '../../domain/countdown_nav_card.dart';
 import '../../router/app_router.gr.dart';
-import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
 import '../../widgets/gold_heart_rule.dart';
 import '../../widgets/wedding_countdown.dart';
-import '../faq/faq_page.dart';
-import '../travel/travel_page.dart';
-import '../wedding_details/wedding_details_page.dart';
-import 'countdown_nav_icons.dart';
-
-const _navCards = [
-  CountdownNavCard(
-    title: 'SCHEDULE',
-    subtitle: 'View the full itinerary',
-    icon: CountdownNavIconVariant.calendar,
-    route: WeddingDetailsRoute(),
-  ),
-  CountdownNavCard(
-    title: 'VENUE',
-    subtitle: 'Get directions and map',
-    icon: CountdownNavIconVariant.mapPin,
-    route: TravelRoute(),
-  ),
-  CountdownNavCard(
-    title: 'LIVE UPDATES',
-    subtitle: 'Stay updated on all the details',
-    icon: CountdownNavIconVariant.megaphone,
-    route: FaqRoute(),
-  ),
-];
 
 const _contacts = [
   CountdownContact(name: 'Alisha', phone: '07712 345678'),
   CountdownContact(name: 'Dawid', phone: '07925 456789'),
 ];
-
-const _navCardSize = 112.0;
-const _navCardGap = 10.0;
-
-void _pushNavCard(BuildContext context, PageRouteInfo<void> route) {
-  switch (route.routeName) {
-    case WeddingDetailsRoute.name:
-      WeddingDetailsPage.push(context);
-    case TravelRoute.name:
-      TravelPage.push(context);
-    case FaqRoute.name:
-      FaqPage.push(context);
-  }
-}
 
 @RoutePage()
 class CountdownPage extends StatelessWidget {
@@ -71,19 +30,13 @@ class CountdownPage extends StatelessWidget {
         const WeddingCountdown(showTitle: false),
         Padding(
           padding: const EdgeInsets.fromLTRB(24, 28, 24, 0),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _NavCardsRow(maxWidth: constraints.maxWidth),
-                  const SizedBox(height: 28),
-                  const GoldHeartRule(),
-                  const SizedBox(height: 28),
-                  const _CountdownContactSection(),
-                ],
-              );
-            },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const GoldHeartRule(),
+              const SizedBox(height: 28),
+              const _CountdownContactSection(),
+            ],
           ),
         ),
       ],
@@ -128,104 +81,6 @@ class _CountdownScriptTitle extends StatelessWidget {
             ],
           );
         },
-      ),
-    );
-  }
-}
-
-class _NavCardsRow extends StatelessWidget {
-  const _NavCardsRow({required this.maxWidth});
-
-  final double maxWidth;
-
-  @override
-  Widget build(BuildContext context) {
-    final rowWidth =
-        _navCards.length * _navCardSize + (_navCards.length - 1) * _navCardGap;
-
-    if (maxWidth >= rowWidth) {
-      return Center(
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            for (var i = 0; i < _navCards.length; i++) ...[
-              SizedBox(
-                width: _navCardSize,
-                height: _navCardSize,
-                child: _CountdownNavCard(data: _navCards[i]),
-              ),
-              if (i < _navCards.length - 1) const SizedBox(width: _navCardGap),
-            ],
-          ],
-        ),
-      );
-    }
-
-    return SizedBox(
-      height: _navCardSize,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: _navCards.length,
-        separatorBuilder: (_, __) => const SizedBox(width: _navCardGap),
-        itemBuilder: (context, index) {
-          return SizedBox(
-            width: _navCardSize,
-            height: _navCardSize,
-            child: _CountdownNavCard(data: _navCards[index]),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _CountdownNavCard extends StatelessWidget {
-  const _CountdownNavCard({required this.data});
-
-  final CountdownNavCard data;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-
-    return Material(
-      color: AppColors.creamBackground.withValues(alpha: 0.85),
-      elevation: 0,
-      shadowColor: AppColors.textCharcoal.withValues(alpha: 0.06),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: AppColors.goldBrass.withValues(alpha: 0.28),
-        ),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: () => _pushNavCard(context, data.route),
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CountdownNavIcon(variant: data.icon, size: 38),
-              const SizedBox(height: 8),
-              Text(
-                data.title,
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AppTypography.navCardTitle(scheme),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                data.subtitle,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: AppTypography.navCardSubtitle(scheme),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

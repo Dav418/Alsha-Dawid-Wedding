@@ -4,12 +4,18 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../features/home/home_page.dart';
 import '../router/app_router.gr.dart';
+import '../theme/app_colors.dart';
 import '../widgets/wedding_app_bar.dart';
 import '../widgets/wedding_drawer.dart';
+import '../widgets/wedding_footer.dart';
 
 const _scrollPhysics = AlwaysScrollableScrollPhysics(
   parent: BouncingScrollPhysics(),
 );
+
+/// Height of the burgundy band revealed when bouncing past the bottom of the scroll.
+double _bottomOverscrollBandHeight(BuildContext context) =>
+    MediaQuery.sizeOf(context).height * 0.3;
 
 @RoutePage()
 class WeddingShellPage extends StatelessWidget {
@@ -84,24 +90,44 @@ class _WeddingShellScaffold extends HookWidget {
     }
 
     return Scaffold(
+      backgroundColor: AppColors.creamBackground,
       drawer: WeddingDrawer(
         routerContext: routerContext,
         onNavigate: onNavigate,
       ),
-      body: CustomScrollView(
-        controller: scrollController,
-        physics: _scrollPhysics,
-        slivers: [
-          WeddingAppBar(onHomeTap: goHome),
-          SliverToBoxAdapter(
-            child: _WeddingSectionTransition(
-              routeName: activeRouteName,
-              child: child,
-            ),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          const ColoredBox(color: AppColors.creamBackground),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: _bottomOverscrollBandHeight(context),
+            child: const ColoredBox(color: AppColors.burgundyAccent),
           ),
-          const SliverPadding(
-            padding: EdgeInsets.only(bottom: 32),
-            sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
+          CustomScrollView(
+            controller: scrollController,
+            physics: _scrollPhysics,
+            slivers: [
+              WeddingAppBar(onHomeTap: goHome),
+              SliverToBoxAdapter(
+                child: ColoredBox(
+                  color: AppColors.creamBackground,
+                  child: _WeddingSectionTransition(
+                    routeName: activeRouteName,
+                    child: child,
+                  ),
+                ),
+              ),
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: WeddingFooter(
+                  routerContext: routerContext,
+                  onNavigate: onNavigate,
+                ),
+              ),
+            ],
           ),
         ],
       ),
