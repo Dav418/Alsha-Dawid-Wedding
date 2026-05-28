@@ -64,6 +64,10 @@ class AppRouter extends RootStackRouter {
               path: 'countdown',
             ),
             _customRoute(
+              page: CountdownTestRoute.page,
+              path: 'countdown-test',
+            ),
+            _customRoute(
               page: LiveUpdatesRoute.page,
               path: 'live-updates',
             ),

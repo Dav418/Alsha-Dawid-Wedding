@@ -6,6 +6,7 @@ import '../../domain/faq_item.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
 import '../../router/app_router.gr.dart';
+import '../../utils/open_contact_email.dart';
 import '../../widgets/gold_heart_rule.dart';
 
 const _faqs = [
@@ -209,13 +210,16 @@ class _FaqContactSection extends StatelessWidget {
         const SizedBox(height: 20),
         Center(
           child: FilledButton(
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Contact details coming soon.'),
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
+            onPressed: () async {
+              final opened = await openContactEmail();
+              if (!opened && context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Could not open email for $contactEmailAddress.'),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              }
             },
             style: FilledButton.styleFrom(
               minimumSize: const Size(168, 44),

@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
 import '../features/countdown/countdown_page.dart';
+import '../features/countdown/countdown_test_page.dart';
 import '../features/faq/faq_page.dart';
 import '../features/gallery/gallery_page.dart';
 import '../features/home/home_page.dart';
@@ -142,6 +143,11 @@ class WeddingDrawer extends StatelessWidget {
               label: 'COUNTDOWN',
               routeName: CountdownRoute.name,
               push: CountdownPage.push,
+            ),
+            tile(
+              label: 'COUNTDOWN TEST',
+              routeName: CountdownTestRoute.name,
+              push: CountdownTestPage.push,
             ),
           ],
         ),

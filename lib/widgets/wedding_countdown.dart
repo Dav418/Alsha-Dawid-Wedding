@@ -6,29 +6,49 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_typography.dart';
 import 'gold_heart_rule.dart';
+import 'wedding_confetti_overlay.dart';
 
-/// Full-width wedding countdown banner — counts down to 17 October 2026.
+/// Full-width wedding countdown banner — counts down to 17 October 2026 by default.
 class WeddingCountdown extends HookWidget {
   const WeddingCountdown({
     super.key,
     this.showTitle = true,
+    this.target,
   });
 
   /// When false, only the heart rules and timer are shown.
   final bool showTitle;
 
-  static final DateTime _weddingDay = DateTime(2026, 10, 17);
+  /// When set, counts down to this moment instead of the wedding day.
+  final DateTime? target;
+
+  static final DateTime weddingDay = DateTime(2026, 10, 17);
 
   @override
   Widget build(BuildContext context) {
-    final remaining = useState(_remainingUntilWedding());
+    final weddingTarget = target ?? weddingDay;
+    final targetKey = weddingTarget.millisecondsSinceEpoch;
+    final remaining = useState(_remainingUntil(weddingTarget));
+    final reachedZero = useRef(false);
+    final confettiController = useWeddingConfettiController();
+
+    useWeddingConfettiOverlay(context, confettiController);
+
+    useEffect(
+      () {
+        reachedZero.value = false;
+        remaining.value = _remainingUntil(weddingTarget);
+        return null;
+      },
+      [targetKey],
+    );
 
     useEffect(
       () {
         final timer = Timer.periodic(
           const Duration(seconds: 1),
           (_) {
-            final next = _remainingUntilWedding();
+            final next = _remainingUntil(weddingTarget);
 
             if (next != remaining.value) {
               remaining.value = next;
@@ -38,7 +58,21 @@ class WeddingCountdown extends HookWidget {
 
         return timer.cancel;
       },
-      const [],
+      [targetKey],
+    );
+
+    useEffect(
+      () {
+        if (remaining.value == Duration.zero && !reachedZero.value) {
+          reachedZero.value = true;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            confettiController.play();
+          });
+        }
+
+        return null;
+      },
+      [remaining.value, confettiController],
     );
 
     final scheme = Theme.of(context).colorScheme;
@@ -47,6 +81,8 @@ class WeddingCountdown extends HookWidget {
     final numberSize = compact ? 34.0 : (width < 520 ? 42.0 : 48.0);
     final labelSize = compact ? 9.0 : 10.0;
     final titleSize = compact ? 11.0 : 12.5;
+    final celebrationSize = compact ? 38.0 : (width < 520 ? 46.0 : 54.0);
+    final isComplete = remaining.value == Duration.zero;
 
     final days = remaining.value.inDays;
     final hours = remaining.value.inHours.remainder(24);
@@ -83,15 +119,26 @@ class WeddingCountdown extends HookWidget {
               ],
               const GoldHeartRule(),
               SizedBox(height: compact ? 20 : 26),
-              _CountdownRow(
-                days: days,
-                hours: hours,
-                minutes: minutes,
-                seconds: seconds,
-                numberSize: numberSize,
-                labelSize: labelSize,
-                compact: compact,
-              ),
+              if (isComplete)
+                Text(
+                  "Let's get married",
+                  textAlign: TextAlign.center,
+                  style: AppTypography.scriptHero(
+                    scheme,
+                    fontSize: celebrationSize,
+                    height: 1.05,
+                  ),
+                )
+              else
+                _CountdownRow(
+                  days: days,
+                  hours: hours,
+                  minutes: minutes,
+                  seconds: seconds,
+                  numberSize: numberSize,
+                  labelSize: labelSize,
+                  compact: compact,
+                ),
               SizedBox(height: compact ? 20 : 26),
               const GoldHeartRule(),
             ],
@@ -101,8 +148,8 @@ class WeddingCountdown extends HookWidget {
     );
   }
 
-  static Duration _remainingUntilWedding() {
-    final diff = _weddingDay.difference(DateTime.now());
+  static Duration _remainingUntil(DateTime target) {
+    final diff = target.difference(DateTime.now());
 
     if (diff.isNegative) {
       return Duration.zero;

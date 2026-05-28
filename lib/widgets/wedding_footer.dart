@@ -54,68 +54,75 @@ class WeddingFooter extends StatelessWidget {
     final activeRoute = routerContext.router.current.name;
 
     return ColoredBox(
-      color: AppColors.burgundyAccent,
+      color: AppColors.creamBackground,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          DecoratedBox(
-            decoration: BoxDecoration(
-              border: Border(
-                top: BorderSide(
-                  color: AppColors.goldBrass.withValues(alpha: 0.45),
+          const SizedBox(height: 40),
+          const Spacer(),
+          ColoredBox(
+            color: AppColors.burgundyAccent,
+            child: SafeArea(
+              top: false,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border(
+                    top: BorderSide(
+                      color: AppColors.goldBrass.withValues(alpha: 0.45),
+                    ),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 20, 8, 20),
+                  child: Row(
+                    children: [
+                      for (var i = 0; i < weddingFooterNavItems.length; i++) ...[
+                        if (i > 0)
+                          VerticalDivider(
+                            width: 1,
+                            thickness: 1,
+                            indent: 8,
+                            endIndent: 8,
+                            color: AppColors.goldBrass.withValues(alpha: 0.35),
+                          ),
+                        Expanded(
+                          child: _FooterNavButton(
+                            data: weddingFooterNavItems[i],
+                            selected: weddingFooterNavItems[i].icon !=
+                                    CountdownNavIconVariant.mapPin &&
+                                activeRoute ==
+                                    weddingFooterNavItems[i].route.routeName,
+                            onTap: () async {
+                              final item = weddingFooterNavItems[i];
+
+                              if (item.icon == CountdownNavIconVariant.mapPin) {
+                                await openVenueMap();
+                                return;
+                              }
+
+                              if (item.icon == CountdownNavIconVariant.megaphone) {
+                                await openLiveUpdatesInNewTab();
+                                return;
+                              }
+
+                              final routeName = item.route.routeName;
+
+                              if (activeRoute == routeName) {
+                                onNavigate?.call(routeName);
+                                return;
+                              }
+
+                              pushWeddingFooterRoute(routerContext, item.route);
+                            },
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
                 ),
               ),
             ),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(8, 20, 8, 20),
-              child: Row(
-                children: [
-                  for (var i = 0; i < weddingFooterNavItems.length; i++) ...[
-                    if (i > 0)
-                      VerticalDivider(
-                        width: 1,
-                        thickness: 1,
-                        indent: 8,
-                        endIndent: 8,
-                        color: AppColors.goldBrass.withValues(alpha: 0.35),
-                      ),
-                    Expanded(
-                      child: _FooterNavButton(
-                        data: weddingFooterNavItems[i],
-                        selected: weddingFooterNavItems[i].icon !=
-                                CountdownNavIconVariant.mapPin &&
-                            activeRoute ==
-                                weddingFooterNavItems[i].route.routeName,
-                        onTap: () async {
-                          final item = weddingFooterNavItems[i];
-
-                          if (item.icon == CountdownNavIconVariant.mapPin) {
-                            await openVenueMap();
-                            return;
-                          }
-
-                          if (item.icon == CountdownNavIconVariant.megaphone) {
-                            await openLiveUpdatesInNewTab();
-                            return;
-                          }
-
-                          final routeName = item.route.routeName;
-
-                          if (activeRoute == routeName) {
-                            onNavigate?.call(routeName);
-                            return;
-                          }
-
-                          pushWeddingFooterRoute(routerContext, item.route);
-                        },
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
           ),
-          const Spacer(),
         ],
       ),
     );
