@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:wedding_invoice/assets/home/home_decor_assets.dart';
 
 import '../../theme/app_typography.dart';
 import '../../router/app_router.gr.dart';
