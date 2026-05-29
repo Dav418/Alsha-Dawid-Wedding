@@ -1,6 +1,6 @@
 $ErrorActionPreference = "Stop"
 
-$repoName = "Wedding-invoice"
+$repoName = "Alsha-Dawid-Wedding"
 $pagesBranch = "main"
 $siteUrl = "https://dav418.github.io/$repoName/"
 
@@ -52,7 +52,9 @@ if ($currentBranch -ne $pagesBranch) {
 }
 
 Run-Command "Cleaning Flutter project" "flutter clean"
+
 Run-Command "Getting Flutter packages" "flutter pub get"
+
 Run-Command "Building Flutter web for GitHub Pages" "flutter build web --release --base-href '/$repoName/'"
 
 if (-not (Test-Path "build\web\index.html")) {
@@ -78,10 +80,12 @@ New-Item -ItemType Directory "docs" | Out-Null
 
 Write-Host ""
 Write-Host "==> Copying build\web into docs" -ForegroundColor Cyan
+
 Copy-Item -Path "build\web\*" -Destination "docs" -Recurse -Force
 
 Write-Host ""
 Write-Host "==> Adding .nojekyll" -ForegroundColor Cyan
+
 New-Item -ItemType File "docs\.nojekyll" -Force | Out-Null
 
 if (-not (Test-Path "docs\index.html")) {
@@ -118,6 +122,7 @@ if ($LASTEXITCODE -ne 0) {
 
 Write-Host ""
 Write-Host "==> Git status for docs" -ForegroundColor Cyan
+
 git status --short docs
 
 $changes = git status --porcelain docs
