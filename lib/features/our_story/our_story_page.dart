@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../content/repositories/wedding_content_repository.dart';
-import '../../domain/polaroid_layout.dart';
-import '../../domain/story_timeline_entry.dart';
+import '../../models/polaroid_layout.dart';
+import '../../models/story_timeline_entry.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
 import '../../router/app_router.gr.dart';

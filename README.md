@@ -7,7 +7,7 @@ A mobile-first Flutter web wedding site for Alisha Fernandes and Dawid Gorski. G
 ## Tech stack
 
 - **Flutter Web** — UI and routing
-- **Riverpod** — app state and content loading
+- **Riverpod** — app state
 - **auto_route** — declarative navigation
 - **Freezed + json_serializable** — typed content models from JSON
 - **flutter_hooks** — lightweight widget state (countdown, accordions)
@@ -28,21 +28,13 @@ A mobile-first Flutter web wedding site for Alisha Fernandes and Dawid Gorski. G
 
 Placeholder sections (RSVP, gallery, travel) remain scaffolded for future content.
 
-## Content-driven setup
-
-Site copy and links live in a single JSON asset:
-
-```
-assets/content/wedding_content.json
-```
-
 At startup the app loads this file once through a Riverpod provider and passes typed `WeddingContent` models to pages and widgets. Layout, colours, icons, and routing stay in Dart — the JSON holds text, URLs, dates, and lists only.
 
 ### Public data
 
 This is a **public static site**. The JSON is bundled into the web build and shipped to GitHub Pages like any other asset. It is **not encrypted** and should not contain secrets. Treat email addresses and external links as publicly visible.
 
-### Swapping wedding content
+### Swapping sensetive wedding content
 
 1. Edit or replace `assets/content/wedding_content.json` with your own content (keep the same JSON shape).
 2. Run code generation if you changed Dart models:

@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../content/data/wedding_content.dart';
 import '../content/repositories/wedding_content_repository.dart';
-import '../domain/footer_nav_action.dart';
+import '../models/footer_nav_action.dart';
 import '../features/wedding_details/wedding_details_page.dart';
 import '../router/app_router.gr.dart';
 import '../theme/app_colors.dart';
