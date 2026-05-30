@@ -1,6 +1,6 @@
 /// Paths for home hero florals (transparent PNGs under [lib/assets/home]).
-abstract final class HomeDecorAssets {
-  HomeDecorAssets._();
+abstract final class WeddingAssets {
+  WeddingAssets._();
 
   static const String leftFloralCluster = 'lib/assets/home/left_floral_cluster.png';
   static const String rightFloralCluster = 'lib/assets/home/right_floral_cluster.png';
