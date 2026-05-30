@@ -43,8 +43,9 @@ abstract final class AppTheme {
         backgroundColor: brightness == Brightness.light
             ? AppColors.creamBackground
             : scheme.surface,
-        foregroundColor:
-            brightness == Brightness.light ? AppColors.textCharcoal : scheme.onSurface,
+        foregroundColor: brightness == Brightness.light
+            ? AppColors.textCharcoal
+            : scheme.onSurface,
       ),
       cardTheme: CardThemeData(
         elevation: 0,

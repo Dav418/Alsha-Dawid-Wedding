@@ -7,8 +7,8 @@ void useAutoRouteAware(AutoRouteAware listener) {
 
   useEffect(
     () {
-      final observer = RouterScope.of(context)
-          .firstObserverOfType<AutoRouteObserver>();
+      final observer =
+          RouterScope.of(context).firstObserverOfType<AutoRouteObserver>();
 
       if (observer != null) {
         observer.subscribe(listener, context.routeData);

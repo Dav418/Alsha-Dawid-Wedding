@@ -197,8 +197,7 @@ class _PortraitPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final initials =
-        '${firstName.isNotEmpty ? firstName[0] : ''}'
+    final initials = '${firstName.isNotEmpty ? firstName[0] : ''}'
         '${lastName.isNotEmpty ? lastName[0] : ''}';
 
     return ColoredBox(

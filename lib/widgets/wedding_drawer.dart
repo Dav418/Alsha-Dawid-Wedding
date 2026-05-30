@@ -44,8 +44,11 @@ class WeddingDrawer extends ConsumerWidget {
     final scheme = theme.colorScheme;
     final router = routerContext.router;
     final active = router.current.name;
-    final liveUpdatesUrl =
-        ref.watch(weddingContentRepositoryProvider).requireValue.links.liveUpdatesUrl;
+    final liveUpdatesUrl = ref
+        .watch(weddingContentRepositoryProvider)
+        .requireValue
+        .links
+        .liveUpdatesUrl;
 
     Widget tile({
       required String label,

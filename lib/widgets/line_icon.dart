@@ -99,13 +99,18 @@ class _CalendarIconPainter extends _LineIconPainter {
     );
     canvas.drawRRect(body, paint);
 
-    canvas.drawLine(Offset(w * 0.14, h * 0.34), Offset(w * 0.86, h * 0.34), paint);
+    canvas.drawLine(
+        Offset(w * 0.14, h * 0.34), Offset(w * 0.86, h * 0.34), paint);
 
-    canvas.drawLine(Offset(w * 0.3, h * 0.12), Offset(w * 0.3, h * 0.26), paint);
-    canvas.drawLine(Offset(w * 0.7, h * 0.12), Offset(w * 0.7, h * 0.26), paint);
+    canvas.drawLine(
+        Offset(w * 0.3, h * 0.12), Offset(w * 0.3, h * 0.26), paint);
+    canvas.drawLine(
+        Offset(w * 0.7, h * 0.12), Offset(w * 0.7, h * 0.26), paint);
 
-    canvas.drawLine(Offset(w * 0.34, h * 0.5), Offset(w * 0.66, h * 0.5), paint);
-    canvas.drawLine(Offset(w * 0.34, h * 0.64), Offset(w * 0.58, h * 0.64), paint);
+    canvas.drawLine(
+        Offset(w * 0.34, h * 0.5), Offset(w * 0.66, h * 0.5), paint);
+    canvas.drawLine(
+        Offset(w * 0.34, h * 0.64), Offset(w * 0.58, h * 0.64), paint);
 
     final star = Path()
       ..moveTo(w * 0.72, h * 0.58)
@@ -181,9 +186,12 @@ class _MegaphoneIconPainter extends _LineIconPainter {
       ..lineTo(w * 0.42, h * 0.82);
     canvas.drawPath(handle, paint);
 
-    canvas.drawLine(Offset(w * 0.86, h * 0.28), Offset(w * 0.94, h * 0.22), paint);
-    canvas.drawLine(Offset(w * 0.86, h * 0.5), Offset(w * 0.96, h * 0.5), paint);
-    canvas.drawLine(Offset(w * 0.86, h * 0.72), Offset(w * 0.94, h * 0.78), paint);
+    canvas.drawLine(
+        Offset(w * 0.86, h * 0.28), Offset(w * 0.94, h * 0.22), paint);
+    canvas.drawLine(
+        Offset(w * 0.86, h * 0.5), Offset(w * 0.96, h * 0.5), paint);
+    canvas.drawLine(
+        Offset(w * 0.86, h * 0.72), Offset(w * 0.94, h * 0.78), paint);
   }
 }
 
@@ -202,8 +210,10 @@ class _EmailIconPainter extends _LineIconPainter {
     );
     canvas.drawRRect(body, paint);
 
-    canvas.drawLine(Offset(w * 0.12, h * 0.3), Offset(w * 0.5, h * 0.52), paint);
-    canvas.drawLine(Offset(w * 0.88, h * 0.3), Offset(w * 0.5, h * 0.52), paint);
+    canvas.drawLine(
+        Offset(w * 0.12, h * 0.3), Offset(w * 0.5, h * 0.52), paint);
+    canvas.drawLine(
+        Offset(w * 0.88, h * 0.3), Offset(w * 0.5, h * 0.52), paint);
   }
 }
 
@@ -240,8 +250,10 @@ class _ChurchIconPainter extends _LineIconPainter {
     final w = size.width;
     final h = size.height;
 
-    canvas.drawLine(Offset(w * 0.5, h * 0.03), Offset(w * 0.5, h * 0.11), paint);
-    canvas.drawLine(Offset(w * 0.44, h * 0.07), Offset(w * 0.56, h * 0.07), paint);
+    canvas.drawLine(
+        Offset(w * 0.5, h * 0.03), Offset(w * 0.5, h * 0.11), paint);
+    canvas.drawLine(
+        Offset(w * 0.44, h * 0.07), Offset(w * 0.56, h * 0.07), paint);
 
     final steeple = Path()
       ..moveTo(w * 0.34, h * 0.36)
@@ -249,7 +261,8 @@ class _ChurchIconPainter extends _LineIconPainter {
       ..lineTo(w * 0.66, h * 0.36);
     canvas.drawPath(steeple, paint);
 
-    canvas.drawLine(Offset(w * 0.1, h * 0.36), Offset(w * 0.9, h * 0.36), paint);
+    canvas.drawLine(
+        Offset(w * 0.1, h * 0.36), Offset(w * 0.9, h * 0.36), paint);
 
     final body = RRect.fromRectAndRadius(
       Rect.fromLTWH(w * 0.1, h * 0.36, w * 0.8, h * 0.54),
@@ -303,7 +316,8 @@ class _ManorIconPainter extends _LineIconPainter {
     );
     canvas.drawRRect(centerBlock, paint);
 
-    canvas.drawLine(Offset(w * 0.08, h * 0.52), Offset(w * 0.92, h * 0.52), paint);
+    canvas.drawLine(
+        Offset(w * 0.08, h * 0.52), Offset(w * 0.92, h * 0.52), paint);
 
     drawArch(
       canvas,
@@ -311,8 +325,10 @@ class _ManorIconPainter extends _LineIconPainter {
       Rect.fromLTWH(w * 0.41, h * 0.56, w * 0.18, h * 0.22),
     );
 
-    canvas.drawLine(Offset(w * 0.2, h * 0.56), Offset(w * 0.2, h * 0.68), paint);
-    canvas.drawLine(Offset(w * 0.8, h * 0.56), Offset(w * 0.8, h * 0.68), paint);
+    canvas.drawLine(
+        Offset(w * 0.2, h * 0.56), Offset(w * 0.2, h * 0.68), paint);
+    canvas.drawLine(
+        Offset(w * 0.8, h * 0.56), Offset(w * 0.8, h * 0.68), paint);
 
     final heart = Path()
       ..moveTo(w * 0.5, h * 0.66)
@@ -372,7 +388,8 @@ class _DressIconPainter extends _LineIconPainter {
       ..quadraticBezierTo(w * 0.62, h * 0.42, w * 0.5, h * 0.36);
     canvas.drawPath(bowRight, paint);
 
-    canvas.drawLine(Offset(w * 0.5, h * 0.14), Offset(w * 0.5, h * 0.08), paint);
+    canvas.drawLine(
+        Offset(w * 0.5, h * 0.14), Offset(w * 0.5, h * 0.08), paint);
     canvas.drawCircle(Offset(w * 0.5, h * 0.06), w * 0.025, paint);
   }
 }
@@ -399,8 +416,10 @@ class _CarIconPainter extends _LineIconPainter {
       ..lineTo(w * 0.76, h * 0.48);
     canvas.drawPath(cabin, paint);
 
-    canvas.drawLine(Offset(w * 0.46, h * 0.28), Offset(w * 0.46, h * 0.48), paint);
-    canvas.drawLine(Offset(w * 0.6, h * 0.28), Offset(w * 0.6, h * 0.48), paint);
+    canvas.drawLine(
+        Offset(w * 0.46, h * 0.28), Offset(w * 0.46, h * 0.48), paint);
+    canvas.drawLine(
+        Offset(w * 0.6, h * 0.28), Offset(w * 0.6, h * 0.48), paint);
 
     canvas.drawCircle(Offset(w * 0.26, h * 0.76), w * 0.1, paint);
     canvas.drawCircle(Offset(w * 0.74, h * 0.76), w * 0.1, paint);

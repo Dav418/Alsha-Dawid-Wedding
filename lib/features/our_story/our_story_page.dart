@@ -33,8 +33,7 @@ const _storyTimeline = [
   ),
   StoryTimelineEntry(
     title: "WHAT WE'RE LOOKING FORWARD TO",
-    description:
-        'A lifetime of love, adventures and memories together.',
+    description: 'A lifetime of love, adventures and memories together.',
   ),
 ];
 
@@ -63,8 +62,10 @@ class OurStoryPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final photoUrls =
-        ref.watch(weddingContentRepositoryProvider).requireValue.ourStoryPhotoUrls;
+    final photoUrls = ref
+        .watch(weddingContentRepositoryProvider)
+        .requireValue
+        .ourStoryPhotoUrls;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
@@ -74,8 +75,7 @@ class OurStoryPage extends ConsumerWidget {
           constraints: const BoxConstraints(maxWidth: _maxPageWidth),
           child: LayoutBuilder(
             builder: (context, constraints) {
-              final sideBySide =
-                  constraints.maxWidth >= _sideBySideBreakpoint;
+              final sideBySide = constraints.maxWidth >= _sideBySideBreakpoint;
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -288,12 +288,10 @@ class _PolaroidPhoto extends StatelessWidget {
   }) {
     final frame = frameSize(width);
     const shadowPadding = 16.0;
-    final boundsWidth =
-        frame.width * math.cos(rotation).abs() +
+    final boundsWidth = frame.width * math.cos(rotation).abs() +
         frame.height * math.sin(rotation).abs() +
         shadowPadding;
-    final boundsHeight =
-        frame.width * math.sin(rotation).abs() +
+    final boundsHeight = frame.width * math.sin(rotation).abs() +
         frame.height * math.cos(rotation).abs() +
         shadowPadding;
     return Size(boundsWidth, boundsHeight);
@@ -427,7 +425,8 @@ class _StoryTimeline extends StatelessWidget {
                 const SizedBox(width: 14),
                 Expanded(
                   child: Padding(
-                    padding: EdgeInsets.only(bottom: i < entries.length - 1 ? 26 : 0),
+                    padding: EdgeInsets.only(
+                        bottom: i < entries.length - 1 ? 26 : 0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

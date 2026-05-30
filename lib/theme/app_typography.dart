@@ -258,16 +258,14 @@ abstract final class AppTypography {
         color: scheme.primary,
       );
 
-  static TextStyle faqToggle(ColorScheme scheme) =>
-      GoogleFonts.playfairDisplay(
+  static TextStyle faqToggle(ColorScheme scheme) => GoogleFonts.playfairDisplay(
         fontSize: 22,
         height: 1,
         fontWeight: FontWeight.w400,
         color: scheme.primary.withValues(alpha: 0.75),
       );
 
-  static TextStyle faqAnswer(ColorScheme scheme) =>
-      GoogleFonts.playfairDisplay(
+  static TextStyle faqAnswer(ColorScheme scheme) => GoogleFonts.playfairDisplay(
         fontSize: 14.5,
         height: 1.55,
         fontWeight: FontWeight.w400,

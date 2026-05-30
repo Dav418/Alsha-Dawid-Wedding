@@ -98,7 +98,8 @@ class CountdownTestPage extends HookWidget {
         if (activeTarget.value != null) ...[
           const SizedBox(height: 24),
           WeddingCountdown(
-            key: ValueKey('${activeTarget.value!.millisecondsSinceEpoch}-${runId.value}'),
+            key: ValueKey(
+                '${activeTarget.value!.millisecondsSinceEpoch}-${runId.value}'),
             showTitle: true,
             target: activeTarget.value,
           ),

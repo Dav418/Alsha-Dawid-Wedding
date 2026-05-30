@@ -10,9 +10,6 @@ abstract final class WeddingPartyAssets {
   }
 
   static String _slug(String value) {
-    return value
-        .toLowerCase()
-        .replaceAll(RegExp(r"[^a-z0-9]+"), '')
-        .trim();
+    return value.toLowerCase().replaceAll(RegExp(r"[^a-z0-9]+"), '').trim();
   }
 }
