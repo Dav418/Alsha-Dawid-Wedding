@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../router/app_router.gr.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
-import '../../widgets/gold_heart_rule.dart';
+import '../../widgets/heart_divider.dart';
 import '../../widgets/padlet_embed.dart';
 
 @RoutePage()
@@ -24,7 +24,7 @@ class LiveUpdatesPage extends StatelessWidget {
         children: [
           const _LiveUpdatesHeader(),
           const SizedBox(height: 22),
-          const GoldHeartRule(),
+          const HeartDivider(),
           const SizedBox(height: 22),
           const PadletEmbed(),
           const SizedBox(height: 32),

@@ -5,7 +5,7 @@ import '../../domain/party_member.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
 import '../../router/app_router.gr.dart';
-import '../../widgets/gold_heart_rule.dart';
+import '../../widgets/heart_divider.dart';
 
 const _bridesmaids = [
   PartyMember(firstName: 'Sonia', lastName: "D'Souza"),
@@ -66,14 +66,14 @@ class WeddingPartyPage extends StatelessWidget {
             members: _bridesmaids,
           ),
           const SizedBox(height: 28),
-          const GoldHeartRule(),
+          const HeartDivider(),
           const SizedBox(height: 28),
           const _PartySection(
             title: 'GROOMSMEN',
             members: _groomsmen,
           ),
           const SizedBox(height: 28),
-          const GoldHeartRule(),
+          const HeartDivider(),
           const SizedBox(height: 28),
           const _PartySection(
             title: 'PARENTS',

@@ -8,13 +8,13 @@ void main() {
   testWidgets('renders root shell', (WidgetTester tester) async {
     await tester.pumpWidget(
       const ProviderScope(
-        child: WeddingInvoiceApp(),
+        child: WeddingWebsiteApp(),
       ),
     );
     await tester.pump();
     await tester.pump(const Duration(seconds: 1));
 
     expect(find.byType(MaterialApp), findsOneWidget);
-    expect(find.textContaining('Invoice'), findsWidgets);
+    expect(find.textContaining('Alisha'), findsWidgets);
   });
 }

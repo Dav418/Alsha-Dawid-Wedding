@@ -1,9 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
-import '../../theme/app_typography.dart';
 import '../../router/app_router.gr.dart';
-import '../../widgets/gold_heart_rule.dart';
+import '../../theme/app_typography.dart';
+import '../../widgets/heart_divider.dart';
 import '../../widgets/wedding_countdown.dart';
 import '../../widgets/wedding_hero_invite_card.dart';
 
@@ -62,7 +62,7 @@ class _HomeInviteContent extends StatelessWidget {
           style: AppTypography.scriptName(scheme),
         ),
         const SizedBox(height: 16),
-        const GoldHeartRule(),
+        const HeartDivider(),
         const SizedBox(height: 16),
         Text(
           '17 OCTOBER 2026',
@@ -75,7 +75,7 @@ class _HomeInviteContent extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 10),
-        const SingleGoldHeart(),
+        const HeartAccent(),
         const SizedBox(height: 10),
         Text(
           'RICKMANSWORTH, UK',
@@ -108,7 +108,7 @@ class _HomeWelcomeSection extends StatelessWidget {
             style: AppTypography.scriptHero(scheme, height: 1.1),
           ),
           const SizedBox(height: 12),
-          const SingleGoldHeart(),
+          const HeartAccent(),
           const SizedBox(height: 18),
           Text(
             "We're so excited to celebrate this special chapter with the "
@@ -124,7 +124,7 @@ class _HomeWelcomeSection extends StatelessWidget {
             style: AppTypography.scriptQuote(scheme, height: 1.2),
           ),
           const SizedBox(height: 14),
-          const SingleGoldHeart(),
+          const HeartAccent(),
         ],
       ),
     );

@@ -5,7 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../theme/app_colors.dart';
 import '../theme/app_typography.dart';
-import 'gold_heart_rule.dart';
+import 'heart_divider.dart';
 import 'wedding_confetti_overlay.dart';
 
 /// Full-width wedding countdown banner — counts down to 17 October 2026 by default.
@@ -117,7 +117,7 @@ class WeddingCountdown extends HookWidget {
                 ),
                 SizedBox(height: compact ? 18 : 22),
               ],
-              const GoldHeartRule(),
+              const HeartDivider(),
               SizedBox(height: compact ? 20 : 26),
               if (isComplete)
                 Text(
@@ -140,7 +140,7 @@ class WeddingCountdown extends HookWidget {
                   compact: compact,
                 ),
               SizedBox(height: compact ? 20 : 26),
-              const GoldHeartRule(),
+              const HeartDivider(),
             ],
           ),
         ),

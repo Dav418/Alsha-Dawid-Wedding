@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
 import '../../router/app_router.gr.dart';
-import '../../widgets/gold_heart_rule.dart';
-import 'wedding_details_icons.dart';
+import '../../widgets/heart_divider.dart';
+import '../../widgets/line_icon.dart';
 
 @RoutePage()
 class WeddingDetailsPage extends StatelessWidget {
@@ -29,7 +29,7 @@ class WeddingDetailsPage extends StatelessWidget {
               const _DetailsHeader(),
               const SizedBox(height: 28),
               const _VenueDetailCard(
-                icon: WeddingDetailsIconVariant.church,
+                icon: LineIconVariant.church,
                 title: 'CEREMONY',
                 time: '2:00 PM',
                 lines: [
@@ -40,7 +40,7 @@ class WeddingDetailsPage extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               const _VenueDetailCard(
-                icon: WeddingDetailsIconVariant.manor,
+                icon: LineIconVariant.manor,
                 title: 'RECEPTION',
                 time: '4:00 PM',
                 lines: [
@@ -54,7 +54,7 @@ class WeddingDetailsPage extends StatelessWidget {
                 const Column(
                   children: [
                     _CompactDetailCard(
-                      icon: WeddingDetailsIconVariant.dress,
+                      icon: LineIconVariant.dress,
                       title: 'DRESS CODE',
                       body:
                           'Formal / Black Tie Optional. Think romantic autumn elegance.',
@@ -62,7 +62,7 @@ class WeddingDetailsPage extends StatelessWidget {
                     ),
                     SizedBox(height: 16),
                     _CompactDetailCard(
-                      icon: WeddingDetailsIconVariant.car,
+                      icon: LineIconVariant.car,
                       title: 'TRANSPORT',
                       body:
                           'Parking available on site. Rickmansworth Station is a 5 minute drive.',
@@ -76,7 +76,7 @@ class WeddingDetailsPage extends StatelessWidget {
                   children: [
                     Expanded(
                       child: _CompactDetailCard(
-                        icon: WeddingDetailsIconVariant.dress,
+                        icon: LineIconVariant.dress,
                         title: 'DRESS CODE',
                         body:
                             'Formal / Black Tie Optional. Think romantic autumn elegance.',
@@ -86,7 +86,7 @@ class WeddingDetailsPage extends StatelessWidget {
                     SizedBox(width: 16),
                     Expanded(
                       child: _CompactDetailCard(
-                        icon: WeddingDetailsIconVariant.car,
+                        icon: LineIconVariant.car,
                         title: 'TRANSPORT',
                         body:
                             'Parking available on site. Rickmansworth Station is a 5 minute drive.',
@@ -134,7 +134,7 @@ class _DetailsHeader extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 14),
-        const GoldHeartRule(),
+        const HeartDivider(),
       ],
     );
   }
@@ -148,7 +148,7 @@ class _VenueDetailCard extends StatelessWidget {
     required this.lines,
   });
 
-  final WeddingDetailsIconVariant icon;
+  final LineIconVariant icon;
   final String title;
   final String time;
   final List<String> lines;
@@ -161,7 +161,7 @@ class _VenueDetailCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          WeddingDetailsIcon(variant: icon, size: 86),
+          LineIcon(variant: icon, size: 86),
           const SizedBox(width: 18),
           Expanded(
             child: Column(
@@ -203,7 +203,7 @@ class _CompactDetailCard extends StatelessWidget {
     required this.swatches,
   });
 
-  final WeddingDetailsIconVariant icon;
+  final LineIconVariant icon;
   final String title;
   final String body;
   final List<Color> swatches;
@@ -215,7 +215,7 @@ class _CompactDetailCard extends StatelessWidget {
     return _DetailsCardShell(
       child: Column(
         children: [
-          WeddingDetailsIcon(variant: icon, size: 72),
+          LineIcon(variant: icon, size: 72),
           const SizedBox(height: 14),
           Text(
             title,

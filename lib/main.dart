@@ -21,5 +21,5 @@ Future<void> main() async {
     GoogleFonts.playfairDisplay(fontWeight: FontWeight.w600),
   ]);
 
-  runApp(const ProviderScope(child: WeddingInvoiceApp()));
+  runApp(const ProviderScope(child: WeddingWebsiteApp()));
 }

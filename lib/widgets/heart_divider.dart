@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-/// Horizontal gold lines with a centered heart — uses [ColorScheme.tertiary].
-class GoldHeartRule extends StatelessWidget {
-  const GoldHeartRule({super.key});
+/// Horizontal lines with a centered heart — uses [ColorScheme.tertiary].
+class HeartDivider extends StatelessWidget {
+  const HeartDivider({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +35,9 @@ class GoldHeartRule extends StatelessWidget {
   }
 }
 
-/// Standalone gold heart accent — uses [ColorScheme.tertiary].
-class SingleGoldHeart extends StatelessWidget {
-  const SingleGoldHeart({super.key});
+/// Standalone heart accent — uses [ColorScheme.tertiary].
+class HeartAccent extends StatelessWidget {
+  const HeartAccent({super.key});
 
   @override
   Widget build(BuildContext context) {

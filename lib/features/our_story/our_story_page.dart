@@ -7,7 +7,7 @@ import '../../domain/story_timeline_entry.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
 import '../../router/app_router.gr.dart';
-import '../../widgets/gold_heart_rule.dart';
+import '../../widgets/heart_divider.dart';
 import 'our_story_decorations.dart';
 
 /// Replace with your own photo URLs when ready.
@@ -124,7 +124,7 @@ class _StoryHeader extends StatelessWidget {
           style: AppTypography.scriptHero(scheme),
         ),
         const SizedBox(height: 10),
-        const SingleGoldHeart(),
+        const HeartAccent(),
         const SizedBox(height: 10),
         Text(
           'A LITTLE BIT OF OUR JOURNEY',
@@ -414,7 +414,7 @@ class _StoryTimeline extends StatelessWidget {
                   width: 28,
                   child: Column(
                     children: [
-                      const SingleGoldHeart(),
+                      const HeartAccent(),
                       if (i < entries.length - 1)
                         Expanded(
                           child: Container(

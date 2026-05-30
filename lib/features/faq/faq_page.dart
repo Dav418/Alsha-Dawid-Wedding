@@ -7,7 +7,7 @@ import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
 import '../../router/app_router.gr.dart';
 import '../../utils/open_contact_email.dart';
-import '../../widgets/gold_heart_rule.dart';
+import '../../widgets/heart_divider.dart';
 
 const _faqs = [
   FaqItem(
@@ -70,7 +70,7 @@ class FaqPage extends StatelessWidget {
         children: [
           const _FaqHeader(),
           const SizedBox(height: 22),
-          const GoldHeartRule(),
+          const HeartDivider(),
           const SizedBox(height: 22),
           for (var i = 0; i < _faqs.length; i++) ...[
             _FaqAccordionTile(item: _faqs[i]),
