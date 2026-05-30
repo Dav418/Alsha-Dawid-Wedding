@@ -1,8 +1,7 @@
+import 'package:alisha_dawid_wedding_website/app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:wedding_invoice/app.dart';
 
 void main() {
   testWidgets('renders root shell', (WidgetTester tester) async {

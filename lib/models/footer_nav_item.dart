@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part '../domain/footer_nav_item.freezed.dart';
+part 'footer_nav_item.freezed.dart';
 
 enum FooterNavAction {
   schedule,
