@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import '../features/home/home_page.dart';
 import '../router/app_router.gr.dart';
 import '../theme/app_colors.dart';
+import '../widgets/hard_edge_color.dart';
 import '../widgets/wedding_app_bar.dart';
 import '../widgets/wedding_drawer.dart';
 import '../widgets/wedding_footer.dart';
@@ -12,6 +13,8 @@ import '../widgets/wedding_footer.dart';
 const _scrollPhysics = AlwaysScrollableScrollPhysics(
   parent: BouncingScrollPhysics(),
 );
+
+const _footerTopSpacing = 40.0;
 
 /// Height of the burgundy band revealed when bouncing past the bottom of the scroll.
 double _bottomOverscrollBandHeight(BuildContext context) =>
@@ -98,13 +101,19 @@ class _WeddingShellScaffold extends HookWidget {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          const ColoredBox(color: AppColors.creamBackground),
+          const HardEdgeColor(
+            color: AppColors.creamBackground,
+            child: SizedBox.expand(),
+          ),
           Positioned(
             left: 0,
             right: 0,
             bottom: 0,
             height: _bottomOverscrollBandHeight(context),
-            child: const ColoredBox(color: AppColors.burgundyAccent),
+            child: const HardEdgeColor(
+              color: AppColors.burgundyAccent,
+              child: SizedBox.expand(),
+            ),
           ),
           CustomScrollView(
             controller: scrollController,
@@ -112,7 +121,7 @@ class _WeddingShellScaffold extends HookWidget {
             slivers: [
               WeddingAppBar(onHomeTap: goHome),
               SliverToBoxAdapter(
-                child: ColoredBox(
+                child: HardEdgeColor(
                   color: AppColors.creamBackground,
                   child: _WeddingSectionTransition(
                     routeName: activeRouteName,
@@ -122,9 +131,24 @@ class _WeddingShellScaffold extends HookWidget {
               ),
               SliverFillRemaining(
                 hasScrollBody: false,
-                child: WeddingFooter(
-                  routerContext: routerContext,
-                  onNavigate: onNavigate,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const HardEdgeColor(
+                      color: AppColors.creamBackground,
+                      child: SizedBox(height: _footerTopSpacing),
+                    ),
+                    const Expanded(
+                      child: HardEdgeColor(
+                        color: AppColors.creamBackground,
+                        child: SizedBox.expand(),
+                      ),
+                    ),
+                    WeddingFooter(
+                      routerContext: routerContext,
+                      onNavigate: onNavigate,
+                    ),
+                  ],
                 ),
               ),
             ],

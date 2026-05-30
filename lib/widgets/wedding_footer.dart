@@ -10,6 +10,7 @@ import '../utils/open_contact_email.dart';
 import '../utils/open_doughy_delights_instagram.dart';
 import '../utils/open_live_updates.dart';
 import '../utils/open_venue_map.dart';
+import 'hard_edge_color.dart';
 import 'line_icon.dart';
 
 const weddingFooterNavItems = [
@@ -50,100 +51,74 @@ class WeddingFooter extends StatelessWidget {
     final compact = MediaQuery.sizeOf(context).width < 360;
     final contactHorizontalPadding = compact ? 16.0 : 40.0;
 
-    return ColoredBox(
-      color: AppColors.creamBackground,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const SizedBox(height: 40),
-          const Spacer(),
-          ColoredBox(
-            color: AppColors.burgundyAccent,
-            child: SafeArea(
-              top: false,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  border: Border(
-                    top: BorderSide(
-                      color: AppColors.goldBrass.withValues(alpha: 0.45),
-                    ),
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 20, 8, 0),
-                      child: Row(
-                        children: [
-                          for (var i = 0;
-                              i < weddingFooterNavItems.length;
-                              i++) ...[
-                            if (i > 0)
-                              VerticalDivider(
-                                width: 1,
-                                thickness: 1,
-                                indent: 8,
-                                endIndent: 8,
-                                color:
-                                    AppColors.goldBrass.withValues(alpha: 0.35),
-                              ),
-                            Expanded(
-                              child: _FooterNavButton(
-                                data: weddingFooterNavItems[i],
-                                selected: weddingFooterNavItems[i].icon !=
-                                        LineIconVariant.mapPin &&
-                                    activeRoute ==
-                                        weddingFooterNavItems[i]
-                                            .route
-                                            .routeName,
-                                onTap: () async {
-                                  final item = weddingFooterNavItems[i];
-
-                                  if (item.icon ==
-                                      LineIconVariant.mapPin) {
-                                    await openVenueMap();
-                                    return;
-                                  }
-
-                                  if (item.icon ==
-                                      LineIconVariant.megaphone) {
-                                    await openLiveUpdatesInNewTab();
-                                    return;
-                                  }
-
-                                  final routeName = item.route.routeName;
-
-                                  if (activeRoute == routeName) {
-                                    onNavigate?.call(routeName);
-                                    return;
-                                  }
-
-                                  WeddingDetailsPage.push(routerContext);
-                                },
-                              ),
-                            ),
-                          ],
-                        ],
+    return HardEdgeColor(
+      color: AppColors.burgundyAccent,
+      child: SafeArea(
+        top: false,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 20, 8, 0),
+              child: Row(
+                children: [
+                  for (var i = 0; i < weddingFooterNavItems.length; i++) ...[
+                    if (i > 0)
+                      VerticalDivider(
+                        width: 1,
+                        thickness: 1,
+                        indent: 8,
+                        endIndent: 8,
+                        color: AppColors.goldBrass.withValues(alpha: 0.35),
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(
-                        contactHorizontalPadding,
-                        0,
-                        contactHorizontalPadding,
-                        16,
+                    Expanded(
+                      child: _FooterNavButton(
+                        data: weddingFooterNavItems[i],
+                        selected: weddingFooterNavItems[i].icon !=
+                                LineIconVariant.mapPin &&
+                            activeRoute ==
+                                weddingFooterNavItems[i].route.routeName,
+                        onTap: () async {
+                          final item = weddingFooterNavItems[i];
+
+                          if (item.icon == LineIconVariant.mapPin) {
+                            await openVenueMap();
+                            return;
+                          }
+
+                          if (item.icon == LineIconVariant.megaphone) {
+                            await openLiveUpdatesInNewTab();
+                            return;
+                          }
+
+                          final routeName = item.route.routeName;
+
+                          if (activeRoute == routeName) {
+                            onNavigate?.call(routeName);
+                            return;
+                          }
+
+                          WeddingDetailsPage.push(routerContext);
+                        },
                       ),
-                      child: const _FooterContactInfo(),
                     ),
                   ],
-                ),
+                ],
               ),
             ),
-          ),
-        ],
+            const SizedBox(height: 12),
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                contactHorizontalPadding,
+                0,
+                contactHorizontalPadding,
+                16,
+              ),
+              child: const _FooterContactInfo(),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -155,6 +130,7 @@ class _FooterContactInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+
     final lineStyle = AppTypography.contactLine(scheme).copyWith(
       fontSize: 12,
       color: Colors.white.withValues(alpha: 0.85),
@@ -180,6 +156,7 @@ class _FooterContactInfo extends StatelessWidget {
           ),
           onTap: () async {
             final opened = await openDoughyDelightsInstagram();
+
             if (!opened && context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
