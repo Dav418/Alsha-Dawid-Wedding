@@ -1,6 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../content/data/wedding_content.dart';
+import '../../content/repositories/wedding_content_repository.dart';
 import '../../router/app_router.gr.dart';
 import '../../theme/app_typography.dart';
 import '../../widgets/heart_divider.dart';
@@ -8,7 +11,7 @@ import '../../widgets/wedding_countdown.dart';
 import '../../widgets/wedding_hero_invite_card.dart';
 
 @RoutePage()
-class HomePage extends StatelessWidget {
+class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
   static void push(BuildContext context) {
@@ -16,12 +19,14 @@ class HomePage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final content = ref.watch(weddingContentRepositoryProvider).requireValue;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         WeddingHeroInviteCard(
-          child: const _HomeInviteContent(),
+          child: _HomeInviteContent(content: content),
         ),
         const WeddingCountdown(),
         const _HomeWelcomeSection(),
@@ -31,11 +36,15 @@ class HomePage extends StatelessWidget {
 }
 
 class _HomeInviteContent extends StatelessWidget {
-  const _HomeInviteContent();
+  const _HomeInviteContent({required this.content});
+
+  final WeddingContent content;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final couple = content.couple;
+    final event = content.event;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -47,7 +56,7 @@ class _HomeInviteContent extends StatelessWidget {
         ),
         const SizedBox(height: 14),
         Text(
-          'Alisha Fernandes',
+          couple.partner1Name,
           textAlign: TextAlign.center,
           style: AppTypography.scriptName(scheme),
         ),
@@ -57,7 +66,7 @@ class _HomeInviteContent extends StatelessWidget {
           style: AppTypography.scriptName(scheme, fontSize: 36),
         ),
         Text(
-          'Dawid Gorski',
+          couple.partner2Name,
           textAlign: TextAlign.center,
           style: AppTypography.scriptName(scheme),
         ),
@@ -65,7 +74,7 @@ class _HomeInviteContent extends StatelessWidget {
         const HeartDivider(),
         const SizedBox(height: 16),
         Text(
-          '17 OCTOBER 2026',
+          event.dateDisplay,
           textAlign: TextAlign.center,
           style: AppTypography.capsLabel(
             scheme,
@@ -78,7 +87,7 @@ class _HomeInviteContent extends StatelessWidget {
         const HeartAccent(),
         const SizedBox(height: 10),
         Text(
-          'RICKMANSWORTH, UK',
+          event.locationDisplay,
           textAlign: TextAlign.center,
           style: AppTypography.capsLabel(
             scheme,

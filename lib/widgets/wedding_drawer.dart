@@ -1,23 +1,24 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../content/repositories/wedding_content_repository.dart';
 import '../features/countdown/countdown_page.dart';
-import '../features/countdown/countdown_test_page.dart';
 import '../features/faq/faq_page.dart';
 import '../features/gallery/gallery_page.dart';
 import '../features/home/home_page.dart';
-import '../features/live_updates/live_updates_page.dart';
 import '../features/our_story/our_story_page.dart';
 import '../features/rsvp/rsvp_page.dart';
 import '../features/travel/travel_page.dart';
 import '../features/wedding_details/wedding_details_page.dart';
 import '../features/wedding_party/wedding_party_page.dart';
 import '../router/app_router.gr.dart';
+import '../utils/open_external_url.dart';
 
 /// Side drawer with all sections — tuned for phones (large tap targets).
 ///
 /// [routerContext] must come from [AutoRouter]'s `builder` (nested stack scope).
-class WeddingDrawer extends StatelessWidget {
+class WeddingDrawer extends ConsumerWidget {
   const WeddingDrawer({
     required this.routerContext,
     required this.onNavigate,
@@ -38,11 +39,13 @@ class WeddingDrawer extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final router = routerContext.router;
     final active = router.current.name;
+    final liveUpdatesUrl =
+        ref.watch(weddingContentRepositoryProvider).requireValue.links.liveUpdatesUrl;
 
     Widget tile({
       required String label,
@@ -134,20 +137,23 @@ class WeddingDrawer extends StatelessWidget {
               routeName: FaqRoute.name,
               push: FaqPage.push,
             ),
-            tile(
-              label: 'LIVE UPDATES',
-              routeName: LiveUpdatesRoute.name,
-              push: LiveUpdatesPage.push,
+            ListTile(
+              title: Text(
+                'LIVE UPDATES',
+                style: theme.textTheme.titleSmall?.copyWith(
+                  letterSpacing: 0.8,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              onTap: () async {
+                Navigator.of(context).pop();
+                await openExternalUrl(Uri.parse(liveUpdatesUrl));
+              },
             ),
             tile(
               label: 'COUNTDOWN',
               routeName: CountdownRoute.name,
               push: CountdownPage.push,
-            ),
-            tile(
-              label: 'COUNTDOWN TEST',
-              routeName: CountdownTestRoute.name,
-              push: CountdownTestPage.push,
             ),
           ],
         ),

@@ -15,12 +15,12 @@ class CountdownPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const _CountdownScriptTitle(),
-        const WeddingCountdown(showTitle: false),
+        _CountdownScriptTitle(),
+        WeddingCountdown(showTitle: false),
       ],
     );
   }

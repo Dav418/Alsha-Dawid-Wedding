@@ -1,12 +1,10 @@
 import 'package:url_launcher/url_launcher.dart';
 
-const contactEmailAddress = 'dawishagorski@gmail.com';
-
-Uri contactEmailUri() => Uri(
+Uri contactEmailUri(String email) => Uri(
       scheme: 'mailto',
-      path: contactEmailAddress,
+      path: email,
     );
 
-Future<bool> openContactEmail() {
-  return launchUrl(contactEmailUri());
+Future<bool> openContactEmail(String email) {
+  return launchUrl(contactEmailUri(email));
 }

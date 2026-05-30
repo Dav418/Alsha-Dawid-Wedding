@@ -2,14 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../content/repositories/wedding_content_repository.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_typography.dart';
 import 'heart_divider.dart';
 import 'wedding_confetti_overlay.dart';
 
-/// Full-width wedding countdown banner — counts down to 17 October 2026 by default.
-class WeddingCountdown extends HookWidget {
+/// Full-width wedding countdown banner — target date comes from content JSON (UTC).
+class WeddingCountdown extends ConsumerWidget {
   const WeddingCountdown({
     super.key,
     this.showTitle = true,
@@ -22,13 +24,30 @@ class WeddingCountdown extends HookWidget {
   /// When set, counts down to this moment instead of the wedding day.
   final DateTime? target;
 
-  static final DateTime weddingDay = DateTime(2026, 10, 17);
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final content = ref.watch(weddingContentRepositoryProvider).requireValue;
+
+    return _WeddingCountdownTimer(
+      showTitle: showTitle,
+      target: target ?? content.event.countdownUtc.toUtc(),
+    );
+  }
+}
+
+class _WeddingCountdownTimer extends HookWidget {
+  const _WeddingCountdownTimer({
+    required this.showTitle,
+    required this.target,
+  });
+
+  final bool showTitle;
+  final DateTime target;
 
   @override
   Widget build(BuildContext context) {
-    final weddingTarget = target ?? weddingDay;
-    final targetKey = weddingTarget.millisecondsSinceEpoch;
-    final remaining = useState(_remainingUntil(weddingTarget));
+    final targetKey = target.millisecondsSinceEpoch;
+    final remaining = useState(_remainingUntil(target));
     final reachedZero = useRef(false);
     final confettiController = useWeddingConfettiController();
 
@@ -37,7 +56,7 @@ class WeddingCountdown extends HookWidget {
     useEffect(
       () {
         reachedZero.value = false;
-        remaining.value = _remainingUntil(weddingTarget);
+        remaining.value = _remainingUntil(target);
         return null;
       },
       [targetKey],
@@ -48,7 +67,7 @@ class WeddingCountdown extends HookWidget {
         final timer = Timer.periodic(
           const Duration(seconds: 1),
           (_) {
-            final next = _remainingUntil(weddingTarget);
+            final next = _remainingUntil(target);
 
             if (next != remaining.value) {
               remaining.value = next;
@@ -149,7 +168,7 @@ class WeddingCountdown extends HookWidget {
   }
 
   static Duration _remainingUntil(DateTime target) {
-    final diff = target.difference(DateTime.now());
+    final diff = target.toUtc().difference(DateTime.now().toUtc());
 
     if (diff.isNegative) {
       return Duration.zero;

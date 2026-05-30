@@ -18,12 +18,12 @@ dependencies:
   auto_route: ">=10.2.0 <10.3.0"
 
   freezed_annotation: ^2.4.4
+  json_annotation: ^4.9.0
 
   google_fonts: ^6.2.1
   # 0.21.3+1 requires Flutter >=3.32; keep ^0.21.2 until the SDK is upgraded.
   flutter_hooks: ^0.21.2
   url_launcher: ^6.3.1
-  web: ^1.1.0
   confetti: ^0.8.0
 
 dev_dependencies:
@@ -35,9 +35,11 @@ dev_dependencies:
   riverpod_generator: ^2.6.4
   auto_route_generator: ">=10.0.0 <10.2.5"
   freezed: ^2.5.8
+  json_serializable: ^6.9.5
 
 flutter:
   uses-material-design: true
   assets:
+    - assets/content/
     - lib/assets/home/
     - lib/assets/wedding_party/

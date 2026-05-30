@@ -2,6 +2,9 @@ import 'dart:math' as math;
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../content/repositories/wedding_content_repository.dart';
 import '../../domain/polaroid_layout.dart';
 import '../../domain/story_timeline_entry.dart';
 import '../../theme/app_colors.dart';
@@ -9,14 +12,6 @@ import '../../theme/app_typography.dart';
 import '../../router/app_router.gr.dart';
 import '../../widgets/heart_divider.dart';
 import 'our_story_decorations.dart';
-
-/// Replace with your own photo URLs when ready.
-const _storyPhotoUrls = [
-  'https://placekittens.com/220/240',
-  'https://placekittens.com/220/240',
-  'https://placekittens.com/210/230',
-  'https://placekittens.com/215/235',
-];
 
 const _storyTimeline = [
   StoryTimelineEntry(
@@ -59,7 +54,7 @@ const _sideBySideBreakpoint = 680.0;
 const _basePolaroidWidth = 168.0;
 
 @RoutePage()
-class OurStoryPage extends StatelessWidget {
+class OurStoryPage extends ConsumerWidget {
   const OurStoryPage({super.key});
 
   static void push(BuildContext context) {
@@ -67,7 +62,10 @@ class OurStoryPage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final photoUrls =
+        ref.watch(weddingContentRepositoryProvider).requireValue.ourStoryPhotoUrls;
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
       child: Align(
@@ -86,12 +84,12 @@ class OurStoryPage extends StatelessWidget {
                   const SizedBox(height: 28),
                   if (sideBySide)
                     _StorySideBySide(
-                      photoUrls: _storyPhotoUrls,
+                      photoUrls: photoUrls,
                       timeline: _storyTimeline,
                     )
                   else ...[
                     _StoryPhotoStack(
-                      photoUrls: _storyPhotoUrls,
+                      photoUrls: photoUrls,
                       compact: true,
                     ),
                     const SizedBox(height: 28),

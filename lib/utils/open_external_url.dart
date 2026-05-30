@@ -1,13 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-final doughyDelightsInstagramUri = Uri.parse(
-  'https://www.instagram.com/doughydelights_uk/',
-);
-
-Future<bool> openDoughyDelightsInstagram() {
+/// Opens [uri] in a new browser tab on web, or externally on other platforms.
+Future<bool> openExternalUrl(Uri uri) {
   return launchUrl(
-    doughyDelightsInstagramUri,
+    uri,
     webOnlyWindowName: kIsWeb ? '_blank' : null,
     mode: kIsWeb ? LaunchMode.platformDefault : LaunchMode.externalApplication,
   );

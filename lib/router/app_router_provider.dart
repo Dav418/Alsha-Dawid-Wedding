@@ -1,5 +1,11 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'app_router.dart';
 
-final appRouterProvider = Provider<AppRouter>((ref) => AppRouter());
+part 'app_router_provider.g.dart';
+
+@riverpod
+class AppRouterController extends _$AppRouterController {
+  @override
+  AppRouter build() => AppRouter();
+}

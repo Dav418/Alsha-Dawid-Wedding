@@ -1,41 +1,22 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../domain/footer_nav_item.dart';
+import '../content/data/wedding_content.dart';
+import '../content/repositories/wedding_content_repository.dart';
+import '../domain/footer_nav_action.dart';
 import '../features/wedding_details/wedding_details_page.dart';
 import '../router/app_router.gr.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_typography.dart';
 import '../utils/open_contact_email.dart';
-import '../utils/open_doughy_delights_instagram.dart';
-import '../utils/open_live_updates.dart';
+import '../utils/open_external_url.dart';
 import '../utils/open_venue_map.dart';
 import 'hard_edge_color.dart';
 import 'line_icon.dart';
 
-const weddingFooterNavItems = [
-  FooterNavItem(
-    title: 'SCHEDULE',
-    subtitle: 'View the full itinerary',
-    icon: LineIconVariant.calendar,
-    route: WeddingDetailsRoute(),
-  ),
-  FooterNavItem(
-    title: 'VENUE',
-    subtitle: 'Get directions and map',
-    icon: LineIconVariant.mapPin,
-    route: TravelRoute(),
-  ),
-  FooterNavItem(
-    title: 'LIVE UPDATES',
-    subtitle: 'Stay updated on all the details',
-    icon: LineIconVariant.megaphone,
-    route: LiveUpdatesRoute(),
-  ),
-];
-
 /// Scrollable footer with quick links — shown at the bottom of every shell page.
-class WeddingFooter extends StatelessWidget {
+class WeddingFooter extends ConsumerWidget {
   const WeddingFooter({
     required this.routerContext,
     this.onNavigate,
@@ -46,7 +27,8 @@ class WeddingFooter extends StatelessWidget {
   final void Function(String routeName)? onNavigate;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final content = ref.watch(weddingContentRepositoryProvider).requireValue;
     final activeRoute = routerContext.router.current.name;
     final compact = MediaQuery.sizeOf(context).width < 360;
     final contactHorizontalPadding = compact ? 16.0 : 40.0;
@@ -63,7 +45,7 @@ class WeddingFooter extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(8, 20, 8, 0),
               child: Row(
                 children: [
-                  for (var i = 0; i < weddingFooterNavItems.length; i++) ...[
+                  for (final (i, action) in FooterNavAction.values.indexed) ...[
                     if (i > 0)
                       VerticalDivider(
                         width: 1,
@@ -74,33 +56,15 @@ class WeddingFooter extends StatelessWidget {
                       ),
                     Expanded(
                       child: _FooterNavButton(
-                        data: weddingFooterNavItems[i],
-                        selected: weddingFooterNavItems[i].icon !=
-                                LineIconVariant.mapPin &&
-                            activeRoute ==
-                                weddingFooterNavItems[i].route.routeName,
-                        onTap: () async {
-                          final item = weddingFooterNavItems[i];
-
-                          if (item.icon == LineIconVariant.mapPin) {
-                            await openVenueMap();
-                            return;
-                          }
-
-                          if (item.icon == LineIconVariant.megaphone) {
-                            await openLiveUpdatesInNewTab();
-                            return;
-                          }
-
-                          final routeName = item.route.routeName;
-
-                          if (activeRoute == routeName) {
-                            onNavigate?.call(routeName);
-                            return;
-                          }
-
-                          WeddingDetailsPage.push(routerContext);
-                        },
+                        action: action,
+                        selected: action == FooterNavAction.schedule &&
+                            activeRoute == WeddingDetailsRoute.name,
+                        onTap: () => _onNavTap(
+                          context: context,
+                          action: action,
+                          content: content,
+                          activeRoute: activeRoute,
+                        ),
                       ),
                     ),
                   ],
@@ -115,17 +79,52 @@ class WeddingFooter extends StatelessWidget {
                 contactHorizontalPadding,
                 16,
               ),
-              child: const _FooterContactInfo(),
+              child: _FooterContactInfo(content: content),
             ),
           ],
         ),
       ),
     );
   }
+
+  Future<void> _onNavTap({
+    required BuildContext context,
+    required FooterNavAction action,
+    required WeddingContent content,
+    required String activeRoute,
+  }) async {
+    switch (action) {
+      case FooterNavAction.venueMap:
+        await openVenueMap(content.links.venueMapQuery);
+        return;
+      case FooterNavAction.liveUpdates:
+        final opened = await openExternalUrl(
+          Uri.parse(content.links.liveUpdatesUrl),
+        );
+        if (!opened && context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Could not open live updates.'),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+        return;
+      case FooterNavAction.schedule:
+        final routeName = WeddingDetailsRoute.name;
+        if (activeRoute == routeName) {
+          onNavigate?.call(routeName);
+          return;
+        }
+        WeddingDetailsPage.push(routerContext);
+    }
+  }
 }
 
 class _FooterContactInfo extends StatelessWidget {
-  const _FooterContactInfo();
+  const _FooterContactInfo({required this.content});
+
+  final WeddingContent content;
 
   @override
   Widget build(BuildContext context) {
@@ -142,26 +141,40 @@ class _FooterContactInfo extends StatelessWidget {
       children: [
         _FooterContactLine(
           icon: LineIconVariant.email,
-          label: contactEmailAddress,
+          label: content.contact.email,
           style: lineStyle,
+          onTap: () async {
+            final opened = await openContactEmail(content.contact.email);
+            if (!opened && context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Could not open email for ${content.contact.email}.',
+                  ),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            }
+          },
         ),
         const SizedBox(height: 6),
         _FooterContactLine(
           icon: LineIconVariant.instagram,
-          label: '@doughydelights_uk',
+          label: content.social.instagramHandle,
           style: lineStyle.copyWith(
             color: AppColors.goldBrass,
             decoration: TextDecoration.underline,
             decorationColor: AppColors.goldBrass.withValues(alpha: 0.5),
           ),
           onTap: () async {
-            final opened = await openDoughyDelightsInstagram();
-
+            final opened = await openExternalUrl(
+              Uri.parse(content.social.instagramUrl),
+            );
             if (!opened && context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-                    'Could not open ${doughyDelightsInstagramUri.host}.',
+                    'Could not open ${Uri.parse(content.social.instagramUrl).host}.',
                   ),
                   behavior: SnackBarBehavior.floating,
                 ),
@@ -224,12 +237,12 @@ class _FooterContactLine extends StatelessWidget {
 
 class _FooterNavButton extends StatelessWidget {
   const _FooterNavButton({
-    required this.data,
+    required this.action,
     required this.selected,
     required this.onTap,
   });
 
-  final FooterNavItem data;
+  final FooterNavAction action;
   final bool selected;
   final VoidCallback onTap;
 
@@ -251,13 +264,13 @@ class _FooterNavButton extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               LineIcon(
-                variant: data.icon,
+                variant: action.icon,
                 size: 28,
                 color: AppColors.goldBrass,
               ),
               const SizedBox(height: 6),
               Text(
-                data.title,
+                action.title,
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,

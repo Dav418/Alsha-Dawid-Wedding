@@ -1,7 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../content/repositories/wedding_content_repository.dart';
 import '../../domain/faq_item.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
@@ -193,11 +195,13 @@ class _FaqAccordionTile extends HookWidget {
   }
 }
 
-class _FaqContactSection extends StatelessWidget {
+class _FaqContactSection extends ConsumerWidget {
   const _FaqContactSection();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final email =
+        ref.watch(weddingContentRepositoryProvider).requireValue.contact.email;
     final scheme = Theme.of(context).colorScheme;
 
     return Column(
@@ -211,11 +215,11 @@ class _FaqContactSection extends StatelessWidget {
         Center(
           child: FilledButton(
             onPressed: () async {
-              final opened = await openContactEmail();
+              final opened = await openContactEmail(email);
               if (!opened && context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('Could not open email for $contactEmailAddress.'),
+                    content: Text('Could not open email for $email.'),
                     behavior: SnackBarBehavior.floating,
                   ),
                 );

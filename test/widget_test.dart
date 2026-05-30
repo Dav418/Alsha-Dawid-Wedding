@@ -12,7 +12,7 @@ void main() {
       ),
     );
     await tester.pump();
-    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle();
 
     expect(find.byType(MaterialApp), findsOneWidget);
     expect(find.textContaining('Alisha'), findsWidgets);

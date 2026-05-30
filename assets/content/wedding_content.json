@@ -1,0 +1,64 @@
+{
+  "couple": {
+    "partner1Name": "Alisha Fernandes",
+    "partner2Name": "Dawid Gorski"
+  },
+  "event": {
+    "dateDisplay": "17 OCTOBER 2026",
+    "locationDisplay": "RICKMANSWORTH, UK",
+    "countdownUtc": "2026-10-17T09:00:00.000Z"
+  },
+  "contact": {
+    "email": "dawishagorski@gmail.com"
+  },
+  "social": {
+    "instagramHandle": "@doughydelights_uk",
+    "instagramUrl": "https://www.instagram.com/doughydelights_uk/"
+  },
+  "links": {
+    "liveUpdatesUrl": "https://padlet.com/gorskidawid98/my-glorious-padlet-nh7dv7ohems19mue",
+    "venueMapQuery": "Rickmansworth, UK"
+  },
+  "ceremony": {
+    "time": "2:00 PM",
+    "addressLines": [
+      "St Mary's Church",
+      "Church Street",
+      "Rickmansworth WD3 1RR"
+    ]
+  },
+  "reception": {
+    "time": "4:00 PM",
+    "addressLines": [
+      "The Grove",
+      "Chorleywood Road",
+      "Rickmansworth WD3 5LQ"
+    ]
+  },
+  "weddingParty": {
+    "bridesmaids": [
+      { "firstName": "Sonia", "lastName": "D'Souza" },
+      { "firstName": "Priya", "lastName": "Patel" },
+      { "firstName": "Megan", "lastName": "Lewis" },
+      { "firstName": "Emma", "lastName": "Wilson" }
+    ],
+    "groomsmen": [
+      { "firstName": "James", "lastName": "Smith" },
+      { "firstName": "Luke", "lastName": "Brown" },
+      { "firstName": "Matthew", "lastName": "Clarke" },
+      { "firstName": "Daniel", "lastName": "Hughes" }
+    ],
+    "parents": [
+      { "firstName": "Anita", "lastName": "Fernandes", "honorific": "Mrs." },
+      { "firstName": "Anthony", "lastName": "Fernandes", "honorific": "Mr." },
+      { "firstName": "Gracyna", "lastName": "Gorska", "honorific": "Mrs." },
+      { "firstName": "Marek", "lastName": "Gorski", "honorific": "Mr." }
+    ]
+  },
+  "ourStoryPhotoUrls": [
+    "https://placekittens.com/220/240",
+    "https://placekittens.com/220/240",
+    "https://placekittens.com/210/230",
+    "https://placekittens.com/215/235"
+  ]
+}

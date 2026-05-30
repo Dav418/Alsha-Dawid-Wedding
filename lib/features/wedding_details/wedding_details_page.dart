@@ -1,6 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../content/data/wedding_content.dart';
+import '../../content/repositories/wedding_content_repository.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
 import '../../router/app_router.gr.dart';
@@ -8,7 +11,7 @@ import '../../widgets/heart_divider.dart';
 import '../../widgets/line_icon.dart';
 
 @RoutePage()
-class WeddingDetailsPage extends StatelessWidget {
+class WeddingDetailsPage extends ConsumerWidget {
   const WeddingDetailsPage({super.key});
 
   static void push(BuildContext context) {
@@ -16,7 +19,9 @@ class WeddingDetailsPage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final content = ref.watch(weddingContentRepositoryProvider).requireValue;
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
       child: LayoutBuilder(
@@ -28,26 +33,16 @@ class WeddingDetailsPage extends StatelessWidget {
             children: [
               const _DetailsHeader(),
               const SizedBox(height: 28),
-              const _VenueDetailCard(
+              _VenueDetailCard(
                 icon: LineIconVariant.church,
                 title: 'CEREMONY',
-                time: '2:00 PM',
-                lines: [
-                  "St Mary's Church",
-                  'Church Street',
-                  'Rickmansworth WD3 1RR',
-                ],
+                slot: content.ceremony,
               ),
               const SizedBox(height: 16),
-              const _VenueDetailCard(
+              _VenueDetailCard(
                 icon: LineIconVariant.manor,
                 title: 'RECEPTION',
-                time: '4:00 PM',
-                lines: [
-                  'The Grove',
-                  'Chorleywood Road',
-                  'Rickmansworth WD3 5LQ',
-                ],
+                slot: content.reception,
               ),
               const SizedBox(height: 16),
               if (compact)
@@ -144,14 +139,12 @@ class _VenueDetailCard extends StatelessWidget {
   const _VenueDetailCard({
     required this.icon,
     required this.title,
-    required this.time,
-    required this.lines,
+    required this.slot,
   });
 
   final LineIconVariant icon;
   final String title;
-  final String time;
-  final List<String> lines;
+  final WeddingVenueSlot slot;
 
   @override
   Widget build(BuildContext context) {
@@ -173,11 +166,11 @@ class _VenueDetailCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  time,
+                  slot.time,
                   style: AppTypography.cardTime(scheme),
                 ),
                 const SizedBox(height: 8),
-                ...lines.map(
+                ...slot.addressLines.map(
                   (line) => Padding(
                     padding: const EdgeInsets.only(bottom: 2),
                     child: Text(

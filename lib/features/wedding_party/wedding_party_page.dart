@@ -1,51 +1,17 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../domain/party_member.dart';
+import '../../assets/wedding_party/wedding_party_assets.dart';
+import '../../content/data/wedding_content.dart';
+import '../../content/repositories/wedding_content_repository.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
 import '../../router/app_router.gr.dart';
 import '../../widgets/heart_divider.dart';
 
-const _bridesmaids = [
-  PartyMember(firstName: 'Sonia', lastName: "D'Souza"),
-  PartyMember(firstName: 'Priya', lastName: 'Patel'),
-  PartyMember(firstName: 'Megan', lastName: 'Lewis'),
-  PartyMember(firstName: 'Emma', lastName: 'Wilson'),
-];
-
-const _groomsmen = [
-  PartyMember(firstName: 'James', lastName: 'Smith'),
-  PartyMember(firstName: 'Luke', lastName: 'Brown'),
-  PartyMember(firstName: 'Matthew', lastName: 'Clarke'),
-  PartyMember(firstName: 'Daniel', lastName: 'Hughes'),
-];
-
-const _parents = [
-  PartyMember(
-    firstName: 'Anita',
-    lastName: 'Fernandes',
-    honorific: 'Mrs.',
-  ),
-  PartyMember(
-    firstName: 'Anthony',
-    lastName: 'Fernandes',
-    honorific: 'Mr.',
-  ),
-  PartyMember(
-    firstName: 'Gracyna',
-    lastName: 'Gorska',
-    honorific: 'Mrs.',
-  ),
-  PartyMember(
-    firstName: 'Marek',
-    lastName: 'Gorski',
-    honorific: 'Mr.',
-  ),
-];
-
 @RoutePage()
-class WeddingPartyPage extends StatelessWidget {
+class WeddingPartyPage extends ConsumerWidget {
   const WeddingPartyPage({super.key});
 
   static void push(BuildContext context) {
@@ -53,7 +19,10 @@ class WeddingPartyPage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final party =
+        ref.watch(weddingContentRepositoryProvider).requireValue.weddingParty;
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
       child: Column(
@@ -61,23 +30,23 @@ class WeddingPartyPage extends StatelessWidget {
         children: [
           const _PartyHeader(),
           const SizedBox(height: 28),
-          const _PartySection(
+          _PartySection(
             title: 'BRIDESMAIDS',
-            members: _bridesmaids,
+            members: party.bridesmaids,
           ),
           const SizedBox(height: 28),
           const HeartDivider(),
           const SizedBox(height: 28),
-          const _PartySection(
+          _PartySection(
             title: 'GROOMSMEN',
-            members: _groomsmen,
+            members: party.groomsmen,
           ),
           const SizedBox(height: 28),
           const HeartDivider(),
           const SizedBox(height: 28),
-          const _PartySection(
+          _PartySection(
             title: 'PARENTS',
-            members: _parents,
+            members: party.parents,
           ),
         ],
       ),
@@ -117,7 +86,7 @@ class _PartySection extends StatelessWidget {
   });
 
   final String title;
-  final List<PartyMember> members;
+  final List<WeddingPartyMember> members;
 
   @override
   Widget build(BuildContext context) {
@@ -159,12 +128,16 @@ class _PartySection extends StatelessWidget {
 class _PartyPortrait extends StatelessWidget {
   const _PartyPortrait({required this.member});
 
-  final PartyMember member;
+  final WeddingPartyMember member;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     const portraitSize = 104.0;
+    final assetPath = WeddingPartyAssets.portrait(
+      member.firstName,
+      member.lastName,
+    );
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -188,7 +161,7 @@ class _PartyPortrait extends StatelessWidget {
           ),
           child: ClipOval(
             child: Image.asset(
-              member.assetPath,
+              assetPath,
               width: portraitSize,
               height: portraitSize,
               fit: BoxFit.cover,

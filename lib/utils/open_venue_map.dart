@@ -1,10 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-const _venueQuery = 'Rickmansworth, UK';
-
-Uri venueMapUri() {
-  final encoded = Uri.encodeComponent(_venueQuery);
+Uri venueMapUri(String query) {
+  final encoded = Uri.encodeComponent(query);
 
   if (kIsWeb) {
     return Uri.parse(
@@ -18,7 +16,7 @@ Uri venueMapUri() {
   };
 }
 
-Future<void> openVenueMap() async {
-  final uri = venueMapUri();
+Future<void> openVenueMap(String query) async {
+  final uri = venueMapUri(query);
   await launchUrl(uri, mode: LaunchMode.externalApplication);
 }

@@ -55,6 +55,8 @@ Run-Command "Cleaning Flutter project" "flutter clean"
 
 Run-Command "Getting Flutter packages" "flutter pub get"
 
+Run-Command "Running code generation" "dart run build_runner build --delete-conflicting-outputs"
+
 Run-Command "Building Flutter web for GitHub Pages" "flutter build web --release --base-href '/$repoName/'"
 
 if (-not (Test-Path "build\web\index.html")) {
