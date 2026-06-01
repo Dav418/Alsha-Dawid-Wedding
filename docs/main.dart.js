@@ -10579,7 +10579,7 @@ _.b=b
 _.c=c
 _.d=d},
 Oo:function Oo(){},
-aww(a,b){return new A.hA(a,B.HR,B.mN,null,"",b,B.xV,!0,null)},
+aww(a,b,c){return new A.hA(a,B.HR,B.mN,null,c,b,B.xV,!0,null)},
 aHL(){return new A.yb(new A.a43(),A.v(t.K,t.Qu))},
 BJ:function BJ(a,b){this.a=a
 this.b=b},
@@ -41275,11 +41275,11 @@ A.O3.prototype={
 hf(a,b){var s=b.jI($.aEl(),t.KD)
 return A.aEV(b.jI($.lA(),t.Cs),new A.afz(s),new A.afA(),new A.afB(),t.TP,t.l7)}}
 A.afB.prototype={
-$0(){return A.aww(B.Kk,A.aqt(B.a0))},
+$0(){return A.aww(B.Kk,A.aqt(B.a0),"Loading...")},
 $S:319}
 A.afA.prototype={
 $2(a,b){var s=null,r=A.aqt(B.a0)
-return A.aww(A.axx(s,A.ka(new A.bn(B.Cw,A.bb("Could not load wedding content.\n"+A.j(a),s,s,s,B.F),s),s,s),s),r)},
+return A.aww(A.axx(s,A.ka(new A.bn(B.Cw,A.bb("Could not load wedding content.\n"+A.j(a),s,s,s,B.F),s),s,s),s),r,"Oops")},
 $S:324}
 A.afz.prototype={
 $1(a){var s,r,q,p,o,n=null,m=a.gE2(),l=B.b.gW(m.gGC().split(" ")),k=B.b.gW(m.gGD().split(" "))
@@ -41300,7 +41300,7 @@ r===$&&A.a()
 r.X(o.gvg())
 s.R8=o
 r=o}else r=o
-return new A.hA(n,n,n,new A.Mg(p,q,r,s.p1),l+" & "+k,m,B.R8,!1,n)},
+return new A.hA(n,n,n,new A.Mg(p,q,r,s.p1),l+" & "+k+" Wedding",m,B.R8,!1,n)},
 $S:325}
 A.afy.prototype={
 $0(){return A.c([new A.wv(A.v(t.f0,t.CJ))],t.tc)},
