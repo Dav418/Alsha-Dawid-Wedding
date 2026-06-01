@@ -37,7 +37,7 @@ class WeddingCouple with _$WeddingCouple {
   String get siteTitle {
     final partner1First = partner1Name.split(' ').first;
     final partner2First = partner2Name.split(' ').first;
-    return '$partner1First & $partner2First';
+    return '$partner1First & $partner2First Wedding';
   }
 }
 

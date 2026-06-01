@@ -16,12 +16,14 @@ class WeddingWebsiteApp extends ConsumerWidget {
 
     return contentAsync.when(
       loading: () => MaterialApp(
+        title: 'Loading...',
         theme: AppTheme.light,
         home: const Scaffold(
           body: Center(child: CircularProgressIndicator()),
         ),
       ),
       error: (error, _) => MaterialApp(
+        title: 'Oops',
         theme: AppTheme.light,
         home: Scaffold(
           body: Center(
