@@ -16,6 +16,7 @@ class WeddingWebsiteApp extends ConsumerWidget {
 
     return contentAsync.when(
       loading: () => MaterialApp(
+        key: const ValueKey('loading-app'),
         title: 'Loading...',
         theme: AppTheme.light,
         home: const Scaffold(
@@ -23,6 +24,7 @@ class WeddingWebsiteApp extends ConsumerWidget {
         ),
       ),
       error: (error, _) => MaterialApp(
+        key: const ValueKey('error-app'),
         title: 'Oops',
         theme: AppTheme.light,
         home: Scaffold(
@@ -37,17 +39,29 @@ class WeddingWebsiteApp extends ConsumerWidget {
           ),
         ),
       ),
-      data: (content) => MaterialApp.router(
-        title: content.couple.siteTitle,
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.light,
-        themeMode: ThemeMode.light,
-        routerConfig: router.config(
-          navigatorObservers: () => [
-            AutoRouteObserver(),
-          ],
-        ),
-      ),
+      data: (content) {
+        final siteTitle = content.couple.siteTitle;
+
+        return MaterialApp.router(
+          key: ValueKey(siteTitle),
+          title: siteTitle,
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.light,
+          themeMode: ThemeMode.light,
+          builder: (context, child) {
+            return Title(
+              title: siteTitle,
+              color: Colors.black,
+              child: child ?? const SizedBox.shrink(),
+            );
+          },
+          routerConfig: router.config(
+            navigatorObservers: () => [
+              AutoRouteObserver(),
+            ],
+          ),
+        );
+      },
     );
   }
 }

@@ -23,6 +23,14 @@ function Run-Command {
     }
 }
 
+function Convert-ToHtmlText {
+    param (
+        [string]$Value
+    )
+
+    return [System.Net.WebUtility]::HtmlEncode($Value)
+}
+
 function Get-AppTitle {
     $contentPath = "assets\content\wedding_content.json"
 
@@ -38,12 +46,6 @@ function Get-AppTitle {
     $partner2First = $content.couple.partner2Name.Split(" ")[0]
 
     return "$partner1First & $partner2First Wedding"
-}
-
-function Convert-ToHtmlText {
-    param ([string]$Value)
-
-    return $Value.Replace("&", "&amp;")
 }
 
 function Stop-FlutterProcessesForThisRepo {
@@ -68,10 +70,58 @@ function Stop-FlutterProcessesForThisRepo {
 
     foreach ($process in $processes) {
         Write-Host "Stopping PID $($process.ProcessId): $($process.Name)" -ForegroundColor Yellow
-        Stop-Process -Id $process.ProcessId -Force
+        Stop-Process -Id $process.ProcessId -Force -ErrorAction SilentlyContinue
     }
 
     Start-Sleep -Seconds 2
+}
+
+function Remove-PathStrict {
+    param (
+        [string]$Path
+    )
+
+    if (-not (Test-Path $Path)) {
+        return
+    }
+
+    Remove-Item $Path -Recurse -Force
+
+    if (Test-Path $Path) {
+        Write-Host ""
+        Write-Host "ERROR: Failed to remove $Path" -ForegroundColor Red
+        Write-Host "Something is probably still locking it. Stop debug mode and try again." -ForegroundColor Yellow
+        exit 1
+    }
+}
+
+function Regenerate-WebFolder {
+    $tempPath = Join-Path $env:TEMP "flutter_web_template_$([guid]::NewGuid().ToString("N"))"
+
+    try {
+        Run-Command `
+            "Generating fresh Flutter web folder in temp directory" `
+            "flutter create --platforms=web --project-name alisha_dawid_wedding_website --no-pub `"$tempPath`""
+
+        if (-not (Test-Path "$tempPath\web\index.html")) {
+            Write-Host ""
+            Write-Host "ERROR: temporary web\index.html was not generated." -ForegroundColor Red
+            exit 1
+        }
+
+        Write-Host ""
+        Write-Host "==> Replacing repo web folder with regenerated web folder" -ForegroundColor Cyan
+
+        Remove-PathStrict "web"
+
+        New-Item -ItemType Directory "web" | Out-Null
+        Copy-Item -Path "$tempPath\web\*" -Destination "web" -Recurse -Force
+    }
+    finally {
+        if (Test-Path $tempPath) {
+            Remove-Item $tempPath -Recurse -Force -ErrorAction SilentlyContinue
+        }
+    }
 }
 
 function Update-WebIndexMetadata {
@@ -165,13 +215,13 @@ Stop-FlutterProcessesForThisRepo
 Run-Command "Cleaning Flutter project" "flutter clean"
 
 Write-Host ""
-Write-Host "==> Removing existing web folder" -ForegroundColor Cyan
+Write-Host "==> Making sure old generated folders are removed" -ForegroundColor Cyan
 
-if (Test-Path "web") {
-    Remove-Item "web" -Recurse -Force
-}
+Remove-PathStrict "build"
+Remove-PathStrict ".dart_tool"
+Remove-PathStrict ".flutter-plugins-dependencies"
 
-Run-Command "Regenerating Flutter web folder" "flutter create . --platforms=web"
+Regenerate-WebFolder
 
 Write-Host ""
 Write-Host "==> Updating regenerated web metadata" -ForegroundColor Cyan
@@ -210,9 +260,7 @@ if ($builtIndexHtml -notlike "*<title>$htmlTitle</title>*") {
 Write-Host ""
 Write-Host "==> Replacing docs folder" -ForegroundColor Cyan
 
-if (Test-Path "docs") {
-    Remove-Item "docs" -Recurse -Force
-}
+Remove-PathStrict "docs"
 
 New-Item -ItemType Directory "docs" | Out-Null
 
