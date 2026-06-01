@@ -81,6 +81,7 @@ class WeddingFooter extends ConsumerWidget {
               ),
               child: _FooterContactInfo(content: content),
             ),
+            const SizedBox(height: 24),
           ],
         ),
       ),

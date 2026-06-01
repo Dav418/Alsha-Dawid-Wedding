@@ -146,10 +146,10 @@ class WeddingHeroInviteCard extends HookWidget {
                   ),
                   if (hasImage)
                     Positioned(
-                      top: 50,
+                      top: -6,
                       left: 0,
                       right: 0,
-                      height: 100,
+                      height: 150,
                       child: Image.asset(
                         imageAssetPath!,
                         fit: BoxFit.contain,

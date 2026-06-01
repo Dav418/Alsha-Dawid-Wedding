@@ -10,10 +10,6 @@ import '../widgets/wedding_app_bar.dart';
 import '../widgets/wedding_drawer.dart';
 import '../widgets/wedding_footer.dart';
 
-const _scrollPhysics = AlwaysScrollableScrollPhysics(
-  parent: BouncingScrollPhysics(),
-);
-
 const _footerTopSpacing = 40.0;
 
 /// Height of the burgundy band revealed when bouncing past the bottom of the scroll.
@@ -117,7 +113,7 @@ class _WeddingShellScaffold extends HookWidget {
           ),
           CustomScrollView(
             controller: scrollController,
-            physics: _scrollPhysics,
+            physics: ClampingScrollPhysics(),
             slivers: [
               WeddingAppBar(onHomeTap: goHome),
               SliverToBoxAdapter(
