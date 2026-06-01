@@ -12,4 +12,6 @@ abstract final class WeddingAssets {
   /// Gold monogram PNG (transparent); source magenta stripped via [tool/strip_magenta_bg.py].
   static const String monogramAdWreath =
       'lib/assets/home/monogram_ad_wreath.png';
+
+  static const String seal = 'lib/assets/home/seal.png';
 }
