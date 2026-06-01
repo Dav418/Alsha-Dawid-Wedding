@@ -1,8 +1,8 @@
 $ErrorActionPreference = "Stop"
 
-$repoName = "Alsha-Dawid-Wedding"
 $pagesBranch = "main"
-$siteUrl = "https://dav418.github.io/$repoName/"
+$customDomain = "alisha-dawid-wedding.vip"
+$siteUrl = "https://$customDomain/"
 
 function Run-Command {
     param (
@@ -57,7 +57,7 @@ Run-Command "Getting Flutter packages" "flutter pub get"
 
 Run-Command "Running code generation" "dart run build_runner build --delete-conflicting-outputs"
 
-Run-Command "Building Flutter web for GitHub Pages" "flutter build web --release --base-href '/$repoName/'"
+Run-Command "Building Flutter web for custom domain" "flutter build web --release --base-href '/'"
 
 if (-not (Test-Path "build\web\index.html")) {
     Write-Host ""
@@ -90,6 +90,11 @@ Write-Host "==> Adding .nojekyll" -ForegroundColor Cyan
 
 New-Item -ItemType File "docs\.nojekyll" -Force | Out-Null
 
+Write-Host ""
+Write-Host "==> Adding CNAME for custom domain" -ForegroundColor Cyan
+
+Set-Content -Path "docs\CNAME" -Value $customDomain -NoNewline
+
 if (-not (Test-Path "docs\index.html")) {
     Write-Host ""
     Write-Host "ERROR: docs\index.html is missing after copy." -ForegroundColor Red
@@ -99,6 +104,12 @@ if (-not (Test-Path "docs\index.html")) {
 if (-not (Test-Path "docs\main.dart.js")) {
     Write-Host ""
     Write-Host "ERROR: docs\main.dart.js is missing after copy." -ForegroundColor Red
+    exit 1
+}
+
+if (-not (Test-Path "docs\CNAME")) {
+    Write-Host ""
+    Write-Host "ERROR: docs\CNAME is missing after copy." -ForegroundColor Red
     exit 1
 }
 
@@ -139,7 +150,7 @@ if ([string]::IsNullOrWhiteSpace($changes)) {
 Write-Host ""
 Write-Host "==> Committing deploy files" -ForegroundColor Cyan
 
-git commit -m "DEPLOY updated Flutter web app"
+git commit -m "DEPLOY updated Flutter web app for custom domain"
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "ERROR: git commit failed." -ForegroundColor Red
@@ -158,7 +169,7 @@ if ($LASTEXITCODE -ne 0) {
 
 Write-Host ""
 Write-Host "Deploy pushed successfully." -ForegroundColor Green
-Write-Host "Wait 1-2 minutes, then open:" -ForegroundColor Green
+Write-Host "Open:" -ForegroundColor Green
 Write-Host $siteUrl -ForegroundColor White
 Write-Host ""
-Write-Host "Hard refresh with Ctrl + F5." -ForegroundColor Yellow
+Write-Host "Hard refresh with Ctrl + F5 if your browser cached the old app." -ForegroundColor Yellow
