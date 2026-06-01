@@ -23,6 +23,109 @@ function Run-Command {
     }
 }
 
+function Get-AppTitle {
+    $contentPath = "assets\content\wedding_content.json"
+
+    if (-not (Test-Path $contentPath)) {
+        Write-Host ""
+        Write-Host "ERROR: $contentPath not found." -ForegroundColor Red
+        exit 1
+    }
+
+    $content = Get-Content $contentPath -Raw | ConvertFrom-Json
+
+    $partner1First = $content.couple.partner1Name.Split(" ")[0]
+    $partner2First = $content.couple.partner2Name.Split(" ")[0]
+
+    return "$partner1First & $partner2First Wedding"
+}
+
+function Convert-ToHtmlText {
+    param ([string]$Value)
+
+    return $Value.Replace("&", "&amp;")
+}
+
+function Stop-FlutterProcessesForThisRepo {
+    $repoPath = (Get-Location).Path
+
+    Write-Host ""
+    Write-Host "==> Checking for running Flutter/Dart processes using this repo" -ForegroundColor Cyan
+
+    $processes = Get-CimInstance Win32_Process |
+        Where-Object {
+            ($_.Name -eq "dart.exe" -or $_.Name -eq "flutter.exe") -and
+            $_.CommandLine -like "*$repoPath*"
+        }
+
+    if (-not $processes) {
+        Write-Host "No running Flutter/Dart processes found for this repo." -ForegroundColor Green
+        return
+    }
+
+    Write-Host ""
+    Write-Host "Found running Flutter/Dart process(es) for this repo. Stopping them..." -ForegroundColor Yellow
+
+    foreach ($process in $processes) {
+        Write-Host "Stopping PID $($process.ProcessId): $($process.Name)" -ForegroundColor Yellow
+        Stop-Process -Id $process.ProcessId -Force
+    }
+
+    Start-Sleep -Seconds 2
+}
+
+function Update-WebIndexMetadata {
+    param (
+        [string]$AppTitle
+    )
+
+    $indexPath = "web\index.html"
+    $htmlTitle = Convert-ToHtmlText $AppTitle
+
+    if (-not (Test-Path $indexPath)) {
+        Write-Host ""
+        Write-Host "ERROR: web\index.html was not generated." -ForegroundColor Red
+        exit 1
+    }
+
+    $indexHtml = Get-Content $indexPath -Raw
+
+    if ($indexHtml -match '<meta name="description" content=".*?">') {
+        $indexHtml = $indexHtml -replace '<meta name="description" content=".*?">', "<meta name=`"description`" content=`"$htmlTitle`">"
+    }
+
+    if ($indexHtml -match "<title>.*?</title>") {
+        $indexHtml = $indexHtml -replace "<title>.*?</title>", "<title>$htmlTitle</title>"
+    } else {
+        $indexHtml = $indexHtml -replace "</head>", "  <title>$htmlTitle</title>`r`n</head>"
+    }
+
+    Set-Content -Path $indexPath -Value $indexHtml -NoNewline
+}
+
+function Update-WebManifestMetadata {
+    param (
+        [string]$AppTitle
+    )
+
+    $manifestPath = "web\manifest.json"
+
+    if (-not (Test-Path $manifestPath)) {
+        Write-Host ""
+        Write-Host "WARNING: web\manifest.json was not generated." -ForegroundColor Yellow
+        return
+    }
+
+    $manifest = Get-Content $manifestPath -Raw | ConvertFrom-Json
+
+    $manifest.name = $AppTitle
+    $manifest.short_name = "Wedding"
+
+    $manifest |
+        ConvertTo-Json -Depth 20 |
+        Set-Content -Path $manifestPath -NoNewline
+}
+
 Write-Host ""
 Write-Host "Starting Flutter web deploy..." -ForegroundColor Green
 
@@ -51,7 +154,30 @@ if ($currentBranch -ne $pagesBranch) {
     exit 1
 }
 
+$appTitle = Get-AppTitle
+$htmlTitle = Convert-ToHtmlText $appTitle
+
+Write-Host ""
+Write-Host "Using app title: $appTitle" -ForegroundColor Green
+
+Stop-FlutterProcessesForThisRepo
+
 Run-Command "Cleaning Flutter project" "flutter clean"
+
+Write-Host ""
+Write-Host "==> Removing existing web folder" -ForegroundColor Cyan
+
+if (Test-Path "web") {
+    Remove-Item "web" -Recurse -Force
+}
+
+Run-Command "Regenerating Flutter web folder" "flutter create . --platforms=web"
+
+Write-Host ""
+Write-Host "==> Updating regenerated web metadata" -ForegroundColor Cyan
+
+Update-WebIndexMetadata $appTitle
+Update-WebManifestMetadata $appTitle
 
 Run-Command "Getting Flutter packages" "flutter pub get"
 
@@ -68,6 +194,16 @@ if (-not (Test-Path "build\web\index.html")) {
 if (-not (Test-Path "build\web\main.dart.js")) {
     Write-Host ""
     Write-Host "ERROR: build\web\main.dart.js was not created." -ForegroundColor Red
+    exit 1
+}
+
+$builtIndexHtml = Get-Content "build\web\index.html" -Raw
+
+if ($builtIndexHtml -notlike "*<title>$htmlTitle</title>*") {
+    Write-Host ""
+    Write-Host "ERROR: build\web\index.html has the wrong browser tab title." -ForegroundColor Red
+    Write-Host "Expected:" -ForegroundColor Yellow
+    Write-Host "<title>$htmlTitle</title>" -ForegroundColor White
     exit 1
 }
 
@@ -113,36 +249,46 @@ if (-not (Test-Path "docs\CNAME")) {
     exit 1
 }
 
-Write-Host ""
-Write-Host "==> Adding docs folder to Git" -ForegroundColor Cyan
+$docsIndexHtml = Get-Content "docs\index.html" -Raw
 
-git add -A docs
+if ($docsIndexHtml -notlike "*<title>$htmlTitle</title>*") {
+    Write-Host ""
+    Write-Host "ERROR: docs\index.html has the wrong browser tab title after copy." -ForegroundColor Red
+    Write-Host "Expected:" -ForegroundColor Yellow
+    Write-Host "<title>$htmlTitle</title>" -ForegroundColor White
+    exit 1
+}
+
+Write-Host ""
+Write-Host "==> Adding web and docs folders to Git" -ForegroundColor Cyan
+
+git add -A web docs
 
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "ERROR: git add -A docs failed." -ForegroundColor Red
+    Write-Host "ERROR: git add -A web docs failed." -ForegroundColor Red
     exit $LASTEXITCODE
 }
 
 Write-Host ""
 Write-Host "==> Force-adding ignored Flutter web files" -ForegroundColor Cyan
 
-git add -f docs
+git add -f web docs
 
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "ERROR: git add -f docs failed." -ForegroundColor Red
+    Write-Host "ERROR: git add -f web docs failed." -ForegroundColor Red
     exit $LASTEXITCODE
 }
 
 Write-Host ""
-Write-Host "==> Git status for docs" -ForegroundColor Cyan
+Write-Host "==> Git status for web and docs" -ForegroundColor Cyan
 
-git status --short docs
+git status --short web docs
 
-$changes = git status --porcelain docs
+$changes = git status --porcelain web docs
 
 if ([string]::IsNullOrWhiteSpace($changes)) {
     Write-Host ""
-    Write-Host "No docs changes to deploy." -ForegroundColor Yellow
+    Write-Host "No web/docs changes to deploy." -ForegroundColor Yellow
     Write-Host "Your site may already be up to date." -ForegroundColor Yellow
     exit 0
 }
@@ -150,7 +296,7 @@ if ([string]::IsNullOrWhiteSpace($changes)) {
 Write-Host ""
 Write-Host "==> Committing deploy files" -ForegroundColor Cyan
 
-git commit -m "DEPLOY updated Flutter web app for custom domain"
+git commit -m "DEPLOY regenerated Flutter web app for custom domain"
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "ERROR: git commit failed." -ForegroundColor Red
