@@ -1,11 +1,11 @@
 {
-  "name": "Wedding invoice",
-  "short_name": "Invoice",
+  "name": "Alisha & Dawid Wedding",
+  "short_name": "Alisha & Dawid Wedding",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#f7f2fa",
   "theme_color": "#6B4E71",
-  "description": "Wedding invoice",
+  "description": "Alisha & Dawid Wedding",
   "orientation": "portrait-primary",
   "prefer_related_applications": false
 }
