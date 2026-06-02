@@ -1,53 +1,85 @@
-# Alisha & Dawid — Wedding Website
+# Alisha & Dawid Wedding Website
 
-A mobile-first Flutter web wedding site for Alisha Fernandes and Dawid Gorski. Guests can browse the schedule, travel notes, wedding party, FAQ, and a live countdown — all from a single static deployment on GitHub Pages.
+A mobile-first Flutter web wedding website for Alisha Fernandes and Dawid Gorski.
 
-**Live site:** [https://dav418.github.io/Alsha-Dawid-Wedding/](https://dav418.github.io/Alsha-Dawid-Wedding/)
+The site gives guests one simple place to view the wedding details, schedule, travel notes, wedding party, FAQ, live updates, and countdown.
+
+**Live site:** https://alisha-dawid-wedding.vip
+
+---
 
 ## Tech stack
 
-- **Flutter Web** — UI and routing
-- **Riverpod** — app state
-- **auto_route** — declarative navigation
-- **Freezed + json_serializable** — typed content models from JSON
-- **flutter_hooks** — lightweight widget state (countdown, accordions)
-- **Google Fonts** — typography (Playfair Display, Montserrat, script faces)
-- **GitHub Pages** — static hosting from the `/docs` folder on `main`
+* **Flutter Web** for the static website
+* **Riverpod** for app state and content loading
+* **auto_route** for routing
+* **Freezed + json_serializable** for typed content models
+* **flutter_hooks** for lightweight widget state
+* **Google Fonts** for typography
+* **url_launcher** for external links
+* **GitHub Pages** for static hosting from the `/docs` folder
+
+---
 
 ## Features
 
-- Home invite card with couple names, date, and location
-- Wedding countdown (UTC target from content JSON)
-- Our Story timeline with photo stack
-- Wedding details (ceremony, reception, dress code, transport)
-- Wedding party portraits
-- FAQ accordion
-- Footer quick links (schedule, venue map, live updates)
-- Clickable contact email and Instagram link
-- Side drawer navigation across all sections
+* Mobile-first wedding invite landing page
+* Wedding countdown
+* Ceremony and reception details
+* Wedding party section
+* Our Story timeline
+* FAQ accordion
+* Contact links
+* Instagram link
+* Venue map links
+* Live updates page
+* Static content loaded from JSON
+* GitHub Pages deployment script
 
-Placeholder sections (RSVP, gallery, travel) remain scaffolded for future content.
+Some sections, such as RSVP, gallery, and travel, may still be scaffolded for future content.
 
-At startup the app loads this file once through a Riverpod provider and passes typed `WeddingContent` models to pages and widgets. Layout, colours, icons, and routing stay in Dart — the JSON holds text, URLs, dates, and lists only.
+---
 
-### Public data
+## Content
 
-This is a **public static site**. The JSON is bundled into the web build and shipped to GitHub Pages like any other asset. It is **not encrypted** and should not contain secrets. Treat email addresses and external links as publicly visible.
+Most editable wedding content lives in:
 
-### Swapping sensetive wedding content
+```text
+assets/content/wedding_content.json
+```
 
-1. Edit or replace `assets/content/wedding_content.json` with your own content (keep the same JSON shape).
-2. Run code generation if you changed Dart models:
-   ```powershell
-   dart run build_runner build --delete-conflicting-outputs
-   ```
-3. Run the app locally to verify, then deploy (see below).
+This includes things like:
 
-Couple names, schedule copy, FAQ entries, party members, contact email, Instagram, live-updates URL, venue map query, and the countdown UTC timestamp all come from this file.
+* Couple names
+* Wedding date and time
+* Venue details
+* Schedule copy
+* FAQ entries
+* Wedding party members
+* Contact details
+* Social links
+* Live updates URL
+* Countdown timestamp
+
+The app loads this JSON through a Riverpod provider and maps it into typed Dart models.
+
+Layout, routing, styling, icons, and animations stay in Dart. The JSON is only for content that may need to change.
+
+---
+
+## Public data warning
+
+This is a public static website.
+
+Anything inside `assets/content/wedding_content.json` is bundled into the web build and published with the site. It is not private, encrypted, or hidden.
+
+Do not put secrets, private notes, API keys, passwords, or anything sensitive in the JSON file.
+
+---
 
 ## Run locally
 
-Requires a recent stable Flutter SDK (Dart ≥ 3.6).
+Install Flutter, then run:
 
 ```powershell
 flutter pub get
@@ -55,53 +87,104 @@ dart run build_runner build --delete-conflicting-outputs
 flutter run -d chrome
 ```
 
-For a release-style web build (matching GitHub Pages paths):
+---
 
-```powershell
-flutter build web --release --base-href "/Alsha-Dawid-Wedding/"
+## Build for custom domain
+
+The site is deployed at the domain root:
+
+```text
+https://alisha-dawid-wedding.vip/
 ```
 
-Serve `build/web` with any static file server, or open via Flutter’s dev server.
+So the web build must use:
 
-## Deploy to GitHub Pages
+```powershell
+flutter build web --release --base-href '/'
+```
 
-The repo publishes from the **`/docs` folder on `main`**. The included PowerShell script builds Flutter web, copies output into `docs`, commits, and pushes:
+Do not use the old repo-path base href:
+
+```powershell
+flutter build web --release --base-href '/Alsha-Dawid-Wedding/'
+```
+
+That was only needed when the site was hosted directly under the GitHub Pages repo URL.
+
+---
+
+## Deploy
+
+The repo publishes from:
+
+```text
+main branch → /docs folder
+```
+
+Run:
 
 ```powershell
 .\deploy.ps1
 ```
 
-The script:
+The deploy script:
 
-1. Verifies you are on `main`
-2. Runs `flutter pub get`
-3. Runs `dart run build_runner build --delete-conflicting-outputs`
-4. Builds with `--base-href "/Alsha-Dawid-Wedding/"`
-5. Copies `build/web` → `docs` and adds `.nojekyll`
-6. Commits and pushes `docs` if anything changed
+1. Verifies the script is being run from the Flutter project root.
+2. Verifies the repo is on the correct branch.
+3. Cleans the Flutter project.
+4. Gets Flutter packages.
+5. Runs code generation.
+6. Builds the Flutter web release using the custom-domain base href.
+7. Replaces the `/docs` folder with the latest `build/web` output.
+8. Adds `.nojekyll`.
+9. Adds the `CNAME` file for the custom domain.
+10. Commits and pushes the updated deploy files.
 
-Ensure GitHub Pages is configured to serve from **branch `main`, folder `/docs`**.
+After pushing, wait for GitHub Pages to update, then hard-refresh the live site with:
 
-After pushing, allow one to two minutes for GitHub Pages to update, then hard-refresh the live URL.
+```text
+Ctrl + F5
+```
+
+---
 
 ## Generated files
 
-Code generation produces `*.freezed.dart`, `*.g.dart`, and `*.gr.dart` files locally. These are **gitignored** and recreated by `build_runner` before each build or deploy. Do not commit them.
+Code generation creates files such as:
 
-## Project layout (high level)
-
+```text
+*.freezed.dart
+*.g.dart
+*.gr.dart
 ```
-assets/content/          Wedding copy (JSON)
-lib/content/             Models, repository, Riverpod provider
-lib/features/            Route pages
+
+These are generated by `build_runner`.
+
+Run code generation after changing models, routes, providers, or anything else that depends on generated files:
+
+```powershell
+dart run build_runner build --delete-conflicting-outputs
+```
+
+---
+
+## Project layout
+
+```text
+assets/content/          Wedding content JSON
+lib/content/             Content models, repository, and provider
+lib/features/            Main route pages and feature sections
 lib/router/              auto_route configuration
-lib/shell/               App shell (app bar, footer, scroll)
-lib/theme/               Colours and typography
-lib/widgets/             Shared UI components
-docs/                    Built web app (deploy artefact)
-deploy.ps1               Build and publish script
+lib/shell/               App shell, navigation, scroll structure
+lib/theme/               Colours, typography, and theme setup
+lib/widgets/             Shared UI widgets
+web/                     Flutter web template files
+docs/                    Built GitHub Pages output
+deploy.ps1               Build and deployment script
 ```
+
+---
 
 ## Licence
 
-Private wedding project — not intended for redistribution.
+Private wedding project. Not intended for redistribution.

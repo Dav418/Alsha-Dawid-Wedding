@@ -5,8 +5,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-import '../models/invite_card_shape.dart';
 import '../hooks/use_auto_route_aware.dart';
+import '../models/invite_card_shape.dart';
 
 class WeddingHeroInviteCard extends HookWidget {
   const WeddingHeroInviteCard({
@@ -146,10 +146,10 @@ class WeddingHeroInviteCard extends HookWidget {
                   ),
                   if (hasImage)
                     Positioned(
-                      top: -6,
+                      top: -16,
                       left: 0,
                       right: 0,
-                      height: 150,
+                      height: 120,
                       child: Image.asset(
                         imageAssetPath!,
                         fit: BoxFit.contain,
@@ -159,7 +159,7 @@ class WeddingHeroInviteCard extends HookWidget {
                   Padding(
                     padding: EdgeInsets.fromLTRB(
                       36,
-                      hasImage ? 132 : 36,
+                      hasImage ? 70 : 36,
                       36,
                       28,
                     ),

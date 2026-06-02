@@ -15,7 +15,7 @@ import '../utils/open_venue_map.dart';
 import 'hard_edge_color.dart';
 import 'line_icon.dart';
 
-/// Scrollable footer with quick links — shown at the bottom of every shell page.
+/// Fixed footer with quick links — pinned to the bottom of every shell page.
 class WeddingFooter extends ConsumerWidget {
   const WeddingFooter({
     required this.routerContext,
@@ -42,7 +42,7 @@ class WeddingFooter extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(8, 20, 8, 0),
+              padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
               child: Row(
                 children: [
                   for (final (i, action) in FooterNavAction.values.indexed) ...[
@@ -81,7 +81,7 @@ class WeddingFooter extends ConsumerWidget {
               ),
               child: _FooterContactInfo(content: content),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 8),
           ],
         ),
       ),

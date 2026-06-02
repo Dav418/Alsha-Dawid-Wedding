@@ -79,6 +79,7 @@ class WeddingLinks with _$WeddingLinks {
   const factory WeddingLinks({
     required String liveUpdatesUrl,
     required String venueMapQuery,
+    required String rsvpUrl,
   }) = _WeddingLinks;
 
   factory WeddingLinks.fromJson(Map<String, dynamic> json) =>
@@ -116,6 +117,7 @@ class WeddingPartyMember with _$WeddingPartyMember {
     required String firstName,
     required String lastName,
     String? honorific,
+    String? bio,
   }) = _WeddingPartyMember;
 
   factory WeddingPartyMember.fromJson(Map<String, dynamic> json) =>

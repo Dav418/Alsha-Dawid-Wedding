@@ -10,6 +10,9 @@ class WeddingAppBar extends StatelessWidget {
 
   static const expandedHeight = 136.0;
 
+  static const monogramMaxHeight = expandedHeight - 48;
+  static const monogramMinHeight = 34.0;
+
   @override
   Widget build(BuildContext context) {
     final appBarTheme = Theme.of(context).appBarTheme;
@@ -31,7 +34,10 @@ class WeddingAppBar extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: _MonogramLockup(
-                  height: (constraints.maxHeight - 48).clamp(34.0, 88.0),
+                  height: (constraints.maxHeight - 48).clamp(
+                    monogramMinHeight,
+                    monogramMaxHeight,
+                  ),
                   onTap: onHomeTap,
                 ),
               ),

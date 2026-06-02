@@ -7,7 +7,9 @@ import '../../content/data/wedding_content.dart';
 import '../../content/repositories/wedding_content_repository.dart';
 import '../../router/app_router.gr.dart';
 import '../../theme/app_typography.dart';
+import '../../features/rsvp/rsvp_page.dart';
 import '../../widgets/heart_divider.dart';
+import '../../widgets/wedding_action_button.dart';
 import '../../widgets/wedding_countdown.dart';
 import '../../widgets/wedding_hero_invite_card.dart';
 
@@ -30,6 +32,11 @@ class HomePage extends ConsumerWidget {
           imageAssetPath: WeddingAssets.seal,
           child: _HomeInviteContent(content: content),
         ),
+        WeddingActionButton(
+          label: 'RSVP',
+          onPressed: () => RsvpPage.push(context),
+        ),
+        const SizedBox(height: 14),
         const WeddingCountdown(),
         const _HomeWelcomeSection(),
       ],
@@ -134,7 +141,7 @@ class _HomeWelcomeSection extends StatelessWidget {
             textAlign: TextAlign.center,
             style: AppTypography.scriptQuote(scheme, height: 1.2),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 28),
           const HeartAccent(),
         ],
       ),

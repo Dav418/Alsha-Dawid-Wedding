@@ -111,41 +111,36 @@ class _WeddingShellScaffold extends HookWidget {
               child: SizedBox.expand(),
             ),
           ),
-          CustomScrollView(
-            controller: scrollController,
-            physics: ClampingScrollPhysics(),
-            slivers: [
-              WeddingAppBar(onHomeTap: goHome),
-              SliverToBoxAdapter(
-                child: HardEdgeColor(
-                  color: AppColors.creamBackground,
-                  child: _WeddingSectionTransition(
-                    routeName: activeRouteName,
-                    child: child,
-                  ),
-                ),
-              ),
-              SliverFillRemaining(
-                hasScrollBody: false,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const HardEdgeColor(
-                      color: AppColors.creamBackground,
-                      child: SizedBox(height: _footerTopSpacing),
-                    ),
-                    const Expanded(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: CustomScrollView(
+                  controller: scrollController,
+                  physics: const ClampingScrollPhysics(),
+                  slivers: [
+                    WeddingAppBar(onHomeTap: goHome),
+                    SliverToBoxAdapter(
                       child: HardEdgeColor(
                         color: AppColors.creamBackground,
-                        child: SizedBox.expand(),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            _WeddingSectionTransition(
+                              routeName: activeRouteName,
+                              child: child,
+                            ),
+                            const SizedBox(height: _footerTopSpacing),
+                          ],
+                        ),
                       ),
-                    ),
-                    WeddingFooter(
-                      routerContext: routerContext,
-                      onNavigate: onNavigate,
                     ),
                   ],
                 ),
+              ),
+              WeddingFooter(
+                routerContext: routerContext,
+                onNavigate: onNavigate,
               ),
             ],
           ),

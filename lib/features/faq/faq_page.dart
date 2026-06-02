@@ -10,6 +10,7 @@ import '../../theme/app_typography.dart';
 import '../../router/app_router.gr.dart';
 import '../../utils/open_contact_email.dart';
 import '../../widgets/heart_divider.dart';
+import '../../widgets/wedding_action_button.dart';
 
 const _faqs = [
   FaqItem(
@@ -213,7 +214,8 @@ class _FaqContactSection extends ConsumerWidget {
         ),
         const SizedBox(height: 20),
         Center(
-          child: FilledButton(
+          child: WeddingActionButton(
+            label: 'CONTACT US',
             onPressed: () async {
               final opened = await openContactEmail(email);
               if (!opened && context.mounted) {
@@ -225,17 +227,6 @@ class _FaqContactSection extends ConsumerWidget {
                 );
               }
             },
-            style: FilledButton.styleFrom(
-              minimumSize: const Size(168, 44),
-              padding: const EdgeInsets.symmetric(horizontal: 28),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            child: Text(
-              'CONTACT US',
-              style: AppTypography.buttonLabel(scheme),
-            ),
           ),
         ),
       ],

@@ -9,6 +9,7 @@ import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
 import '../../router/app_router.gr.dart';
 import '../../widgets/heart_divider.dart';
+import '../../widgets/party_member_polaroid_overlay.dart';
 
 @RoutePage()
 class WeddingPartyPage extends ConsumerWidget {
@@ -139,35 +140,49 @@ class _PartyPortrait extends StatelessWidget {
       member.lastName,
     );
 
+    final placeholder = _PortraitPlaceholder(
+      firstName: member.firstName,
+      lastName: member.lastName,
+    );
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          width: portraitSize,
-          height: portraitSize,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: AppColors.goldBrass.withValues(alpha: 0.35),
-              width: 1.5,
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            customBorder: const CircleBorder(),
+            onTap: () => showPartyMemberPolaroid(
+              context,
+              member: member,
+              assetPath: assetPath,
+              imagePlaceholder: placeholder,
             ),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.textCharcoal.withValues(alpha: 0.1),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: ClipOval(
-            child: Image.asset(
-              assetPath,
+            child: Container(
               width: portraitSize,
               height: portraitSize,
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => _PortraitPlaceholder(
-                firstName: member.firstName,
-                lastName: member.lastName,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: AppColors.goldBrass.withValues(alpha: 0.35),
+                  width: 1.5,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.textCharcoal.withValues(alpha: 0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: ClipOval(
+                child: Image.asset(
+                  assetPath,
+                  width: portraitSize,
+                  height: portraitSize,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => placeholder,
+                ),
               ),
             ),
           ),

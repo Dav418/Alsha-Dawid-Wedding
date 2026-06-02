@@ -17,7 +17,8 @@
   },
   "links": {
     "liveUpdatesUrl": "https://padlet.com/gorskidawid98/my-glorious-padlet-nh7dv7ohems19mue",
-    "venueMapQuery": "Rickmansworth, UK"
+    "venueMapQuery": "Rickmansworth, UK",
+    "rsvpUrl": "https://example.com/rsvp"
   },
   "ceremony": {
     "time": "2:00 PM",
