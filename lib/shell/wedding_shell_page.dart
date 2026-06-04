@@ -12,10 +12,6 @@ import '../widgets/wedding_footer.dart';
 
 const _footerTopSpacing = 40.0;
 
-/// Height of the burgundy band revealed when bouncing past the bottom of the scroll.
-double _bottomOverscrollBandHeight(BuildContext context) =>
-    MediaQuery.sizeOf(context).height * 0.3;
-
 @RoutePage()
 class WeddingShellPage extends StatelessWidget {
   const WeddingShellPage({super.key});
@@ -97,20 +93,6 @@ class _WeddingShellScaffold extends HookWidget {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          const HardEdgeColor(
-            color: AppColors.creamBackground,
-            child: SizedBox.expand(),
-          ),
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            height: _bottomOverscrollBandHeight(context),
-            child: const HardEdgeColor(
-              color: AppColors.burgundyAccent,
-              child: SizedBox.expand(),
-            ),
-          ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [

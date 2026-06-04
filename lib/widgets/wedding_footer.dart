@@ -159,30 +159,6 @@ class _FooterContactInfo extends StatelessWidget {
           },
         ),
         const SizedBox(height: 6),
-        _FooterContactLine(
-          icon: LineIconVariant.instagram,
-          label: content.social.instagramHandle,
-          style: lineStyle.copyWith(
-            color: AppColors.goldBrass,
-            decoration: TextDecoration.underline,
-            decorationColor: AppColors.goldBrass.withValues(alpha: 0.5),
-          ),
-          onTap: () async {
-            final opened = await openExternalUrl(
-              Uri.parse(content.social.instagramUrl),
-            );
-            if (!opened && context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'Could not open ${Uri.parse(content.social.instagramUrl).host}.',
-                  ),
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
-            }
-          },
-        ),
       ],
     );
   }

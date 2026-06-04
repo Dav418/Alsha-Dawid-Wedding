@@ -10,7 +10,6 @@ class WeddingContent with _$WeddingContent {
     required WeddingCouple couple,
     required WeddingEvent event,
     required WeddingContact contact,
-    required WeddingSocial social,
     required WeddingLinks links,
     required WeddingVenueSlot ceremony,
     required WeddingVenueSlot reception,
@@ -61,17 +60,6 @@ class WeddingContact with _$WeddingContact {
 
   factory WeddingContact.fromJson(Map<String, dynamic> json) =>
       _$WeddingContactFromJson(json);
-}
-
-@freezed
-class WeddingSocial with _$WeddingSocial {
-  const factory WeddingSocial({
-    required String instagramHandle,
-    required String instagramUrl,
-  }) = _WeddingSocial;
-
-  factory WeddingSocial.fromJson(Map<String, dynamic> json) =>
-      _$WeddingSocialFromJson(json);
 }
 
 @freezed
