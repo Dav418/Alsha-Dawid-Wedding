@@ -22,7 +22,10 @@ class WeddingHeroInviteCard extends HookWidget {
   final double maxWidth;
   final bool animateOnMount;
 
-  static const _shape = InviteCardShape();
+  static const _shape = InviteCardShape(
+    archWidth: 270,
+    archHeight: 90,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -146,10 +149,10 @@ class WeddingHeroInviteCard extends HookWidget {
                   ),
                   if (hasImage)
                     Positioned(
-                      top: -16,
+                      top: 6,
                       left: 0,
                       right: 0,
-                      height: 120,
+                      height: 100,
                       child: Image.asset(
                         imageAssetPath!,
                         fit: BoxFit.contain,
