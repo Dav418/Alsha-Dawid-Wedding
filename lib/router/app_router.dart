@@ -56,6 +56,10 @@ class AppRouter extends RootStackRouter {
               path: 'wedding-party',
             ),
             _customRoute(
+              page: FoodRoute.page,
+              path: 'food',
+            ),
+            _customRoute(
               page: FaqRoute.page,
               path: 'faq',
             ),

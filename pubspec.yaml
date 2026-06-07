@@ -43,3 +43,4 @@ flutter:
     - assets/content/
     - lib/assets/home/
     - lib/assets/wedding_party/
+    - lib/assets/food/

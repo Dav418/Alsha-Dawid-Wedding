@@ -1,0 +1,525 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+
+import '../../models/food_item.dart';
+import '../../theme/app_colors.dart';
+import '../../theme/app_typography.dart';
+import '../../router/app_router.gr.dart';
+import '../../utils/open_external_url.dart';
+import '../../widgets/heart_divider.dart';
+import 'food_menu_data.dart';
+
+@RoutePage()
+class FoodPage extends StatelessWidget {
+  const FoodPage({super.key});
+
+  static void push(BuildContext context) {
+    context.router.navigate(const FoodRoute());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const _FoodHeader(),
+          const SizedBox(height: 22),
+          const HeartDivider(),
+          const SizedBox(height: 22),
+          const _FoodMenuBody(),
+          const SizedBox(height: 32),
+        ],
+      ),
+    );
+  }
+}
+
+class _FoodHeader extends StatelessWidget {
+  const _FoodHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
+    return Column(
+      children: [
+        Text(
+          'Food & Menu',
+          textAlign: TextAlign.center,
+          style: AppTypography.scriptHero(scheme, fontSize: 48, height: 1.08),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          'A FEAST OF TWO CULTURES',
+          textAlign: TextAlign.center,
+          style: AppTypography.capsLabel(
+            scheme,
+            color: AppColors.sageGreen,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _FoodMenuBody extends HookWidget {
+  const _FoodMenuBody();
+
+  @override
+  Widget build(BuildContext context) {
+    final culture = useState(FoodCulture.goan);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _CulturePillSwitch(
+          selected: culture.value,
+          onChanged: (value) => culture.value = value,
+        ),
+        const SizedBox(height: 24),
+        Text(
+          culture.value == FoodCulture.polish
+              ? 'Polish classics from Dawid\'s side of the family.'
+              : 'Goan flavours from Alisha\'s side of the family.',
+          textAlign: TextAlign.center,
+          style: AppTypography.bodySerif(
+            Theme.of(context).colorScheme,
+            fontSize: 14.5,
+          ),
+        ),
+        const SizedBox(height: 28),
+        for (final (i, course) in FoodCourse.values.indexed) ...[
+          _FoodCourseSection(
+            course: course,
+            culture: culture.value,
+          ),
+          if (i < FoodCourse.values.length - 1) const SizedBox(height: 28),
+        ],
+      ],
+    );
+  }
+}
+
+class _CulturePillSwitch extends StatelessWidget {
+  const _CulturePillSwitch({
+    required this.selected,
+    required this.onChanged,
+  });
+
+  final FoodCulture selected;
+  final ValueChanged<FoodCulture> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: AppColors.creamBackground.withValues(alpha: 0.9),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(
+          color: AppColors.goldBrass.withValues(alpha: 0.35),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.textCharcoal.withValues(alpha: 0.05),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final halfWidth = constraints.maxWidth / 2;
+
+            return Stack(
+              children: [
+                AnimatedPositioned(
+                  duration: const Duration(milliseconds: 220),
+                  curve: Curves.easeOut,
+                  left: selected == FoodCulture.polish ? 0 : halfWidth,
+                  top: 0,
+                  bottom: 0,
+                  width: halfWidth,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: scheme.primary,
+                      borderRadius: BorderRadius.circular(999),
+                      boxShadow: [
+                        BoxShadow(
+                          color: scheme.primary.withValues(alpha: 0.25),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Row(
+                  children: [
+                    _CulturePillOption(
+                      label: 'POLISH',
+                      selected: selected == FoodCulture.polish,
+                      onTap: () => onChanged(FoodCulture.polish),
+                    ),
+                    _CulturePillOption(
+                      label: 'GOAN',
+                      selected: selected == FoodCulture.goan,
+                      onTap: () => onChanged(FoodCulture.goan),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _CulturePillOption extends StatelessWidget {
+  const _CulturePillOption({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
+    return Expanded(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(999),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 13),
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              style: AppTypography.capsLabel(
+                scheme,
+                fontSize: 11.5,
+                letterSpacing: 2.2,
+                color: selected ? scheme.onPrimary : scheme.primary,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _FoodCourseSection extends StatelessWidget {
+  const _FoodCourseSection({
+    required this.course,
+    required this.culture,
+  });
+
+  final FoodCourse course;
+  final FoodCulture culture;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final items = FoodMenuData.forCultureAndCourse(culture, course);
+
+    if (items.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          _courseLabel(course),
+          textAlign: TextAlign.center,
+          style: AppTypography.cardTitleCaps(
+            scheme,
+            fontSize: 14,
+            letterSpacing: 2.4,
+            color: AppColors.sageGreen,
+          ),
+        ),
+        const SizedBox(height: 14),
+        for (var i = 0; i < items.length; i++) ...[
+          _FoodAccordionTile(item: items[i]),
+          if (i < items.length - 1) const SizedBox(height: 12),
+        ],
+      ],
+    );
+  }
+
+  String _courseLabel(FoodCourse course) => switch (course) {
+        FoodCourse.starter => 'STARTER',
+        FoodCourse.main => 'MAIN',
+        FoodCourse.dessert => 'DESSERT',
+      };
+}
+
+class _FoodAccordionTile extends HookWidget {
+  const _FoodAccordionTile({required this.item});
+
+  final FoodItem item;
+
+  @override
+  Widget build(BuildContext context) {
+    final expanded = useState(false);
+    final scheme = Theme.of(context).colorScheme;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: AppColors.creamBackground.withValues(alpha: 0.85),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppColors.goldBrass.withValues(alpha: 0.22),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.textCharcoal.withValues(alpha: 0.06),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Material(
+          color: Colors.transparent,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              InkWell(
+                onTap: () => expanded.value = !expanded.value,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+                  child: Row(
+                    children: [
+                      _FoodItemImage(
+                        assetPath: item.imageAsset,
+                        width: 64,
+                        height: 64,
+                        borderRadius: 10,
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Text(
+                          item.name,
+                          style: AppTypography.faqQuestion(scheme),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      AnimatedRotation(
+                        turns: expanded.value ? 0.125 : 0,
+                        duration: const Duration(milliseconds: 200),
+                        curve: Curves.easeOut,
+                        child: Text(
+                          '+',
+                          style: AppTypography.faqToggle(scheme),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              AnimatedSize(
+                duration: const Duration(milliseconds: 220),
+                curve: Curves.easeOut,
+                alignment: Alignment.topCenter,
+                child: expanded.value
+                    ? Padding(
+                        padding: const EdgeInsets.fromLTRB(14, 0, 14, 18),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            _FoodItemImage(
+                              assetPath: item.imageAsset,
+                              height: 180,
+                              borderRadius: 10,
+                            ),
+                            const SizedBox(height: 14),
+                            Text(
+                              item.description,
+                              style: AppTypography.faqAnswer(scheme),
+                            ),
+                            const SizedBox(height: 14),
+                            _FoodDetailLine(
+                              label: 'CONTAINS',
+                              value: item.contains,
+                            ),
+                            const SizedBox(height: 10),
+                            _FoodDetailLine(
+                              label: 'ALLERGENS',
+                              value: item.allergens,
+                            ),
+                            const SizedBox(height: 10),
+                            _FoodDetailLine(
+                              label: 'SPICE',
+                              value: item.spiceLevel,
+                            ),
+                            const SizedBox(height: 16),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: TextButton.icon(
+                                onPressed: () async {
+                                  final opened = await openExternalUrl(
+                                    Uri.parse(item.wikipediaUrl),
+                                  );
+                                  if (!opened && context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Could not open Wikipedia link.',
+                                        ),
+                                        behavior: SnackBarBehavior.floating,
+                                      ),
+                                    );
+                                  }
+                                },
+                                icon: Icon(
+                                  Icons.open_in_new_rounded,
+                                  size: 16,
+                                  color: scheme.primary,
+                                ),
+                                label: Text(
+                                  'READ MORE ON WIKIPEDIA',
+                                  style: AppTypography.capsLabel(
+                                    scheme,
+                                    fontSize: 10.5,
+                                    letterSpacing: 1.6,
+                                    color: scheme.primary,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : const SizedBox(width: double.infinity),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _FoodDetailLine extends StatelessWidget {
+  const _FoodDetailLine({
+    required this.label,
+    required this.value,
+  });
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: AppTypography.capsLabel(
+            scheme,
+            fontSize: 10,
+            letterSpacing: 1.8,
+            color: AppColors.sageGreen,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: AppTypography.faqAnswer(scheme),
+        ),
+      ],
+    );
+  }
+}
+
+class _FoodItemImage extends StatelessWidget {
+  const _FoodItemImage({
+    required this.assetPath,
+    this.width,
+    required this.height,
+    required this.borderRadius,
+  });
+
+  final String assetPath;
+  final double? width;
+  final double height;
+  final double borderRadius;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(borderRadius),
+      child: SizedBox(
+        width: width,
+        height: height,
+        child: Image.asset(
+          assetPath,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => _FoodImagePlaceholder(
+            scheme: scheme,
+            height: height,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _FoodImagePlaceholder extends StatelessWidget {
+  const _FoodImagePlaceholder({
+    required this.scheme,
+    required this.height,
+  });
+
+  final ColorScheme scheme;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppColors.sageGreen.withValues(alpha: 0.25),
+            AppColors.goldBrass.withValues(alpha: 0.18),
+          ],
+        ),
+        border: Border.all(
+          color: AppColors.goldBrass.withValues(alpha: 0.2),
+        ),
+      ),
+      child: Center(
+        child: Icon(
+          Icons.restaurant_menu_rounded,
+          size: height < 100 ? 24 : 36,
+          color: scheme.primary.withValues(alpha: 0.45),
+        ),
+      ),
+    );
+  }
+}

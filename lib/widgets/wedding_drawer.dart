@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../content/repositories/wedding_content_repository.dart';
 import '../features/countdown/countdown_page.dart';
 import '../features/faq/faq_page.dart';
+import '../features/food/food_page.dart';
 import '../features/gallery/gallery_page.dart';
 import '../features/home/home_page.dart';
 import '../features/our_story/our_story_page.dart';
@@ -134,6 +135,11 @@ class WeddingDrawer extends ConsumerWidget {
               label: 'WEDDING PARTY',
               routeName: WeddingPartyRoute.name,
               push: WeddingPartyPage.push,
+            ),
+            tile(
+              label: 'FOOD',
+              routeName: FoodRoute.name,
+              push: FoodPage.push,
             ),
             tile(
               label: 'FAQ',

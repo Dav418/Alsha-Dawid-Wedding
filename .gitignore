@@ -33,3 +33,6 @@ doc/api/
 
 # Cursor — local IDE state
 .cursor/
+
+# FVM Version Cache
+.fvm/
