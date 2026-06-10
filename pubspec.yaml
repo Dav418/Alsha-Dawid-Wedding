@@ -44,3 +44,5 @@ flutter:
     - lib/assets/home/
     - lib/assets/wedding_party/
     - lib/assets/food/
+    - lib/assets/food/goan/
+    - lib/assets/food/polish/
