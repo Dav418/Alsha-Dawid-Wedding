@@ -5,7 +5,7 @@ abstract final class FoodAssets {
 
   static const _root = 'lib/assets/food';
 
-  static String polish(String slug) => '$_root/polish/$slug.png';
+  static String polish(String slug) => '$_root/polish/$slug.jpg';
 
-  static String goan(String slug) => '$_root/goan/$slug.png';
+  static String goan(String slug) => '$_root/goan/$slug.jpg';
 }
