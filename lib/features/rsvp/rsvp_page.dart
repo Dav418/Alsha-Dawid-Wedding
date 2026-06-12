@@ -37,7 +37,7 @@ class RsvpPage extends ConsumerWidget {
           Center(
             child: WeddingActionButton(
               label: 'RESPOND ONLINE',
-              onPressed: () => _openExternalRsvp(context, rsvpUrl),
+              onPressed: () => openExternalRsvp(context, rsvpUrl),
             ),
           ),
           const SizedBox(height: 40),
@@ -46,7 +46,7 @@ class RsvpPage extends ConsumerWidget {
     );
   }
 
-  static Future<void> _openExternalRsvp(
+  static Future<void> openExternalRsvp(
     BuildContext context,
     String url,
   ) async {
@@ -114,25 +114,53 @@ class _RsvpIntro extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'If you are joining us for the church ceremony, the evening '
-          'celebration, or both, we kindly ask that you RSVP so we can '
-          'plan seating, catering, and your place in the day.',
+          'We are so excited to celebrate our wedding day with the people '
+          'we love most.',
           textAlign: TextAlign.center,
           style: AppTypography.bodySerif(scheme),
         ),
         const SizedBox(height: 18),
         Text(
-          'Our RSVP is completed on a separate secure site. Please work '
-          'through every step of the form until you reach the confirmation '
-          'page — that is how we know your response has been received.',
+          'Before you RSVP, please note that you will be asked two '
+          'separate questions. One will ask whether you will be attending '
+          'the church ceremony, and the other will ask whether you will be '
+          'joining us for the evening celebration.',
           textAlign: TextAlign.center,
           style: AppTypography.bodySerif(scheme),
         ),
         const SizedBox(height: 18),
         Text(
-          'The form will let you tell us which parts of the day you are '
-          'attending, how many guests are in your party, and any details '
-          'we should know ahead of time.',
+          'This helps us understand which parts of the day each guest will '
+          'be joining us for, so we can plan everything properly, including '
+          'seating, timings, catering, and making sure everyone is included '
+          'in the right part of the day.',
+          textAlign: TextAlign.center,
+          style: AppTypography.bodySerif(scheme),
+        ),
+        const SizedBox(height: 18),
+        Text(
+          'To make the RSVP form easier to complete, guests under 18 have '
+          'been grouped with their family. Parents or guardians can RSVP '
+          'on behalf of children in their family group.',
+          textAlign: TextAlign.center,
+          style: AppTypography.bodySerif(scheme),
+        ),
+        const SizedBox(height: 18),
+        Text(
+          'Guests aged 18 or over have their own RSVP entry and will need '
+          'to complete their own response separately.',
+          textAlign: TextAlign.center,
+          style: AppTypography.bodySerif(
+            scheme,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(height: 18),
+        Text(
+          'When you click the RSVP button, the form will open in a new tab. '
+          'Please complete the form all the way through until you reach the '
+          'final confirmation screen. Your RSVP is only submitted once you '
+          'see that confirmation screen.',
           textAlign: TextAlign.center,
           style: AppTypography.bodySerif(
             scheme,
@@ -141,8 +169,8 @@ class _RsvpIntro extends StatelessWidget {
         ),
         const SizedBox(height: 24),
         Text(
-          'When you are ready, use the button below to open RSVP in a '
-          'new tab.',
+          'After that, it is safe to close the RSVP tab and return to our '
+          'wedding website.',
           textAlign: TextAlign.center,
           style: AppTypography.scriptQuote(scheme, fontSize: 24, height: 1.3),
         ),
