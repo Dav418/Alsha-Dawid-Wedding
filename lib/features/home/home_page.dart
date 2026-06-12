@@ -34,8 +34,7 @@ class HomePage extends ConsumerWidget {
         ),
         WeddingActionButton(
           label: 'RSVP',
-          onPressed: () =>
-              RsvpPage.openExternalRsvp(context, content.links.rsvpUrl),
+          onPressed: () => RsvpPage.push(context),
         ),
         const SizedBox(height: 14),
         const WeddingCountdown(),
