@@ -247,6 +247,13 @@ if (-not (Test-Path "build\web\main.dart.js")) {
     exit 1
 }
 
+if (-not (Test-Path "build\web\404.html")) {
+    Write-Host ""
+    Write-Host "ERROR: build\web\404.html was not created." -ForegroundColor Red
+    Write-Host "Add web\404.html so GitHub Pages can serve deep links like /food." -ForegroundColor Yellow
+    exit 1
+}
+
 $builtIndexHtml = Get-Content "build\web\index.html" -Raw
 
 if ($builtIndexHtml -notlike "*<title>$htmlTitle</title>*") {
@@ -288,6 +295,12 @@ if (-not (Test-Path "docs\index.html")) {
 if (-not (Test-Path "docs\main.dart.js")) {
     Write-Host ""
     Write-Host "ERROR: docs\main.dart.js is missing after copy." -ForegroundColor Red
+    exit 1
+}
+
+if (-not (Test-Path "docs\404.html")) {
+    Write-Host ""
+    Write-Host "ERROR: docs\404.html is missing after copy." -ForegroundColor Red
     exit 1
 }
 

@@ -14,16 +14,9 @@ class WeddingWebsiteApp extends ConsumerWidget {
     final router = ref.watch(appRouterControllerProvider);
     final contentAsync = ref.watch(weddingContentRepositoryProvider);
 
-    return contentAsync.when(
-      loading: () => MaterialApp(
-        key: const ValueKey('loading-app'),
-        title: 'Loading...',
-        theme: AppTheme.light,
-        home: const Scaffold(
-          body: Center(child: CircularProgressIndicator()),
-        ),
-      ),
-      error: (error, _) => MaterialApp(
+    if (contentAsync.hasError) {
+      final error = contentAsync.error!;
+      return MaterialApp(
         key: const ValueKey('error-app'),
         title: 'Oops',
         theme: AppTheme.light,
@@ -38,30 +31,30 @@ class WeddingWebsiteApp extends ConsumerWidget {
             ),
           ),
         ),
-      ),
-      data: (content) {
-        final siteTitle = content.couple.siteTitle;
+      );
+    }
 
-        return MaterialApp.router(
-          key: ValueKey(siteTitle),
+    final content = contentAsync.requireValue;
+    final siteTitle = content.couple.siteTitle;
+
+    return MaterialApp.router(
+      key: ValueKey(siteTitle),
+      title: siteTitle,
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.light,
+      themeMode: ThemeMode.light,
+      builder: (context, child) {
+        return Title(
           title: siteTitle,
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme.light,
-          themeMode: ThemeMode.light,
-          builder: (context, child) {
-            return Title(
-              title: siteTitle,
-              color: Colors.black,
-              child: child ?? const SizedBox.shrink(),
-            );
-          },
-          routerConfig: router.config(
-            navigatorObservers: () => [
-              AutoRouteObserver(),
-            ],
-          ),
+          color: Colors.black,
+          child: child ?? const SizedBox.shrink(),
         );
       },
+      routerConfig: router.config(
+        navigatorObservers: () => [
+          AutoRouteObserver(),
+        ],
+      ),
     );
   }
 }

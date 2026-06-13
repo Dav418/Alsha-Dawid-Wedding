@@ -12,9 +12,11 @@ class WeddingContentRepository extends _$WeddingContentRepository {
   static const assetPath = 'assets/content/wedding_content.json';
 
   @override
-  Future<WeddingContent> build() async {
-    final jsonString = await rootBundle.loadString(assetPath);
-    final json = jsonDecode(jsonString) as Map<String, dynamic>;
-    return WeddingContent.fromJson(json);
-  }
+  Future<WeddingContent> build() async => loadWeddingContentFromAssets();
+}
+
+Future<WeddingContent> loadWeddingContentFromAssets() async {
+  final jsonString = await rootBundle.loadString(WeddingContentRepository.assetPath);
+  final json = jsonDecode(jsonString) as Map<String, dynamic>;
+  return WeddingContent.fromJson(json);
 }
