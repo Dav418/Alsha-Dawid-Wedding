@@ -3,6 +3,8 @@ $ErrorActionPreference = "Stop"
 $pagesBranch = "main"
 $customDomain = "alisha-dawid-wedding.vip"
 $siteUrl = "https://$customDomain/"
+$faviconSourcePath = "lib\assets\home\monogram_ad_wreath.png"
+$faviconSize = 48
 
 function Run-Command {
     param (
@@ -176,6 +178,58 @@ function Update-WebManifestMetadata {
         Set-Content -Path $manifestPath -NoNewline
 }
 
+function Update-WebFavicon {
+    param (
+        [string]$SourcePath = $faviconSourcePath,
+        [int]$Size = $faviconSize
+    )
+
+    $destPath = "web\favicon.png"
+
+    if (-not (Test-Path $SourcePath)) {
+        Write-Host ""
+        Write-Host "ERROR: $SourcePath not found." -ForegroundColor Red
+        exit 1
+    }
+
+    Write-Host ""
+    Write-Host "==> Creating favicon from monogram asset" -ForegroundColor Cyan
+
+    Add-Type -AssemblyName System.Drawing
+
+    $sourceFullPath = (Resolve-Path $SourcePath).Path
+    $destFullPath = Join-Path (Get-Location) $destPath
+
+    $source = [System.Drawing.Image]::FromFile($sourceFullPath)
+    try {
+        $bitmap = New-Object System.Drawing.Bitmap $Size, $Size
+        try {
+            $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
+            try {
+                $graphics.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
+                $graphics.CompositingQuality = [System.Drawing.Drawing2D.CompositingQuality]::HighQuality
+                $graphics.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::HighQuality
+                $graphics.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
+                $graphics.DrawImage($source, 0, 0, $Size, $Size)
+            } finally {
+                $graphics.Dispose()
+            }
+
+            $bitmap.Save($destFullPath, [System.Drawing.Imaging.ImageFormat]::Png)
+        } finally {
+            $bitmap.Dispose()
+        }
+    } finally {
+        $source.Dispose()
+    }
+
+    if (-not (Test-Path $destPath)) {
+        Write-Host ""
+        Write-Host "ERROR: $destPath was not created." -ForegroundColor Red
+        exit 1
+    }
+}
+
 function Ensure-Web404Page {
     param (
         [string]$WebOutputPath
@@ -248,6 +302,7 @@ Write-Host "==> Updating regenerated web metadata" -ForegroundColor Cyan
 
 Update-WebIndexMetadata $appTitle
 Update-WebManifestMetadata $appTitle
+Update-WebFavicon
 
 Run-Command "Getting Flutter packages" "flutter pub get"
 
@@ -264,6 +319,12 @@ if (-not (Test-Path "build\web\index.html")) {
 if (-not (Test-Path "build\web\main.dart.js")) {
     Write-Host ""
     Write-Host "ERROR: build\web\main.dart.js was not created." -ForegroundColor Red
+    exit 1
+}
+
+if (-not (Test-Path "build\web\favicon.png")) {
+    Write-Host ""
+    Write-Host "ERROR: build\web\favicon.png was not created." -ForegroundColor Red
     exit 1
 }
 
