@@ -124,16 +124,9 @@ class _RsvpIntro extends StatelessWidget {
           'Before you RSVP, please note that you will be asked two '
           'separate questions. One will ask whether you will be attending '
           'the church ceremony, and the other will ask whether you will be '
-          'joining us for the evening celebration.',
-          textAlign: TextAlign.center,
-          style: AppTypography.bodySerif(scheme),
-        ),
-        const SizedBox(height: 18),
-        Text(
+          'joining us for the evening celebration.'
           'This helps us understand which parts of the day each guest will '
-          'be joining us for, so we can plan everything properly, including '
-          'seating, timings, catering, and making sure everyone is included '
-          'in the right part of the day.',
+          'be joining us for, so we can plan everything properly.',
           textAlign: TextAlign.center,
           style: AppTypography.bodySerif(scheme),
         ),
@@ -154,6 +147,16 @@ class _RsvpIntro extends StatelessWidget {
             scheme,
             fontWeight: FontWeight.w500,
           ),
+        ),
+        const SizedBox(height: 18),
+        Text(
+          'Please note that names and surnames on the RSVP form have been '
+          'entered without accents or special characters. For example, '
+          'letters such as ó, ł, ś, ć, ż, ź, ń and ę may appear as o, l, '
+          's, c, z, z, n and e. If your name normally includes accents, '
+          'please search for it using the plain-letter version.',
+          textAlign: TextAlign.center,
+          style: AppTypography.bodySerif(scheme),
         ),
         const SizedBox(height: 18),
         Text(
