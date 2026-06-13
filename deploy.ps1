@@ -176,6 +176,26 @@ function Update-WebManifestMetadata {
         Set-Content -Path $manifestPath -NoNewline
 }
 
+function Ensure-Web404Page {
+    param (
+        [string]$WebOutputPath
+    )
+
+    $indexPath = Join-Path $WebOutputPath "index.html"
+    $notFoundPath = Join-Path $WebOutputPath "404.html"
+
+    if (-not (Test-Path $indexPath)) {
+        Write-Host ""
+        Write-Host "ERROR: $indexPath not found." -ForegroundColor Red
+        exit 1
+    }
+
+    Write-Host ""
+    Write-Host "==> Creating 404.html from built index.html for GitHub Pages deep links" -ForegroundColor Cyan
+
+    Copy-Item -Path $indexPath -Destination $notFoundPath -Force
+}
+
 Write-Host ""
 Write-Host "Starting Flutter web deploy..." -ForegroundColor Green
 
@@ -247,10 +267,11 @@ if (-not (Test-Path "build\web\main.dart.js")) {
     exit 1
 }
 
+Ensure-Web404Page "build\web"
+
 if (-not (Test-Path "build\web\404.html")) {
     Write-Host ""
     Write-Host "ERROR: build\web\404.html was not created." -ForegroundColor Red
-    Write-Host "Add web\404.html so GitHub Pages can serve deep links like /food." -ForegroundColor Yellow
     exit 1
 }
 
