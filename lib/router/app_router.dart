@@ -48,6 +48,10 @@ class AppRouter extends RootStackRouter {
               path: 'travel',
             ),
             _customRoute(
+              page: MapRoute.page,
+              path: 'map',
+            ),
+            _customRoute(
               page: GalleryRoute.page,
               path: 'gallery',
             ),

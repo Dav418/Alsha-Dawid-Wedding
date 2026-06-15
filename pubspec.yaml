@@ -26,6 +26,8 @@ dependencies:
   # 0.21.3+1 requires Flutter >=3.32; keep ^0.21.2 until the SDK is upgraded.
   flutter_hooks: ^0.21.2
   url_launcher: ^6.3.1
+  google_maps_flutter: ^2.12.1
+  web: ^1.1.1
   confetti: ^0.8.0
 
 dev_dependencies:

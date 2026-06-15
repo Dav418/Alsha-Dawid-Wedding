@@ -8,6 +8,8 @@ import '../features/faq/faq_page.dart';
 import '../features/food/food_page.dart';
 import '../features/gallery/gallery_page.dart';
 import '../features/home/home_page.dart';
+import '../features/map/map_page.dart';
+import '../features/map/map_page_config.dart';
 import '../features/our_story/our_story_page.dart';
 import '../features/rsvp/rsvp_page.dart';
 import '../features/travel/travel_page.dart';
@@ -125,6 +127,11 @@ class WeddingDrawer extends ConsumerWidget {
               label: 'TRAVEL',
               routeName: TravelRoute.name,
               push: TravelPage.push,
+            ),
+            tile(
+              label: MapPageConfig.menuLabel,
+              routeName: MapRoute.name,
+              push: MapPage.push,
             ),
             tile(
               label: 'GALLERY',

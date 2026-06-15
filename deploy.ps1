@@ -250,6 +250,62 @@ function Ensure-Web404Page {
     Copy-Item -Path $indexPath -Destination $notFoundPath -Force
 }
 
+function Assert-GoogleMapsSecretsReady {
+    param (
+        [string]$SecretsPath = "secrets.json",
+        [string]$Domain = $customDomain
+    )
+
+    if (-not (Test-Path $SecretsPath)) {
+        Write-Host ""
+        Write-Host "ERROR: $SecretsPath not found." -ForegroundColor Red
+        Write-Host "The Map page embeds Google Maps and needs an API key at build time." -ForegroundColor Yellow
+        Write-Host ""
+        Write-Host "Setup:" -ForegroundColor Yellow
+        Write-Host "  1. Copy secrets.json.example to secrets.json" -ForegroundColor White
+        Write-Host "  2. Paste your Google Maps API key (Maps JavaScript API enabled)" -ForegroundColor White
+        Write-Host "  3. Restrict the key to HTTP referrers, e.g.:" -ForegroundColor White
+        Write-Host "       http://localhost:*" -ForegroundColor White
+        Write-Host "       https://$Domain/*" -ForegroundColor White
+        Write-Host ""
+        Write-Host "secrets.json is gitignored and is not committed by this script." -ForegroundColor Yellow
+        exit 1
+    }
+
+    try {
+        $secrets = Get-Content $SecretsPath -Raw | ConvertFrom-Json
+    }
+    catch {
+        Write-Host ""
+        Write-Host "ERROR: $SecretsPath is not valid JSON." -ForegroundColor Red
+        Write-Host $_.Exception.Message -ForegroundColor Yellow
+        exit 1
+    }
+
+    $apiKey = [string]$secrets.GOOGLE_MAPS_API_KEY
+
+    if ([string]::IsNullOrWhiteSpace($apiKey)) {
+        Write-Host ""
+        Write-Host "ERROR: GOOGLE_MAPS_API_KEY is empty in $SecretsPath." -ForegroundColor Red
+        exit 1
+    }
+
+    $placeholders = @(
+        "paste-your-key-here",
+        "YOUR_GOOGLE_MAPS_API_KEY"
+    )
+
+    if ($placeholders -contains $apiKey.Trim()) {
+        Write-Host ""
+        Write-Host "ERROR: GOOGLE_MAPS_API_KEY in $SecretsPath is still a placeholder." -ForegroundColor Red
+        Write-Host "Replace it with a real key from Google Cloud Console." -ForegroundColor Yellow
+        exit 1
+    }
+
+    Write-Host ""
+    Write-Host "Google Maps API key found in $SecretsPath (key value not printed)." -ForegroundColor Green
+}
+
 Write-Host ""
 Write-Host "Starting Flutter web deploy..." -ForegroundColor Green
 
@@ -308,7 +364,9 @@ Run-Command "Getting Flutter packages" "flutter pub get"
 
 Run-Command "Running code generation" "dart run build_runner build --delete-conflicting-outputs"
 
-Run-Command "Building Flutter web for custom domain" "flutter build web --release --base-href '/'"
+Assert-GoogleMapsSecretsReady
+
+Run-Command "Building Flutter web for custom domain (with Google Maps key)" "flutter build web --release --base-href '/' --dart-define-from-file=secrets.json"
 
 if (-not (Test-Path "build\web\index.html")) {
     Write-Host ""

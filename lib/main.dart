@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'app.dart';
 import 'content/data/wedding_content.dart';
 import 'content/repositories/wedding_content_repository.dart';
+import 'utils/google_maps_web_loader.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +27,8 @@ Future<void> main() async {
   ]);
 
   final weddingContent = await loadWeddingContentFromAssets();
+
+  await ensureGoogleMapsLoaded();
 
   runApp(
     ProviderScope(
