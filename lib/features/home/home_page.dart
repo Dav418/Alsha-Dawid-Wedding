@@ -85,7 +85,7 @@ class _HomeInviteContent extends StatelessWidget {
         const HeartDivider(),
         const SizedBox(height: 16),
         Text(
-          event.dateDisplay,
+          event.weddingDate,
           textAlign: TextAlign.center,
           style: AppTypography.capsLabel(
             scheme,

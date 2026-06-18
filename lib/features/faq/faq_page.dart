@@ -9,6 +9,7 @@ import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
 import '../../router/app_router.gr.dart';
 import '../../utils/open_contact_email.dart';
+import '../../utils/string_extensions.dart';
 import '../../widgets/heart_divider.dart';
 import '../../widgets/wedding_action_button.dart';
 
@@ -179,7 +180,7 @@ class _FaqAccordionTile extends HookWidget {
                     ? Padding(
                         padding: const EdgeInsets.fromLTRB(18, 0, 18, 18),
                         child: Text(
-                          item.answer,
+                          item.answer.withSuperscriptOrdinals(),
                           style: AppTypography.faqAnswer(scheme),
                         ),
                       )

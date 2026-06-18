@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../utils/string_extensions.dart';
+
 part 'wedding_content.freezed.dart';
 part 'wedding_content.g.dart';
 
@@ -50,6 +52,11 @@ class WeddingEvent with _$WeddingEvent {
 
   factory WeddingEvent.fromJson(Map<String, dynamic> json) =>
       _$WeddingEventFromJson(json);
+
+  const WeddingEvent._();
+
+  /// e.g. `17ᵗʰ OCTOBER 2026` — from [dateDisplay] with raised ordinal suffix.
+  String get weddingDate => dateDisplay.withSuperscriptOrdinals();
 }
 
 @freezed

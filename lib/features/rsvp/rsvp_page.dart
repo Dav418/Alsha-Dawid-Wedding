@@ -8,6 +8,7 @@ import '../../router/app_router.gr.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
 import '../../utils/open_external_url.dart';
+import '../../utils/string_extensions.dart';
 import '../../widgets/heart_divider.dart';
 
 @RoutePage()
@@ -47,7 +48,7 @@ class RsvpPage extends ConsumerWidget {
             ),
           ),
           Text(
-            'Please RSVP by 17th July 2026. ',
+            'Please RSVP by 17th July 2026. '.withSuperscriptOrdinals(),
             textAlign: TextAlign.center,
             style: AppTypography.bodySerif(
               Theme.of(context).colorScheme,
