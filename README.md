@@ -2,7 +2,7 @@
 
 A mobile-first Flutter web wedding website for Alisha Fernandes and Dawid Gorski.
 
-The site gives guests one simple place to view the wedding details, schedule, travel notes, wedding party, FAQ, live updates, and countdown.
+The site gives guests one simple place to view the wedding details, RSVP, wedding party, food menu, FAQ, venue map, live updates, and countdown.
 
 **Live site:** https://alisha-dawid-wedding.vip
 
@@ -16,8 +16,11 @@ The site gives guests one simple place to view the wedding details, schedule, tr
 * **Freezed + json_serializable** for typed content models
 * **flutter_hooks** for lightweight widget state
 * **Google Fonts** for typography
-* **url_launcher** for external links
+* **google_maps_flutter** for the embedded accommodation map
+* **url_launcher** for external links (RSVP, live updates, email)
 * **GitHub Pages** for static hosting from the `/docs` folder
+
+This repo pins Flutter via [FVM](https://fvm.app/) (see `.fvmrc`). The run and deploy scripts use `fvm flutter` when FVM is installed, otherwise plain `flutter`.
 
 ---
 
@@ -25,53 +28,71 @@ The site gives guests one simple place to view the wedding details, schedule, tr
 
 * Mobile-first wedding invite landing page
 * Wedding countdown
-* Ceremony and reception details
+* Ceremony and reception details (times and addresses from JSON; dress code and transport copy in Dart)
+* RSVP page (opens external RSVP URL from JSON)
 * Wedding party section
-* Our Story timeline
+* Our Story timeline (timeline copy in Dart; photo URLs from JSON)
+* Food & menu page
 * FAQ accordion
-* Contact links
-* Instagram link
-* Venue map links
-* Live updates page
-* Static content loaded from JSON
-* GitHub Pages deployment script
+* Embedded Google Maps page with accommodation POIs
+* Footer quick links (itinerary, venue map, live updates)
+* Contact email link
+* Static content compiled from JSON at build time
+* GitHub Pages deployment scripts
 
-Some sections, such as RSVP, gallery, and travel, may still be scaffolded for future content.
+Gallery and travel are still placeholder sections for future content.
+
+---
+
+## Design choices
+
+**Static site, no backend.** Everything is a Flutter web build served from GitHub Pages. There is no server, database, or runtime API.
+
+**Swap data in JSON, polish in Dart.** Names, dates, venues, party members, and external URLs live in `wedding_content.json` so they can be edited without touching UI code. Layout, routing, styling, icons, animations, FAQ text, Our Story copy, and food menu content stay in Dart because they are tied to the design.
+
+**Compile-time content injection.** Wedding content is not loaded from a public JSON file at runtime. A merge script embeds it into the build via `--dart-define-from-file=dart_defines.json`. That keeps the deployed site a single static bundle and avoids an extra network fetch for core content.
+
+**Secrets stay separate.** The Google Maps API key lives in gitignored `secrets.json` and is merged into `dart_defines.json` at run/build time. It is never committed and never belongs in `wedding_content.json`.
+
+**Custom domain hosting.** The site is served from the domain root (`/`), not from a GitHub Pages project subpath, so builds use `--base-href '/'`.
 
 ---
 
 ## Content
 
-Most editable wedding content lives in:
+Editable wedding content lives at the repo root:
 
 ```text
 wedding_content.json
 ```
 
-Copy `wedding_content.json.example` to `wedding_content.json`, then edit it like normal JSON.
+Copy `wedding_content.json.example` to `wedding_content.json`, then edit it like normal JSON. See the example file for the expected shape.
 
-This includes things like:
+**In JSON:**
 
 * Couple names
-* Wedding date and time
-* Venue details
-* Schedule copy
-* FAQ entries
+* Wedding date, location display, and countdown timestamp
+* Ceremony and reception times and address lines
 * Wedding party members
-* Contact details
-* Social links
-* Live updates URL
-* Countdown timestamp
+* Contact email
+* External links: RSVP URL, live updates URL, venue map search query
+* Our Story photo URLs
 
-Before running or building, merge it with your API key:
+**In Dart (not JSON):**
+
+* FAQ questions and answers
+* Our Story timeline headings and descriptions
+* Dress code, transport, and other details-page copy
+* Food menu items and images
+* Map POI data and page copy
+
+Before running or building, merge content with your API key:
 
 ```bash
-./run.sh
+python3 scripts/merge_dart_defines.py
 ```
 
-VS Code launch configs also run the merge step automatically.
-
-Layout, routing, styling, icons, and animations stay in Dart. The JSON is only for content that may need to change.
+Or use `./run.sh` / `.\run.ps1`, which run the merge step automatically. VS Code launch configs also run it via a preLaunchTask.
 
 ---
 
@@ -79,17 +100,27 @@ Layout, routing, styling, icons, and animations stay in Dart. The JSON is only f
 
 These files are gitignored:
 
-* `secrets.json` — `GOOGLE_MAPS_API_KEY` for the venue map
+* `secrets.json` — `GOOGLE_MAPS_API_KEY` for the embedded map
 * `wedding_content.json` — editable wedding content
 * `dart_defines.json` — generated merge of the two, used by Flutter
 
 Copy the example files and fill in your values:
+
+```bash
+cp secrets.json.example secrets.json
+cp wedding_content.json.example wedding_content.json
+python3 scripts/merge_dart_defines.py
+```
+
+On Windows:
 
 ```powershell
 Copy-Item secrets.json.example secrets.json
 Copy-Item wedding_content.json.example wedding_content.json
 python3 scripts/merge_dart_defines.py
 ```
+
+Restrict the Maps key to HTTP referrers such as `http://localhost:*` and `https://alisha-dawid-wedding.vip/*`.
 
 ---
 
@@ -105,7 +136,16 @@ Keep API keys in `secrets.json` only. Do not put them in `wedding_content.json`.
 
 ## Run locally
 
-Install Flutter, then run:
+First-time setup:
+
+```bash
+flutter pub get
+dart run build_runner build --delete-conflicting-outputs
+cp secrets.json.example secrets.json
+cp wedding_content.json.example wedding_content.json
+```
+
+Then run:
 
 ```bash
 ./run.sh
@@ -117,16 +157,7 @@ On Windows:
 .\run.ps1
 ```
 
-That merges `secrets.json` + `wedding_content.json` and starts the app in Chrome.
-
-First-time setup:
-
-```powershell
-flutter pub get
-dart run build_runner build --delete-conflicting-outputs
-Copy-Item secrets.json.example secrets.json
-Copy-Item wedding_content.json.example wedding_content.json
-```
+That merges `secrets.json` + `wedding_content.json` into `dart_defines.json` and starts the app in Chrome.
 
 ---
 
@@ -138,19 +169,22 @@ The site is deployed at the domain root:
 https://alisha-dawid-wedding.vip/
 ```
 
-So the web build must use:
+A manual release build needs the custom-domain base href **and** the merged dart defines:
 
-```powershell
-flutter build web --release --base-href '/'
+```bash
+python3 scripts/merge_dart_defines.py
+flutter build web --release --base-href '/' --dart-define-from-file=dart_defines.json
 ```
 
 Do not use the old repo-path base href:
 
-```powershell
+```bash
 flutter build web --release --base-href '/Alsha-Dawid-Wedding/'
 ```
 
 That was only needed when the site was hosted directly under the GitHub Pages repo URL.
+
+Prefer `./deploy.sh` or `.\deploy.ps1` instead of building by hand — they handle codegen, web metadata, validation, and copying output to `/docs`.
 
 ---
 
@@ -162,7 +196,13 @@ The repo publishes from:
 main branch → /docs folder
 ```
 
-Run:
+Run from the repo root on `main`:
+
+```bash
+./deploy.sh
+```
+
+On Windows:
 
 ```powershell
 .\deploy.ps1
@@ -170,22 +210,18 @@ Run:
 
 The deploy script:
 
-1. Verifies the script is being run from the Flutter project root.
-2. Verifies the repo is on the correct branch.
-3. Cleans the Flutter project.
-4. Gets Flutter packages.
-5. Runs code generation.
-6. Builds the Flutter web release using the custom-domain base href.
-7. Replaces the `/docs` folder with the latest `build/web` output.
-8. Adds `.nojekyll`.
-9. Adds the `CNAME` file for the custom domain.
+1. Verifies the script is being run from the Flutter project root on the `main` branch.
+2. Cleans the Flutter project and regenerates the `web/` folder from the current Flutter SDK.
+3. Updates web metadata (title, manifest, favicon) from `wedding_content.json`.
+4. Gets Flutter packages and runs code generation.
+5. Validates `wedding_content.json` and `secrets.json`.
+6. Merges dart defines and builds the Flutter web release with `--base-href '/'`.
+7. Creates `404.html` for GitHub Pages deep links.
+8. Replaces the `/docs` folder with the latest `build/web` output.
+9. Adds `.nojekyll` and the `CNAME` file for the custom domain.
 10. Commits and pushes the updated deploy files.
 
-After pushing, wait for GitHub Pages to update, then hard-refresh the live site with:
-
-```text
-Ctrl + F5
-```
+After pushing, wait for GitHub Pages to update, then hard-refresh the live site (e.g. Cmd + Shift + R on macOS, Ctrl + F5 on Windows).
 
 ---
 
@@ -203,7 +239,7 @@ These are generated by `build_runner`.
 
 Run code generation after changing models, routes, providers, or anything else that depends on generated files:
 
-```powershell
+```bash
 dart run build_runner build --delete-conflicting-outputs
 ```
 
@@ -213,15 +249,20 @@ dart run build_runner build --delete-conflicting-outputs
 
 ```text
 wedding_content.json     Editable wedding content (gitignored)
+secrets.json             Google Maps API key (gitignored)
+dart_defines.json        Generated merge for Flutter (gitignored)
+scripts/                 merge_dart_defines.py
+lib/config/              Compile-time config (content JSON, Maps key)
 lib/content/             Content models, repository, and provider
 lib/features/            Main route pages and feature sections
 lib/router/              auto_route configuration
 lib/shell/               App shell, navigation, scroll structure
 lib/theme/               Colours, typography, and theme setup
 lib/widgets/             Shared UI widgets
+lib/assets/              Bundled images (home, party, food, etc.)
 web/                     Flutter web template files
 docs/                    Built GitHub Pages output
-deploy.ps1               Build and deployment script
+deploy.sh / deploy.ps1   Build and deployment scripts
 run.sh / run.ps1         Run locally in Chrome (one command)
 ```
 
