@@ -2,7 +2,7 @@ import '../widgets/line_icon.dart';
 
 enum FooterNavAction {
   schedule(
-    title: 'SCHEDULE',
+    title: 'ITINERARY',
     icon: LineIconVariant.calendar,
   ),
   venueMap(

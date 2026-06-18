@@ -34,6 +34,18 @@ class WeddingWebsiteApp extends ConsumerWidget {
       );
     }
 
+    if (contentAsync.isLoading) {
+      return MaterialApp(
+        key: const ValueKey('loading-app'),
+        theme: AppTheme.light,
+        home: const Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      );
+    }
+
     final content = contentAsync.requireValue;
     final siteTitle = content.couple.siteTitle;
 

@@ -14,7 +14,6 @@ import '../../theme/app_typography.dart';
 import '../../utils/open_external_url.dart';
 import '../../widgets/heart_divider.dart';
 import '../../widgets/wedding_action_button.dart';
-import 'map_page_config.dart';
 import 'map_poi.dart';
 import 'map_poi_data.dart';
 
@@ -62,13 +61,13 @@ class _MapHeader extends StatelessWidget {
     return Column(
       children: [
         Text(
-          MapPageConfig.pageTitle,
+          'If you want to rest your head...',
           textAlign: TextAlign.center,
           style: AppTypography.scriptHero(scheme, fontSize: 48, height: 1.08),
         ),
         const SizedBox(height: 10),
         Text(
-          MapPageConfig.pageSubtitle,
+          'CLICK THE RED DOTS ON THE MAP TO VIEW AND BOOK NEARBY ACCOMMODATION',
           textAlign: TextAlign.center,
           style: AppTypography.capsLabel(
             scheme,
@@ -271,8 +270,9 @@ class _MapSetupRequiredPlaceholder extends StatelessWidget {
                   Text(
                     '1. Enable Maps JavaScript API in Google Cloud Console.\n'
                     '2. Copy secrets.json.example to secrets.json and paste your key.\n'
-                    '3. Run with:\n'
-                    'flutter run -d chrome --dart-define-from-file=secrets.json',
+                    '3. Run:\n'
+                    'python3 scripts/merge_dart_defines.py\n'
+                    'flutter run -d chrome --dart-define-from-file=dart_defines.json',
                     textAlign: TextAlign.center,
                     style: AppTypography.faqAnswer(scheme),
                   ),

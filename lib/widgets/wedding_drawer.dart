@@ -9,7 +9,6 @@ import '../features/food/food_page.dart';
 import '../features/gallery/gallery_page.dart';
 import '../features/home/home_page.dart';
 import '../features/map/map_page.dart';
-import '../features/map/map_page_config.dart';
 import '../features/our_story/our_story_page.dart';
 import '../features/rsvp/rsvp_page.dart';
 import '../features/travel/travel_page.dart';
@@ -109,14 +108,29 @@ class WeddingDrawer extends ConsumerWidget {
               push: HomePage.push,
             ),
             tile(
-              label: 'OUR STORY',
+              label: 'OUR STORY - ?',
               routeName: OurStoryRoute.name,
               push: OurStoryPage.push,
             ),
             tile(
-              label: 'DETAILS',
+              label: 'GALLERY - ?',
+              routeName: GalleryRoute.name,
+              push: GalleryPage.push,
+            ),
+            tile(
+              label: 'ITINERARY',
               routeName: WeddingDetailsRoute.name,
               push: WeddingDetailsPage.push,
+            ),
+            tile(
+              label: 'TRAVEL & ACCOMMODATION',
+              routeName: MapRoute.name,
+              push: MapPage.push,
+            ),
+            tile(
+              label: 'FOOD & DRINKS - ?',
+              routeName: FoodRoute.name,
+              push: FoodPage.push,
             ),
             tile(
               label: 'RSVP',
@@ -124,34 +138,19 @@ class WeddingDrawer extends ConsumerWidget {
               push: RsvpPage.push,
             ),
             tile(
-              label: 'TRAVEL',
-              routeName: TravelRoute.name,
-              push: TravelPage.push,
+              label: 'FAQ',
+              routeName: FaqRoute.name,
+              push: FaqPage.push,
             ),
             tile(
-              label: MapPageConfig.menuLabel,
-              routeName: MapRoute.name,
-              push: MapPage.push,
-            ),
-            tile(
-              label: 'GALLERY',
-              routeName: GalleryRoute.name,
-              push: GalleryPage.push,
-            ),
-            tile(
-              label: 'WEDDING PARTY',
+              label: 'OUR ENTOURAGE',
               routeName: WeddingPartyRoute.name,
               push: WeddingPartyPage.push,
             ),
             tile(
-              label: 'FOOD',
-              routeName: FoodRoute.name,
-              push: FoodPage.push,
-            ),
-            tile(
-              label: 'FAQ',
-              routeName: FaqRoute.name,
-              push: FaqPage.push,
+              label: 'VENDORS - ? ',
+              routeName: TravelRoute.name,
+              push: TravelPage.push,
             ),
             ListTile(
               title: Text(

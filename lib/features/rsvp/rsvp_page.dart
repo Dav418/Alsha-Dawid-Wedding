@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:alisha_dawid_wedding_website/assets/home/wedding_assets.dart';
 
 import '../../content/repositories/wedding_content_repository.dart';
 import '../../router/app_router.gr.dart';
@@ -8,7 +9,6 @@ import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
 import '../../utils/open_external_url.dart';
 import '../../widgets/heart_divider.dart';
-import '../../widgets/wedding_action_button.dart';
 
 @RoutePage()
 class RsvpPage extends ConsumerWidget {
@@ -33,11 +33,25 @@ class RsvpPage extends ConsumerWidget {
           const HeartDivider(),
           const SizedBox(height: 28),
           const _RsvpIntro(),
-          const SizedBox(height: 32),
-          Center(
-            child: WeddingActionButton(
-              label: 'RESPOND ONLINE',
-              onPressed: () => openExternalRsvp(context, rsvpUrl),
+          Semantics(
+            button: true,
+            label: 'RSVP',
+            child: InkWell(
+              onTap: () => openExternalRsvp(context, rsvpUrl),
+              borderRadius: BorderRadius.circular(24),
+              child: Image.asset(
+                WeddingAssets.rsvpButton,
+                height: 100,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+          Text(
+            'Please RSVP by 17th July 2026. ',
+            textAlign: TextAlign.center,
+            style: AppTypography.bodySerif(
+              Theme.of(context).colorScheme,
+              fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 40),
@@ -121,40 +135,16 @@ class _RsvpIntro extends StatelessWidget {
         ),
         const SizedBox(height: 18),
         Text(
-          'Before you RSVP, please note that you will be asked two '
-          'separate questions. One will ask whether you will be attending '
-          'the church ceremony, and the other will ask whether you will be '
-          'joining us for the evening celebration.'
-          'This helps us understand which parts of the day each guest will '
-          'be joining us for, so we can plan everything properly.',
+          'When filling out the response form, please read each question carefully '
+          'as you will be asked to confirm '
+          'your attendance for each part of the event separately. ',
           textAlign: TextAlign.center,
           style: AppTypography.bodySerif(scheme),
         ),
         const SizedBox(height: 18),
         Text(
-          'To make the RSVP form easier to complete, guests under 18 have '
-          'been grouped with their family. Parents or guardians can RSVP '
-          'on behalf of children in their family group.',
-          textAlign: TextAlign.center,
-          style: AppTypography.bodySerif(scheme),
-        ),
-        const SizedBox(height: 18),
-        Text(
-          'Guests aged 18 or over have their own RSVP entry and will need '
-          'to complete their own response separately.',
-          textAlign: TextAlign.center,
-          style: AppTypography.bodySerif(
-            scheme,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        const SizedBox(height: 18),
-        Text(
-          'Please note that names and surnames on the RSVP form have been '
-          'entered without accents or special characters. For example, '
-          'letters such as ó, ł, ś, ć, ż, ź, ń and ę may appear as o, l, '
-          's, c, z, z, n and e. If your name normally includes accents, '
-          'please search for it using the plain-letter version.',
+          'You can respond for yourself, as well as '
+          'for any other guests listed in your group. ',
           textAlign: TextAlign.center,
           style: AppTypography.bodySerif(scheme),
         ),
@@ -162,20 +152,10 @@ class _RsvpIntro extends StatelessWidget {
         Text(
           'When you click the RSVP button, the form will open in a new tab. '
           'Please complete the form all the way through until you reach the '
-          'final confirmation screen. Your RSVP is only submitted once you '
-          'see that confirmation screen.',
+          'final confirmation screen. After that, it is safe to close the '
+          'RSVP tab and return to our wedding website.',
           textAlign: TextAlign.center,
-          style: AppTypography.bodySerif(
-            scheme,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        const SizedBox(height: 24),
-        Text(
-          'After that, it is safe to close the RSVP tab and return to our '
-          'wedding website.',
-          textAlign: TextAlign.center,
-          style: AppTypography.scriptQuote(scheme, fontSize: 24, height: 1.3),
+          style: AppTypography.bodySerif(scheme),
         ),
       ],
     );

@@ -20,39 +20,36 @@ const _faqs = [
   ),
   FaqItem(
     question: 'ARE CHILDREN INVITED?',
-    answer:
-        'Our wedding will be an adults-only celebration. We adore your little ones, '
-        'but we hope you will understand and enjoy a well-deserved night off together.',
+    answer: 'Absolutely! We are delighted to celebrate with your little ones. '
+        'We respectfully ask that parents keep children supervised '
+        'during the Nuptials and First Dance, so that everyone can enjoy '
+        'these special moments.',
   ),
   FaqItem(
     question: 'WHAT TIME SHOULD I ARRIVE?',
     answer:
-        'Please arrive by 1:45 PM so everyone is seated before the ceremony at 2:00 PM.',
+        'We kindly ask guests to arrive 30 minutes before the ceremony begins to allow time for parking, seating, and settling in. The ceremony will start promptly, so please ensure you are seated before the scheduled start time. ',
   ),
   FaqItem(
     question: 'IS PARKING AVAILABLE?',
     answer:
-        'Yes — free parking is available on site at both the church and The Grove. '
-        'If you would rather not drive, Rickmansworth Station is about five minutes away by taxi. '
-        'We would recommend allowing a little extra time on the day, as spaces can fill up quickly '
-        'for a Saturday wedding in October. Ushers will be on hand to point you in the right direction '
-        'when you arrive.',
+        'Yes — free parking is available on site at both the church and reception venue. '
+        'If you would rather not drive, Rickmansworth Station is a few minutes away by taxi.',
   ),
   FaqItem(
     question: 'WHAT IS THE DRESS CODE?',
     answer:
-        'Formal attire with black tie optional. Think romantic autumn elegance — rich tones, '
-        'soft fabrics, and your finest celebration outfit. We would love it if you avoided wearing white or ivory.',
+        'Our wedding dress code is Formal Attire. Think elegant, timeless, and occasion-worthy. We encourage guests to dress comfortably while embracing the joy and significance of this auspicious occasion.',
   ),
   FaqItem(
     question: 'WILL THE WEDDING BE INDOORS?',
-    answer: 'Both the ceremony and reception are indoors.',
+    answer: 'Yes, both the nuptials and reception will be indoors.',
   ),
   FaqItem(
     question: 'WHEN SHOULD I RSVP BY?',
     answer:
-        'Please respond by 1 August 2026 through the RSVP page on this site. '
-        'If you think you should have heard from us and have not, do get in touch — we would hate for you to miss it.',
+        'Please respond by 17th July 2026 through the RSVP page on this site. '
+        'If your plans change, please let us know as soon as possible.',
   ),
 ];
 

@@ -8,8 +8,8 @@ from pathlib import Path
 from PIL import Image
 
 
-def is_background(r: int, g: int, b: int) -> bool:
-    # Pure / near magenta
+def is_bright_magenta(r: int, g: int, b: int) -> bool:
+    # Pure / near fuchsia (#FF00FF and neighbours)
     d1 = ((r - 255) ** 2 + (g - 0) ** 2 + (b - 255) ** 2) ** 0.5
     d2 = ((r - 255) ** 2 + (g - 0) ** 2 + (b - 200) ** 2) ** 0.5
     if d1 < 95 or d2 < 85:
@@ -18,6 +18,26 @@ def is_background(r: int, g: int, b: int) -> bool:
     if r > 160 and b > 160 and g < 140 and (r - g) > 60 and (b - g) > 60:
         return True
     return False
+
+
+def is_dark_magenta(r: int, g: int, b: int) -> bool:
+    # Deep plum / wine backgrounds (~#A00048): low G, moderate R and B
+    if g > 50:
+        return False
+    if r < 45 or b < 10:
+        return False
+    if (r - g) < 35 or (b - g) < 10:
+        return False
+    # Skip dark browns from the foreground art
+    if b < 15 and g > 10:
+        return False
+    if g > 20 and b < g:
+        return False
+    return True
+
+
+def is_background(r: int, g: int, b: int) -> bool:
+    return is_bright_magenta(r, g, b) or is_dark_magenta(r, g, b)
 
 
 def main() -> None:

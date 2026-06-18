@@ -2,8 +2,8 @@
 ///
 /// Local run / build:
 /// ```bash
-/// flutter run -d chrome --dart-define-from-file=secrets.json
-/// flutter build web --dart-define-from-file=secrets.json
+/// flutter run -d chrome --dart-define-from-file=dart_defines.json
+/// flutter build web --dart-define-from-file=dart_defines.json
 /// ```
 ///
 /// See [secrets.json.example] at the repo root for the expected JSON shape.

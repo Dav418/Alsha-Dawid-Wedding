@@ -117,7 +117,7 @@ class _WeddingCountdownTimer extends HookWidget {
         child: Padding(
           padding: EdgeInsets.fromLTRB(
             compact ? 16 : 28,
-            showTitle ? (compact ? 28 : 36) : (compact ? 16 : 20),
+            showTitle ? (compact ? 8 : 16) : (compact ? 6 : 10),
             compact ? 16 : 28,
             compact ? 28 : 36,
           ),

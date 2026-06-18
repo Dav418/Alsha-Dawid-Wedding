@@ -44,7 +44,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/content/
     - lib/assets/home/
     - lib/assets/wedding_party/
     - lib/assets/food/

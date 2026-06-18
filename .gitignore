@@ -12,6 +12,8 @@ doc/api/
 # dotenv environment variables file
 .env*
 secrets.json
+wedding_content.json
+dart_defines.json
 
 # Avoid committing generated Javascript files:
 *.dart.js

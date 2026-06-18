@@ -9,7 +9,6 @@ import '../../router/app_router.gr.dart';
 import '../../theme/app_typography.dart';
 import '../../features/rsvp/rsvp_page.dart';
 import '../../widgets/heart_divider.dart';
-import '../../widgets/wedding_action_button.dart';
 import '../../widgets/wedding_countdown.dart';
 import '../../widgets/wedding_hero_invite_card.dart';
 
@@ -32,11 +31,19 @@ class HomePage extends ConsumerWidget {
           imageAssetPath: WeddingAssets.seal,
           child: _HomeInviteContent(content: content),
         ),
-        WeddingActionButton(
+        Semantics(
+          button: true,
           label: 'RSVP',
-          onPressed: () => RsvpPage.push(context),
+          child: InkWell(
+            onTap: () => RsvpPage.push(context),
+            borderRadius: BorderRadius.circular(24),
+            child: Image.asset(
+              WeddingAssets.rsvpButton,
+              height: 100,
+              fit: BoxFit.contain,
+            ),
+          ),
         ),
-        const SizedBox(height: 14),
         const WeddingCountdown(),
         const _HomeWelcomeSection(),
       ],
@@ -58,11 +65,6 @@ class _HomeInviteContent extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          'TOGETHER WITH THEIR FAMILIES',
-          textAlign: TextAlign.center,
-          style: AppTypography.capsLabel(scheme),
-        ),
         const SizedBox(height: 14),
         Text(
           couple.partner1Name,
@@ -131,15 +133,15 @@ class _HomeWelcomeSection extends StatelessWidget {
           Text(
             "We're so excited to celebrate this special chapter with the "
             'people we love most. Here you\u2019ll find everything you need '
-            'for our wedding weekend in October 2026.',
+            'for our wedding day in October 2026.',
             textAlign: TextAlign.center,
             style: AppTypography.bodySerif(scheme),
           ),
           const SizedBox(height: 20),
           Text(
-            "We can't wait to celebrate with you.",
+            "We can't wait to celebrate with you!",
             textAlign: TextAlign.center,
-            style: AppTypography.scriptQuote(scheme, height: 1.2),
+            style: AppTypography.scriptQuote(scheme, height: 1.2, fontSize: 28),
           ),
           const SizedBox(height: 28),
           const HeartAccent(),

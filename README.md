@@ -45,8 +45,10 @@ Some sections, such as RSVP, gallery, and travel, may still be scaffolded for fu
 Most editable wedding content lives in:
 
 ```text
-assets/content/wedding_content.json
+wedding_content.json
 ```
+
+Copy `wedding_content.json.example` to `wedding_content.json`, then edit it like normal JSON.
 
 This includes things like:
 
@@ -61,9 +63,33 @@ This includes things like:
 * Live updates URL
 * Countdown timestamp
 
-The app loads this JSON through a Riverpod provider and maps it into typed Dart models.
+Before running or building, merge it with your API key:
+
+```bash
+./run.sh
+```
+
+VS Code launch configs also run the merge step automatically.
 
 Layout, routing, styling, icons, and animations stay in Dart. The JSON is only for content that may need to change.
+
+---
+
+## Secrets and local setup
+
+These files are gitignored:
+
+* `secrets.json` — `GOOGLE_MAPS_API_KEY` for the venue map
+* `wedding_content.json` — editable wedding content
+* `dart_defines.json` — generated merge of the two, used by Flutter
+
+Copy the example files and fill in your values:
+
+```powershell
+Copy-Item secrets.json.example secrets.json
+Copy-Item wedding_content.json.example wedding_content.json
+python3 scripts/merge_dart_defines.py
+```
 
 ---
 
@@ -71,9 +97,9 @@ Layout, routing, styling, icons, and animations stay in Dart. The JSON is only f
 
 This is a public static website.
 
-Anything inside `assets/content/wedding_content.json` is bundled into the web build and published with the site. It is not private, encrypted, or hidden.
+Wedding content is compiled into the web build and published with the site. It is not private, encrypted, or hidden.
 
-Do not put secrets, private notes, API keys, passwords, or anything sensitive in the JSON file.
+Keep API keys in `secrets.json` only. Do not put them in `wedding_content.json`.
 
 ---
 
@@ -81,10 +107,25 @@ Do not put secrets, private notes, API keys, passwords, or anything sensitive in
 
 Install Flutter, then run:
 
+```bash
+./run.sh
+```
+
+On Windows:
+
+```powershell
+.\run.ps1
+```
+
+That merges `secrets.json` + `wedding_content.json` and starts the app in Chrome.
+
+First-time setup:
+
 ```powershell
 flutter pub get
 dart run build_runner build --delete-conflicting-outputs
-flutter run -d chrome
+Copy-Item secrets.json.example secrets.json
+Copy-Item wedding_content.json.example wedding_content.json
 ```
 
 ---
@@ -171,7 +212,7 @@ dart run build_runner build --delete-conflicting-outputs
 ## Project layout
 
 ```text
-assets/content/          Wedding content JSON
+wedding_content.json     Editable wedding content (gitignored)
 lib/content/             Content models, repository, and provider
 lib/features/            Main route pages and feature sections
 lib/router/              auto_route configuration
@@ -181,6 +222,7 @@ lib/widgets/             Shared UI widgets
 web/                     Flutter web template files
 docs/                    Built GitHub Pages output
 deploy.ps1               Build and deployment script
+run.sh / run.ps1         Run locally in Chrome (one command)
 ```
 
 ---

@@ -49,6 +49,13 @@ class WeddingPartyPage extends ConsumerWidget {
             title: 'PARENTS',
             members: party.parents,
           ),
+          const SizedBox(height: 28),
+          const HeartDivider(),
+          const SizedBox(height: 28),
+          _PartySection(
+            title: 'PAWS OF HONOR',
+            members: party.parents,
+          ),
         ],
       ),
     );
@@ -65,7 +72,7 @@ class _PartyHeader extends StatelessWidget {
     return Column(
       children: [
         Text(
-          'Our Wedding Party',
+          'Our Wedding Entourage',
           textAlign: TextAlign.center,
           style: AppTypography.scriptHero(scheme),
         ),

@@ -14,4 +14,6 @@ abstract final class WeddingAssets {
       'lib/assets/home/monogram_ad_wreath.png';
 
   static const String seal = 'lib/assets/home/seal.png';
+
+  static const String rsvpButton = 'lib/assets/home/rsvp_button.png';
 }

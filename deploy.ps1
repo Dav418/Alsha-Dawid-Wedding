@@ -34,7 +34,7 @@ function Convert-ToHtmlText {
 }
 
 function Get-AppTitle {
-    $contentPath = "assets\content\wedding_content.json"
+    $contentPath = "wedding_content.json"
 
     if (-not (Test-Path $contentPath)) {
         Write-Host ""
@@ -250,6 +250,31 @@ function Ensure-Web404Page {
     Copy-Item -Path $indexPath -Destination $notFoundPath -Force
 }
 
+function Assert-BuildConfigReady {
+    if (-not (Test-Path "wedding_content.json")) {
+        Write-Host ""
+        Write-Host "ERROR: wedding_content.json not found." -ForegroundColor Red
+        Write-Host "Copy wedding_content.json.example to wedding_content.json and edit your content." -ForegroundColor Yellow
+        exit 1
+    }
+
+    try {
+        Get-Content "wedding_content.json" -Raw | ConvertFrom-Json | Out-Null
+    }
+    catch {
+        Write-Host ""
+        Write-Host "ERROR: wedding_content.json is not valid JSON." -ForegroundColor Red
+        Write-Host $_.Exception.Message -ForegroundColor Yellow
+        exit 1
+    }
+
+    Assert-GoogleMapsSecretsReady
+}
+
+function Merge-DartDefines {
+    Run-Command "Merging secrets and wedding content for Flutter build" "python3 scripts/merge_dart_defines.py"
+}
+
 function Assert-GoogleMapsSecretsReady {
     param (
         [string]$SecretsPath = "secrets.json",
@@ -364,9 +389,11 @@ Run-Command "Getting Flutter packages" "flutter pub get"
 
 Run-Command "Running code generation" "dart run build_runner build --delete-conflicting-outputs"
 
-Assert-GoogleMapsSecretsReady
+Assert-BuildConfigReady
 
-Run-Command "Building Flutter web for custom domain (with Google Maps key)" "flutter build web --release --base-href '/' --dart-define-from-file=secrets.json"
+Merge-DartDefines
+
+Run-Command "Building Flutter web for custom domain (with Google Maps key)" "flutter build web --release --base-href '/' --dart-define-from-file=dart_defines.json"
 
 if (-not (Test-Path "build\web\index.html")) {
     Write-Host ""

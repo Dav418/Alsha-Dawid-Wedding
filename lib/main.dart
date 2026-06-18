@@ -26,7 +26,7 @@ Future<void> main() async {
     GoogleFonts.playfairDisplay(fontWeight: FontWeight.w600),
   ]);
 
-  final weddingContent = await loadWeddingContentFromAssets();
+  final weddingContent = await loadWeddingContent();
 
   await ensureGoogleMapsLoaded();
 
