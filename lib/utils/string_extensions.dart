@@ -1,8 +1,6 @@
 final _ordinalPattern = RegExp(r'(\d+)(st|nd|rd|th)\b', caseSensitive: false);
 
-/// Ordinal suffixes with raised Unicode letters (e.g. `17ᵗʰ`).
 extension SuperscriptOrdinalString on String {
-  /// Replaces `17th`-style ordinals with superscript suffixes.
   String withSuperscriptOrdinals() {
     return replaceAllMapped(_ordinalPattern, (match) {
       final digits = match.group(1)!;
@@ -11,7 +9,6 @@ extension SuperscriptOrdinalString on String {
     });
   }
 
-  /// Raises ordinal suffix letters, e.g. `th` → `ᵗʰ`.
   String get superscriptOrdinal {
     return split('').map(_toSuperscriptLetter).join();
   }

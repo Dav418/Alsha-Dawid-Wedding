@@ -55,7 +55,6 @@ class WeddingEvent with _$WeddingEvent {
 
   const WeddingEvent._();
 
-  /// e.g. `17ᵗʰ OCTOBER 2026` — from [dateDisplay] with raised ordinal suffix.
   String get weddingDate => dateDisplay.withSuperscriptOrdinals();
 }
 

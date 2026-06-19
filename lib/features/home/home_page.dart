@@ -69,17 +69,17 @@ class _HomeInviteContent extends StatelessWidget {
         Text(
           couple.partner1Name,
           textAlign: TextAlign.center,
-          style: AppTypography.scriptName(scheme),
+          style: AppTypography.scriptHero(scheme, fontSize: 44, height: 1),
         ),
         Text(
           '&',
           textAlign: TextAlign.center,
-          style: AppTypography.scriptName(scheme, fontSize: 36),
+          style: AppTypography.scriptHero(scheme, fontSize: 36, height: 1),
         ),
         Text(
           couple.partner2Name,
           textAlign: TextAlign.center,
-          style: AppTypography.scriptName(scheme),
+          style: AppTypography.scriptHero(scheme, fontSize: 44, height: 1),
         ),
         const SizedBox(height: 16),
         const HeartDivider(),

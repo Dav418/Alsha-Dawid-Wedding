@@ -12,10 +12,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   usePathUrlStrategy();
 
-  // Avoid font swaps during layout/animation on Flutter web.
-  // Preload the exact families + weights used by AppTypography.
   await GoogleFonts.pendingFonts([
-    GoogleFonts.alexBrush(),
+    GoogleFonts.allura(),
     GoogleFonts.greatVibes(),
     GoogleFonts.montserrat(fontWeight: FontWeight.w400),
     GoogleFonts.montserrat(fontWeight: FontWeight.w500),

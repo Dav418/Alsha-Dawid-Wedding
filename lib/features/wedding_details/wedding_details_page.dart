@@ -120,15 +120,6 @@ class _DetailsHeader extends StatelessWidget {
           style: AppTypography.scriptHero(scheme),
         ),
         const SizedBox(height: 10),
-        // Text(
-        //   "HERE'S WHAT TO EXPECT",
-        //   textAlign: TextAlign.center,
-        //   style: AppTypography.capsLabel(
-        //     scheme,
-        //     color: scheme.primary,
-        //   ),
-        // ),
-        // const SizedBox(height: 14),
         const HeartDivider(),
       ],
     );
