@@ -1,14 +1,18 @@
 import 'package:alisha_dawid_wedding_website/assets/home/wedding_assets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../content/data/wedding_content.dart';
 import '../../content/repositories/wedding_content_repository.dart';
+import '../../models/app_page.dart';
 import '../../router/app_router.gr.dart';
 import '../../theme/app_typography.dart';
 import '../../features/rsvp/rsvp_page.dart';
+import '../../features/secret/secret_page.dart';
 import '../../widgets/heart_divider.dart';
+import '../../widgets/page_availability_gate.dart';
 import '../../widgets/wedding_countdown.dart';
 import '../../widgets/wedding_hero_invite_card.dart';
 
@@ -24,29 +28,56 @@ class HomePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final content = ref.watch(weddingContentRepositoryProvider).requireValue;
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        WeddingHeroInviteCard(
-          imageAssetPath: WeddingAssets.seal,
-          child: _HomeInviteContent(content: content),
-        ),
-        Semantics(
-          button: true,
-          label: 'RSVP',
-          child: InkWell(
-            onTap: () => RsvpPage.push(context),
-            borderRadius: BorderRadius.circular(24),
-            child: Image.asset(
-              WeddingAssets.rsvpButton,
-              height: 100,
-              fit: BoxFit.contain,
+    return PageAvailabilityGate(
+      page: AppPage.home,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _HomeHeroInviteCard(content: content),
+          Semantics(
+            button: true,
+            label: 'RSVP',
+            child: InkWell(
+              onTap: () => RsvpPage.push(context),
+              borderRadius: BorderRadius.circular(24),
+              child: Image.asset(
+                WeddingAssets.rsvpButton,
+                height: 100,
+                fit: BoxFit.contain,
+              ),
             ),
           ),
-        ),
-        const WeddingCountdown(),
-        const _HomeWelcomeSection(),
-      ],
+          const WeddingCountdown(),
+          const _HomeWelcomeSection(),
+        ],
+      ),
+    );
+  }
+}
+
+class _HomeHeroInviteCard extends HookWidget {
+  const _HomeHeroInviteCard({required this.content});
+
+  final WeddingContent content;
+
+  static const _secretTapCount = 10;
+
+  @override
+  Widget build(BuildContext context) {
+    final sealTapCount = useState(0);
+
+    void onSealTap() {
+      sealTapCount.value++;
+      if (sealTapCount.value >= _secretTapCount) {
+        sealTapCount.value = 0;
+        SecretPage.push(context);
+      }
+    }
+
+    return WeddingHeroInviteCard(
+      imageAssetPath: WeddingAssets.seal,
+      onImageTap: onSealTap,
+      child: _HomeInviteContent(content: content),
     );
   }
 }

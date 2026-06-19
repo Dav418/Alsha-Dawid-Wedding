@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../content/repositories/wedding_content_repository.dart';
+import '../../models/app_page.dart';
 import '../../models/polaroid_layout.dart';
 import '../../models/story_timeline_entry.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
 import '../../router/app_router.gr.dart';
 import '../../widgets/heart_divider.dart';
+import '../../widgets/page_availability_gate.dart';
 import 'our_story_decorations.dart';
 
 const _storyTimeline = [
@@ -67,39 +69,42 @@ class OurStoryPage extends ConsumerWidget {
         .requireValue
         .ourStoryPhotoUrls;
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
-      child: Align(
-        alignment: Alignment.topCenter,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: _maxPageWidth),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final sideBySide = constraints.maxWidth >= _sideBySideBreakpoint;
+    return PageAvailabilityGate(
+      page: AppPage.ourStory,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: _maxPageWidth),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final sideBySide = constraints.maxWidth >= _sideBySideBreakpoint;
 
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const _StoryHeader(),
-                  const SizedBox(height: 28),
-                  if (sideBySide)
-                    _StorySideBySide(
-                      photoUrls: photoUrls,
-                      timeline: _storyTimeline,
-                    )
-                  else ...[
-                    _StoryPhotoStack(
-                      photoUrls: photoUrls,
-                      compact: true,
-                    ),
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const _StoryHeader(),
                     const SizedBox(height: 28),
-                    _StoryTimeline(entries: _storyTimeline),
+                    if (sideBySide)
+                      _StorySideBySide(
+                        photoUrls: photoUrls,
+                        timeline: _storyTimeline,
+                      )
+                    else ...[
+                      _StoryPhotoStack(
+                        photoUrls: photoUrls,
+                        compact: true,
+                      ),
+                      const SizedBox(height: 28),
+                      _StoryTimeline(entries: _storyTimeline),
+                    ],
+                    const SizedBox(height: 36),
+                    const _StoryFooter(),
                   ],
-                  const SizedBox(height: 36),
-                  const _StoryFooter(),
-                ],
-              );
-            },
+                );
+              },
+            ),
           ),
         ),
       ),

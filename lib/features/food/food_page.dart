@@ -2,12 +2,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
+import '../../models/app_page.dart';
 import '../../models/food_item.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
 import '../../router/app_router.gr.dart';
 import '../../utils/open_external_url.dart';
 import '../../widgets/heart_divider.dart';
+import '../../widgets/page_availability_gate.dart';
 import 'food_menu_data.dart';
 
 @RoutePage()
@@ -20,18 +22,21 @@ class FoodPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const _FoodHeader(),
-          const SizedBox(height: 22),
-          const HeartDivider(),
-          const SizedBox(height: 22),
-          const _FoodMenuBody(),
-          const SizedBox(height: 32),
-        ],
+    return PageAvailabilityGate(
+      page: AppPage.food,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const _FoodHeader(),
+            const SizedBox(height: 22),
+            const HeartDivider(),
+            const SizedBox(height: 22),
+            const _FoodMenuBody(),
+            const SizedBox(height: 32),
+          ],
+        ),
       ),
     );
   }

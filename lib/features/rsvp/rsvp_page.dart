@@ -4,12 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:alisha_dawid_wedding_website/assets/home/wedding_assets.dart';
 
 import '../../content/repositories/wedding_content_repository.dart';
+import '../../models/app_page.dart';
 import '../../router/app_router.gr.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
 import '../../utils/open_external_url.dart';
 import '../../utils/string_extensions.dart';
 import '../../widgets/heart_divider.dart';
+import '../../widgets/page_availability_gate.dart';
 
 @RoutePage()
 class RsvpPage extends ConsumerWidget {
@@ -24,39 +26,42 @@ class RsvpPage extends ConsumerWidget {
     final rsvpUrl =
         ref.watch(weddingContentRepositoryProvider).requireValue.links.rsvpUrl;
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const _RsvpHeader(),
-          const SizedBox(height: 28),
-          const HeartDivider(),
-          const SizedBox(height: 28),
-          const _RsvpIntro(),
-          Semantics(
-            button: true,
-            label: 'RSVP',
-            child: InkWell(
-              onTap: () => openExternalRsvp(context, rsvpUrl),
-              borderRadius: BorderRadius.circular(24),
-              child: Image.asset(
-                WeddingAssets.rsvpButton,
-                height: 100,
-                fit: BoxFit.contain,
+    return PageAvailabilityGate(
+      page: AppPage.rsvp,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const _RsvpHeader(),
+            const SizedBox(height: 28),
+            const HeartDivider(),
+            const SizedBox(height: 28),
+            const _RsvpIntro(),
+            Semantics(
+              button: true,
+              label: 'RSVP',
+              child: InkWell(
+                onTap: () => openExternalRsvp(context, rsvpUrl),
+                borderRadius: BorderRadius.circular(24),
+                child: Image.asset(
+                  WeddingAssets.rsvpButton,
+                  height: 100,
+                  fit: BoxFit.contain,
+                ),
               ),
             ),
-          ),
-          Text(
-            'Please RSVP by 17th July 2026. '.withSuperscriptOrdinals(),
-            textAlign: TextAlign.center,
-            style: AppTypography.bodySerif(
-              Theme.of(context).colorScheme,
-              fontWeight: FontWeight.w600,
+            Text(
+              'Please RSVP by 17th July 2026. '.withSuperscriptOrdinals(),
+              textAlign: TextAlign.center,
+              style: AppTypography.bodySerif(
+                Theme.of(context).colorScheme,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
-          const SizedBox(height: 40),
-        ],
+            const SizedBox(height: 40),
+          ],
+        ),
       ),
     );
   }

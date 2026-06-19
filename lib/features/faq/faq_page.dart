@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../content/repositories/wedding_content_repository.dart';
+import '../../models/app_page.dart';
 import '../../models/faq_item.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
@@ -11,6 +12,7 @@ import '../../router/app_router.gr.dart';
 import '../../utils/open_contact_email.dart';
 import '../../utils/string_extensions.dart';
 import '../../widgets/heart_divider.dart';
+import '../../widgets/page_availability_gate.dart';
 import '../../widgets/wedding_action_button.dart';
 
 const _faqs = [
@@ -64,22 +66,25 @@ class FaqPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const _FaqHeader(),
-          const SizedBox(height: 22),
-          const HeartDivider(),
-          const SizedBox(height: 22),
-          for (var i = 0; i < _faqs.length; i++) ...[
-            _FaqAccordionTile(item: _faqs[i]),
-            if (i < _faqs.length - 1) const SizedBox(height: 12),
+    return PageAvailabilityGate(
+      page: AppPage.faq,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const _FaqHeader(),
+            const SizedBox(height: 22),
+            const HeartDivider(),
+            const SizedBox(height: 22),
+            for (var i = 0; i < _faqs.length; i++) ...[
+              _FaqAccordionTile(item: _faqs[i]),
+              if (i < _faqs.length - 1) const SizedBox(height: 12),
+            ],
+            const SizedBox(height: 32),
+            const _FaqContactSection(),
           ],
-          const SizedBox(height: 32),
-          const _FaqContactSection(),
-        ],
+        ),
       ),
     );
   }

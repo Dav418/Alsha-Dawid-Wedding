@@ -1,0 +1,72 @@
+import '../router/app_router.gr.dart';
+
+enum AppPage {
+  home,
+  ourStory,
+  gallery,
+  itinerary,
+  map,
+  food,
+  rsvp,
+  faq,
+  weddingParty,
+  vendors,
+  countdown,
+  countdownTest,
+}
+
+extension AppPageX on AppPage {
+  String get displayName => switch (this) {
+        AppPage.home => 'HOME',
+        AppPage.ourStory => 'OUR STORY',
+        AppPage.gallery => 'GALLERY',
+        AppPage.itinerary => 'ITINERARY',
+        AppPage.map => 'TRAVEL & ACCOMMODATION',
+        AppPage.food => 'FOOD & DRINKS',
+        AppPage.rsvp => 'RSVP',
+        AppPage.faq => 'FAQ',
+        AppPage.weddingParty => 'OUR ENTOURAGE',
+        AppPage.vendors => 'VENDORS',
+        AppPage.countdown => 'COUNTDOWN',
+        AppPage.countdownTest => 'COUNTDOWN TEST',
+      };
+
+  String get routeName => switch (this) {
+        AppPage.home => HomeRoute.name,
+        AppPage.ourStory => OurStoryRoute.name,
+        AppPage.gallery => GalleryRoute.name,
+        AppPage.itinerary => WeddingDetailsRoute.name,
+        AppPage.map => MapRoute.name,
+        AppPage.food => FoodRoute.name,
+        AppPage.rsvp => RsvpRoute.name,
+        AppPage.faq => FaqRoute.name,
+        AppPage.weddingParty => WeddingPartyRoute.name,
+        AppPage.vendors => TravelRoute.name,
+        AppPage.countdown => CountdownRoute.name,
+        AppPage.countdownTest => CountdownTestRoute.name,
+      };
+}
+
+AppPage? appPageForRouteName(String routeName) {
+  for (final page in AppPage.values) {
+    if (page.routeName == routeName) {
+      return page;
+    }
+  }
+  return null;
+}
+
+const defaultPageAvailability = <AppPage, bool>{
+  AppPage.home: true,
+  AppPage.ourStory: false,
+  AppPage.gallery: false,
+  AppPage.itinerary: true,
+  AppPage.map: true,
+  AppPage.food: false,
+  AppPage.rsvp: true,
+  AppPage.faq: true,
+  AppPage.weddingParty: true,
+  AppPage.vendors: false,
+  AppPage.countdown: true,
+  AppPage.countdownTest: true,
+};

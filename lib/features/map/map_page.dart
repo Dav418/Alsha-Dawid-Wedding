@@ -7,12 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../models/app_page.dart';
 import '../../router/app_router.gr.dart';
 import '../../config/google_maps_api_key.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
 import '../../utils/open_external_url.dart';
 import '../../widgets/heart_divider.dart';
+import '../../widgets/page_availability_gate.dart';
 import '../../widgets/wedding_action_button.dart';
 import 'map_poi.dart';
 import 'map_poi_data.dart';
@@ -29,21 +31,24 @@ class MapPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: _maxPageWidth),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const _MapHeader(),
-              const SizedBox(height: 22),
-              const HeartDivider(),
-              const SizedBox(height: 22),
-              const _InteractiveMapSection(),
-              const SizedBox(height: 32),
-            ],
+    return PageAvailabilityGate(
+      page: AppPage.map,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: _maxPageWidth),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const _MapHeader(),
+                const SizedBox(height: 22),
+                const HeartDivider(),
+                const SizedBox(height: 22),
+                const _InteractiveMapSection(),
+                const SizedBox(height: 32),
+              ],
+            ),
           ),
         ),
       ),

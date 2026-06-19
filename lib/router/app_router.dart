@@ -75,6 +75,10 @@ class AppRouter extends RootStackRouter {
               page: CountdownTestRoute.page,
               path: 'countdown-test',
             ),
+            _customRoute(
+              page: SecretRoute.page,
+              path: 'secret',
+            ),
           ],
         ),
       ];

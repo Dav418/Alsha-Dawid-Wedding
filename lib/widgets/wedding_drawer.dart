@@ -14,7 +14,7 @@ import '../features/rsvp/rsvp_page.dart';
 import '../features/travel/travel_page.dart';
 import '../features/wedding_details/wedding_details_page.dart';
 import '../features/wedding_party/wedding_party_page.dart';
-import '../router/app_router.gr.dart';
+import '../models/app_page.dart';
 import '../utils/open_external_url.dart';
 
 /// Side drawer with all sections — tuned for phones (large tap targets).
@@ -53,17 +53,17 @@ class WeddingDrawer extends ConsumerWidget {
         .liveUpdatesUrl;
 
     Widget tile({
-      required String label,
-      required String routeName,
+      required AppPage page,
       required void Function(BuildContext) push,
     }) {
+      final routeName = page.routeName;
       final selected = active == routeName;
 
       return ListTile(
         selected: selected,
         selectedTileColor: scheme.primaryContainer.withValues(alpha: 0.35),
         title: Text(
-          label,
+          page.displayName,
           style: theme.textTheme.titleSmall?.copyWith(
             letterSpacing: 0.8,
             fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
@@ -103,53 +103,43 @@ class WeddingDrawer extends ConsumerWidget {
               ),
             ),
             tile(
-              label: 'HOME',
-              routeName: HomeRoute.name,
+              page: AppPage.home,
               push: HomePage.push,
             ),
             tile(
-              label: 'OUR STORY - ?',
-              routeName: OurStoryRoute.name,
+              page: AppPage.ourStory,
               push: OurStoryPage.push,
             ),
             tile(
-              label: 'GALLERY - ?',
-              routeName: GalleryRoute.name,
+              page: AppPage.gallery,
               push: GalleryPage.push,
             ),
             tile(
-              label: 'ITINERARY',
-              routeName: WeddingDetailsRoute.name,
+              page: AppPage.itinerary,
               push: WeddingDetailsPage.push,
             ),
             tile(
-              label: 'TRAVEL & ACCOMMODATION',
-              routeName: MapRoute.name,
+              page: AppPage.map,
               push: MapPage.push,
             ),
             tile(
-              label: 'FOOD & DRINKS - ?',
-              routeName: FoodRoute.name,
+              page: AppPage.food,
               push: FoodPage.push,
             ),
             tile(
-              label: 'RSVP',
-              routeName: RsvpRoute.name,
+              page: AppPage.rsvp,
               push: RsvpPage.push,
             ),
             tile(
-              label: 'FAQ',
-              routeName: FaqRoute.name,
+              page: AppPage.faq,
               push: FaqPage.push,
             ),
             tile(
-              label: 'OUR ENTOURAGE',
-              routeName: WeddingPartyRoute.name,
+              page: AppPage.weddingParty,
               push: WeddingPartyPage.push,
             ),
             tile(
-              label: 'VENDORS - ? ',
-              routeName: TravelRoute.name,
+              page: AppPage.vendors,
               push: TravelPage.push,
             ),
             ListTile(
@@ -166,8 +156,7 @@ class WeddingDrawer extends ConsumerWidget {
               },
             ),
             tile(
-              label: 'COUNTDOWN',
-              routeName: CountdownRoute.name,
+              page: AppPage.countdown,
               push: CountdownPage.push,
             ),
           ],

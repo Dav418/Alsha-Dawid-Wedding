@@ -1,8 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
+import '../../models/app_page.dart';
 import '../../router/app_router.gr.dart';
 import '../../theme/app_typography.dart';
+import '../../widgets/page_availability_gate.dart';
 import '../../widgets/wedding_countdown.dart';
 
 @RoutePage()
@@ -15,13 +17,16 @@ class CountdownPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _CountdownScriptTitle(),
-        WeddingCountdown(showTitle: false),
-      ],
+    return PageAvailabilityGate(
+      page: AppPage.countdown,
+      child: const Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _CountdownScriptTitle(),
+          WeddingCountdown(showTitle: false),
+        ],
+      ),
     );
   }
 }

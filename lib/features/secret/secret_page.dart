@@ -1,0 +1,76 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../models/app_page.dart';
+import '../../providers/page_availability_provider.dart';
+import '../../router/app_router.gr.dart';
+import '../../theme/app_typography.dart';
+
+@RoutePage()
+class SecretPage extends ConsumerWidget {
+  const SecretPage({super.key});
+
+  static void push(BuildContext context) {
+    context.router.navigate(const SecretRoute());
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final availability = ref.watch(pageAvailabilityProvider);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Page availability',
+            textAlign: TextAlign.center,
+            style: AppTypography.sectionCaps(scheme, fontSize: 16),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Toggle whether each page is live or under construction.',
+            textAlign: TextAlign.center,
+            style: AppTypography.bodySerif(
+              scheme,
+              color: scheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 24),
+          ...AppPage.values.map(
+            (page) {
+              final isWorking = isPageWorking(availability, page);
+
+              return SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(
+                  page.displayName,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    letterSpacing: 0.8,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                subtitle: Text(
+                  isWorking ? 'Working' : 'Under construction',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
+                ),
+                value: isWorking,
+                onChanged: (value) {
+                  ref
+                      .read(pageAvailabilityProvider.notifier)
+                      .setWorking(page, value);
+                },
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}

@@ -5,10 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../assets/wedding_party/wedding_party_assets.dart';
 import '../../content/data/wedding_content.dart';
 import '../../content/repositories/wedding_content_repository.dart';
+import '../../models/app_page.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
 import '../../router/app_router.gr.dart';
 import '../../widgets/heart_divider.dart';
+import '../../widgets/page_availability_gate.dart';
 import '../../widgets/party_member_polaroid_overlay.dart';
 
 @RoutePage()
@@ -24,39 +26,42 @@ class WeddingPartyPage extends ConsumerWidget {
     final party =
         ref.watch(weddingContentRepositoryProvider).requireValue.weddingParty;
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const _PartyHeader(),
-          const SizedBox(height: 28),
-          _PartySection(
-            title: 'BRIDESMAIDS',
-            members: party.bridesmaids,
-          ),
-          const SizedBox(height: 28),
-          const HeartDivider(),
-          const SizedBox(height: 28),
-          _PartySection(
-            title: 'GROOMSMEN',
-            members: party.groomsmen,
-          ),
-          const SizedBox(height: 28),
-          const HeartDivider(),
-          const SizedBox(height: 28),
-          _PartySection(
-            title: 'PARENTS',
-            members: party.parents,
-          ),
-          const SizedBox(height: 28),
-          const HeartDivider(),
-          const SizedBox(height: 28),
-          _PartySection(
-            title: 'PAWS OF HONOR',
-            members: party.parents,
-          ),
-        ],
+    return PageAvailabilityGate(
+      page: AppPage.weddingParty,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const _PartyHeader(),
+            const SizedBox(height: 28),
+            _PartySection(
+              title: 'BRIDESMAIDS',
+              members: party.bridesmaids,
+            ),
+            const SizedBox(height: 28),
+            const HeartDivider(),
+            const SizedBox(height: 28),
+            _PartySection(
+              title: 'GROOMSMEN',
+              members: party.groomsmen,
+            ),
+            const SizedBox(height: 28),
+            const HeartDivider(),
+            const SizedBox(height: 28),
+            _PartySection(
+              title: 'PARENTS',
+              members: party.parents,
+            ),
+            const SizedBox(height: 28),
+            const HeartDivider(),
+            const SizedBox(height: 28),
+            _PartySection(
+              title: 'PAWS OF HONOR',
+              members: party.parents,
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -15,12 +15,14 @@ class WeddingHeroInviteCard extends HookWidget {
     super.key,
     this.maxWidth = 382,
     this.animateOnMount = true,
+    this.onImageTap,
   });
 
   final String? imageAssetPath;
   final Widget child;
   final double maxWidth;
   final bool animateOnMount;
+  final VoidCallback? onImageTap;
 
   static const _shape = InviteCardShape(
     archWidth: 270,
@@ -153,10 +155,14 @@ class WeddingHeroInviteCard extends HookWidget {
                       left: 0,
                       right: 0,
                       height: 100,
-                      child: Image.asset(
-                        imageAssetPath!,
-                        fit: BoxFit.contain,
-                        filterQuality: FilterQuality.high,
+                      child: GestureDetector(
+                        onTap: onImageTap,
+                        behavior: HitTestBehavior.opaque,
+                        child: Image.asset(
+                          imageAssetPath!,
+                          fit: BoxFit.contain,
+                          filterQuality: FilterQuality.high,
+                        ),
                       ),
                     ),
                   Padding(
