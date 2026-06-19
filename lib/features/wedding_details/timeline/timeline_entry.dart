@@ -1,17 +1,15 @@
-import 'timeline_image_position.dart';
+import 'package:flutter/material.dart';
 
 class TimelineEntry {
   const TimelineEntry({
     required this.time,
     required this.title,
     this.details,
-    this.imageAssetPath,
-    this.imagePosition = TimelineImagePosition.topRight,
+    this.icon,
   });
 
   final String time;
   final String title;
   final String? details;
-  final String? imageAssetPath;
-  final TimelineImagePosition imagePosition;
+  final IconData? icon;
 }

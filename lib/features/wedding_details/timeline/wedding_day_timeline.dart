@@ -6,29 +6,29 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import '../../../theme/app_colors.dart';
 import '../../../theme/app_typography.dart';
 import 'timeline_entry.dart';
-import 'timeline_image_position.dart';
 
 class WeddingDayTimeline extends HookWidget {
   const WeddingDayTimeline({
     required this.entries,
+    this.topChild,
     this.trailingChild,
-    this.trailingChildOverlap = 64,
     this.viewportHeightFactor = 0.62,
-    this.focusAlignment = 0.26,
+    this.focusAlignment = 0.42,
     super.key,
   });
 
   final List<TimelineEntry> entries;
+  final Widget? topChild;
   final Widget? trailingChild;
-  final double trailingChildOverlap;
   final double viewportHeightFactor;
   final double focusAlignment;
 
-  static const _rowExtent = 230.0;
-  static const _railWidth = 46.0;
-  static const _dotCenterY = 46.0;
-  static const _focusRadius = _rowExtent * 0.85;
-  static const _focusHoldRadius = _rowExtent * 0.28;
+  static const _estimatedRowExtent = 180.0;
+  static const _rowSpacing = 42.0;
+  static const _railWidth = 42.0;
+  static const _dotCenterY = 32.0;
+  static const _focusRadius = _estimatedRowExtent * 0.95;
+  static const _focusHoldRadius = _estimatedRowExtent * 0.28;
 
   @override
   Widget build(BuildContext context) {
@@ -38,30 +38,28 @@ class WeddingDayTimeline extends HookWidget {
     final viewportHeight =
         MediaQuery.sizeOf(context).height * viewportHeightFactor;
 
-    final focusY = viewportHeight * focusAlignment;
-
-    final topPadding = math.max(
-      16.0,
-      focusY - _rowExtent / 2,
-    );
+    final topPadding = topChild == null
+        ? math.max(
+            16.0,
+            viewportHeight * focusAlignment - _dotCenterY,
+          )
+        : 16.0;
 
     final bottomPadding = trailingChild == null
         ? math.max(
             16.0,
-            viewportHeight - focusY - _rowExtent / 2,
+            viewportHeight * (1 - focusAlignment) - _dotCenterY,
           )
         : 16.0;
 
-    final itemCount = entries.length + (trailingChild == null ? 0 : 1);
+    final itemCount = entries.length +
+        (topChild == null ? 0 : 1) +
+        (trailingChild == null ? 0 : 1);
 
     return SizedBox(
       height: viewportHeight,
-      child: AnimatedBuilder(
-        animation: scrollController,
-        builder: (context, _) {
-          final scrollOffset =
-              scrollController.hasClients ? scrollController.offset : 0.0;
-
+      child: LayoutBuilder(
+        builder: (timelineContext, _) {
           return ListView.builder(
             controller: scrollController,
             physics: const ClampingScrollPhysics(),
@@ -71,47 +69,38 @@ class WeddingDayTimeline extends HookWidget {
             ),
             itemCount: itemCount,
             itemBuilder: (context, index) {
-              if (index == entries.length) {
-                return Transform.translate(
-                  offset: Offset(0, -trailingChildOverlap),
-                  child: trailingChild!,
-                );
+              if (topChild != null && index == 0) {
+                return topChild!;
               }
 
-              final progress = focusProgressForItem(
-                scrollOffset: scrollOffset,
-                itemIndex: index,
-                itemExtent: _rowExtent,
-                itemFocusOffset: _dotCenterY,
-                focusY: focusY,
-                topPadding: topPadding,
-                focusRadius: _focusRadius,
-                focusHoldRadius: _focusHoldRadius,
-              );
+              final timelineIndex = index - (topChild == null ? 0 : 1);
 
-              final isExpanded = expandedIndexes.value.contains(index);
+              if (timelineIndex == entries.length) {
+                return trailingChild!;
+              }
 
-              return SizedBox(
-                height: _rowExtent,
-                child: _TimelineRow(
-                  entry: entries[index],
-                  progress: progress,
-                  isExpanded: isExpanded,
-                  isLeft: index.isEven,
-                  isFirst: index == 0,
-                  isLast: index == entries.length - 1,
-                  onTap: () {
-                    final updatedIndexes = {...expandedIndexes.value};
+              final isExpanded = expandedIndexes.value.contains(timelineIndex);
 
-                    if (isExpanded) {
-                      updatedIndexes.remove(index);
-                    } else {
-                      updatedIndexes.add(index);
-                    }
+              return _TimelineRowPositionReader(
+                scrollController: scrollController,
+                timelineContext: timelineContext,
+                viewportHeight: viewportHeight,
+                focusAlignment: focusAlignment,
+                entry: entries[timelineIndex],
+                isExpanded: isExpanded,
+                isFirst: timelineIndex == 0,
+                isLast: timelineIndex == entries.length - 1,
+                onTap: () {
+                  final updatedIndexes = {...expandedIndexes.value};
 
-                    expandedIndexes.value = updatedIndexes;
-                  },
-                ),
+                  if (isExpanded) {
+                    updatedIndexes.remove(timelineIndex);
+                  } else {
+                    updatedIndexes.add(timelineIndex);
+                  }
+
+                  expandedIndexes.value = updatedIndexes;
+                },
               );
             },
           );
@@ -121,20 +110,76 @@ class WeddingDayTimeline extends HookWidget {
   }
 }
 
-double focusProgressForItem({
-  required double scrollOffset,
-  required int itemIndex,
-  required double itemExtent,
-  required double itemFocusOffset,
-  required double focusY,
-  required double topPadding,
+class _TimelineRowPositionReader extends StatelessWidget {
+  const _TimelineRowPositionReader({
+    required this.scrollController,
+    required this.timelineContext,
+    required this.viewportHeight,
+    required this.focusAlignment,
+    required this.entry,
+    required this.isExpanded,
+    required this.isFirst,
+    required this.isLast,
+    required this.onTap,
+  });
+
+  final ScrollController scrollController;
+  final BuildContext timelineContext;
+  final double viewportHeight;
+  final double focusAlignment;
+  final TimelineEntry entry;
+  final bool isExpanded;
+  final bool isFirst;
+  final bool isLast;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (rowContext, _) {
+        return AnimatedBuilder(
+          animation: scrollController,
+          builder: (context, _) {
+            final progress = focusProgressForRow(
+              timelineContext: timelineContext,
+              rowContext: rowContext,
+              viewportHeight: viewportHeight,
+              focusAlignment: focusAlignment,
+              rowFocusOffset: WeddingDayTimeline._dotCenterY,
+              focusRadius: WeddingDayTimeline._focusRadius,
+              focusHoldRadius: WeddingDayTimeline._focusHoldRadius,
+            );
+
+            return _TimelineRow(
+              entry: entry,
+              progress: progress,
+              isExpanded: isExpanded,
+              isFirst: isFirst,
+              isLast: isLast,
+              onTap: onTap,
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+double focusProgressForRow({
+  required BuildContext timelineContext,
+  required BuildContext rowContext,
+  required double viewportHeight,
+  required double focusAlignment,
+  required double rowFocusOffset,
   required double focusRadius,
   required double focusHoldRadius,
 }) {
-  final itemFocusY =
-      topPadding + itemIndex * itemExtent + itemFocusOffset - scrollOffset;
+  final timelineTopY = _globalTopOf(timelineContext);
+  final rowTopY = _globalTopOf(rowContext);
 
-  final distanceFromFocus = (itemFocusY - focusY).abs();
+  final focusY = timelineTopY + viewportHeight * focusAlignment;
+  final rowFocusY = rowTopY + rowFocusOffset;
+  final distanceFromFocus = (rowFocusY - focusY).abs();
 
   if (distanceFromFocus <= focusHoldRadius) {
     return 1.0;
@@ -147,6 +192,16 @@ double focusProgressForItem({
   return rawProgress.clamp(0.0, 1.0).toDouble();
 }
 
+double _globalTopOf(BuildContext context) {
+  final renderObject = context.findRenderObject();
+
+  if (renderObject is! RenderBox || !renderObject.hasSize) {
+    return 0;
+  }
+
+  return renderObject.localToGlobal(Offset.zero).dy;
+}
+
 double _lerp(double start, double end, double progress) {
   return start + (end - start) * progress;
 }
@@ -156,7 +211,6 @@ class _TimelineRow extends StatelessWidget {
     required this.entry,
     required this.progress,
     required this.isExpanded,
-    required this.isLeft,
     required this.isFirst,
     required this.isLast,
     required this.onTap,
@@ -165,41 +219,43 @@ class _TimelineRow extends StatelessWidget {
   final TimelineEntry entry;
   final double progress;
   final bool isExpanded;
-  final bool isLeft;
   final bool isFirst;
   final bool isLast;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final card = _TimelineSideCard(
-      entry: entry,
-      progress: progress,
-      isExpanded: isExpanded,
-      isLeft: isLeft,
-      onTap: onTap,
-    );
-
-    return Row(
-      children: [
-        Expanded(
-          child: isLeft ? card : const SizedBox.shrink(),
-        ),
-        _TimelineDot(
-          progress: progress,
-          isFirst: isFirst,
-          isLast: isLast,
-        ),
-        Expanded(
-          child: isLeft ? const SizedBox.shrink() : card,
-        ),
-      ],
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _TimelineRail(
+            progress: progress,
+            isFirst: isFirst,
+            isLast: isLast,
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(
+                bottom: isLast ? 0 : WeddingDayTimeline._rowSpacing,
+              ),
+              child: _TimelineCard(
+                entry: entry,
+                progress: progress,
+                isExpanded: isExpanded,
+                onTap: onTap,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
-class _TimelineDot extends StatelessWidget {
-  const _TimelineDot({
+class _TimelineRail extends StatelessWidget {
+  const _TimelineRail({
     required this.progress,
     required this.isFirst,
     required this.isLast,
@@ -222,14 +278,12 @@ class _TimelineDot extends StatelessWidget {
 
     return SizedBox(
       width: WeddingDayTimeline._railWidth,
-      height: WeddingDayTimeline._rowExtent,
       child: Stack(
         children: [
           if (!isFirst)
             const Positioned(
               top: 0,
-              bottom: WeddingDayTimeline._rowExtent -
-                  WeddingDayTimeline._dotCenterY,
+              height: WeddingDayTimeline._dotCenterY,
               left: (WeddingDayTimeline._railWidth - 2) / 2,
               child: _TimelineRailLine(),
             ),
@@ -276,63 +330,60 @@ class _TimelineRailLine extends StatelessWidget {
   }
 }
 
-class _TimelineSideCard extends StatelessWidget {
-  const _TimelineSideCard({
-    required this.entry,
-    required this.progress,
-    required this.isExpanded,
-    required this.isLeft,
-    required this.onTap,
-  });
-
-  final TimelineEntry entry;
-  final double progress;
-  final bool isExpanded;
-  final bool isLeft;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: isLeft ? Alignment.topRight : Alignment.topLeft,
-      child: Padding(
-        padding: EdgeInsets.only(
-          left: isLeft ? 12 : 0,
-          right: isLeft ? 0 : 12,
-        ),
-        child: _TimelineCard(
-          entry: entry,
-          progress: progress,
-          isExpanded: isExpanded,
-          isLeft: isLeft,
-          onTap: onTap,
-        ),
-      ),
-    );
-  }
-}
-
-class _TimelineCard extends StatelessWidget {
+class _TimelineCard extends HookWidget {
   const _TimelineCard({
     required this.entry,
     required this.progress,
     required this.isExpanded,
-    required this.isLeft,
     required this.onTap,
   });
 
   final TimelineEntry entry;
   final double progress;
   final bool isExpanded;
-  final bool isLeft;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
 
+    final iconController = useAnimationController(
+      duration: const Duration(milliseconds: 950),
+    );
+
+    final iconAnimation = useMemoized(
+      () => iconController.drive(
+        CurveTween(
+          curve: const Interval(
+            0.28,
+            1,
+            curve: Curves.easeOutCubic,
+          ),
+        ),
+      ),
+      [iconController],
+    );
+
+    final iconOpacity = useAnimation(iconAnimation);
+
+    useEffect(
+      () {
+        if (isExpanded) {
+          iconController.forward(from: 0);
+        } else {
+          iconController.stop();
+          iconController.value = 0;
+        }
+
+        return null;
+      },
+      [isExpanded],
+    );
+
+    final hasIcon = entry.icon != null;
     final cardOpacity = _lerp(0.36, 1.0, progress);
     final textOpacity = _lerp(0.45, 1.0, progress);
+    final iconMaxOpacity = _lerp(0.04, 0.095, progress);
 
     return Opacity(
       opacity: cardOpacity,
@@ -357,48 +408,37 @@ class _TimelineCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               child: Stack(
                 children: [
-                  if (entry.imageAssetPath != null)
-                    Positioned.fill(
-                      child: Align(
-                        alignment: _alignmentFor(entry.imagePosition),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: AnimatedOpacity(
-                            opacity: isExpanded ? textOpacity : 0,
-                            duration: const Duration(milliseconds: 180),
-                            curve: Curves.easeOut,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Image.asset(
-                                entry.imageAssetPath!,
-                                width: 54,
-                                height: 54,
-                                fit: BoxFit.cover,
-                              ),
+                  if (hasIcon)
+                    Positioned(
+                      right: -24,
+                      bottom: -28,
+                      child: IgnorePointer(
+                        child: Transform.rotate(
+                          angle: -0.08,
+                          child: Opacity(
+                            opacity: isExpanded
+                                ? iconOpacity * textOpacity * iconMaxOpacity
+                                : 0,
+                            child: Icon(
+                              entry.icon,
+                              size: 104,
+                              color: scheme.primary,
                             ),
                           ),
                         ),
                       ),
                     ),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(
-                      isLeft ? 36 : 14,
-                      14,
-                      isLeft ? 14 : 36,
-                      14,
-                    ),
+                    padding: const EdgeInsets.fromLTRB(18, 14, 42, 14),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: isLeft
-                          ? CrossAxisAlignment.end
-                          : CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Opacity(
                           opacity: textOpacity,
                           child: Text(
                             entry.time,
-                            textAlign:
-                                isLeft ? TextAlign.right : TextAlign.left,
+                            textAlign: TextAlign.left,
                             style: AppTypography.cardTime(scheme),
                           ),
                         ),
@@ -407,8 +447,7 @@ class _TimelineCard extends StatelessWidget {
                           opacity: textOpacity,
                           child: Text(
                             entry.title,
-                            textAlign:
-                                isLeft ? TextAlign.right : TextAlign.left,
+                            textAlign: TextAlign.left,
                             softWrap: true,
                             style: AppTypography.cardTitleCaps(
                               scheme,
@@ -432,11 +471,8 @@ class _TimelineCard extends StatelessWidget {
                                   padding: const EdgeInsets.only(top: 8),
                                   child: Text(
                                     entry.details!,
-                                    textAlign: isLeft
-                                        ? TextAlign.right
-                                        : TextAlign.left,
-                                    maxLines: 4,
-                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.left,
+                                    softWrap: true,
                                     style: AppTypography.bodySerif(
                                       scheme,
                                       fontSize: 12,
@@ -452,8 +488,7 @@ class _TimelineCard extends StatelessWidget {
                   ),
                   Positioned(
                     top: 10,
-                    left: isLeft ? 12 : null,
-                    right: isLeft ? null : 12,
+                    right: 12,
                     child: _TimelineCardToggle(
                       isExpanded: isExpanded,
                     ),
@@ -489,13 +524,4 @@ class _TimelineCardToggle extends StatelessWidget {
       ),
     );
   }
-}
-
-Alignment _alignmentFor(TimelineImagePosition position) {
-  return switch (position) {
-    TimelineImagePosition.topLeft => Alignment.topLeft,
-    TimelineImagePosition.topRight => Alignment.topRight,
-    TimelineImagePosition.bottomLeft => Alignment.bottomLeft,
-    TimelineImagePosition.bottomRight => Alignment.bottomRight,
-  };
 }

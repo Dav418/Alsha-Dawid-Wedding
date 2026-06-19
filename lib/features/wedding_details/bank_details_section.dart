@@ -67,7 +67,7 @@ class _BankRegionPillSwitch extends StatelessWidget {
   static const _options = [
     (BankAccountRegion.polish, 'POLISH'),
     (BankAccountRegion.english, 'ENGLISH'),
-    (BankAccountRegion.indian, 'INDIAN'),
+    (BankAccountRegion.goa, 'GOA'),
   ];
 
   @override

@@ -31,22 +31,24 @@ class WeddingDetailsPage extends HookWidget {
           children: [
             const _DetailsHeader(),
             WeddingDayTimeline(
+              topChild: Column(
+                children: [
+                  SizedBox(height: 40),
+                  Text(
+                    'We are so excited to share our wedding day with you. Below is a guide to the main events of the day, from the ceremony to the evening celebration. Please use this as a gentle overview of what to expect, while allowing a little flexibility for the natural flow of the day.',
+                    textAlign: TextAlign.center,
+                    style: AppTypography.bodySerif(scheme),
+                  ),
+                  SizedBox(height: 40),
+                  HeartDivider(),
+                  SizedBox(height: 40),
+                ],
+              ),
               entries: weddingDayTimelineEntries,
               trailingChild: Column(
                 children: [
+                  SizedBox(height: 40),
                   HeartDivider(),
-                  // SizedBox(height: 12),
-                  // Text(
-                  //   'Dress Code',
-                  //   textAlign: TextAlign.center,
-                  //   style: AppTypography.capsLabel(
-                  //     scheme,
-                  //     color: AppColors.sageGreen,
-                  //     fontSize: 28,
-                  //   ),
-                  // ),
-                  // SizedBox(height: 12),
-                  // HeartDivider(),
                   SizedBox(height: 12),
                   Text(
                     'Dress Code - Formal Attire. Think elegant, timeless, and occasion-worthy. We encourage guests to dress comfortably while embracing the joy and significance of this auspicious occasion.',
@@ -63,6 +65,7 @@ class WeddingDetailsPage extends HookWidget {
                   ),
                   SizedBox(height: 24),
                   const BankDetailsSection(),
+                  SizedBox(height: 100),
                 ],
               ),
             ),

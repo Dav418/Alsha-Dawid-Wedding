@@ -1,7 +1,7 @@
 enum BankAccountRegion {
   polish,
   english,
-  indian,
+  goa,
 }
 
 class BankDetailField {
@@ -49,8 +49,8 @@ const bankAccounts = {
       BankDetailField(label: 'IBAN', value: 'GB29 BARC 2000 0012 3456 78'),
     ],
   ),
-  BankAccountRegion.indian: BankAccountDetails(
-    region: BankAccountRegion.indian,
+  BankAccountRegion.goa: BankAccountDetails(
+    region: BankAccountRegion.goa,
     fields: [
       BankDetailField(label: 'Bank name', value: 'HDFC Bank'),
       BankDetailField(
