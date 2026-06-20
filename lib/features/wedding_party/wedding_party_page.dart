@@ -10,6 +10,8 @@ import '../../router/app_router.gr.dart';
 import '../../widgets/heart_divider.dart';
 import '../../widgets/page_availability_gate.dart';
 import '../../widgets/party_member_polaroid_overlay.dart';
+import '../../widgets/party_member_portrait_placeholder.dart';
+import '../../utils/cursed_text.dart';
 import '../../utils/extension/context_extension.dart';
 
 @RoutePage()
@@ -57,7 +59,7 @@ class WeddingPartyPage extends ConsumerWidget {
             const SizedBox(height: 28),
             _PartySection(
               title: 'PAWS OF HONOR',
-              members: party.parents,
+              members: party.dogs,
             ),
           ],
         ),
@@ -125,7 +127,10 @@ class _PartySection extends StatelessWidget {
                 mainAxisSpacing: 20,
               ),
               itemBuilder: (context, index) {
-                return _PartyPortrait(member: members[index]);
+                return _PartyPortrait(
+                  member: members[index],
+                  cursedSeed: '$title-$index',
+                );
               },
             );
           },
@@ -136,22 +141,25 @@ class _PartySection extends StatelessWidget {
 }
 
 class _PartyPortrait extends StatelessWidget {
-  const _PartyPortrait({required this.member});
+  const _PartyPortrait({
+    required this.member,
+    required this.cursedSeed,
+  });
 
   final WeddingPartyMember member;
+  final String cursedSeed;
 
   @override
   Widget build(BuildContext context) {
     const portraitSize = 104.0;
+    const placeholder = PartyMemberPortraitPlaceholder();
     final assetPath = WeddingPartyAssets.portrait(
       member.firstName,
       member.lastName,
     );
-
-    final placeholder = _PortraitPlaceholder(
-      firstName: member.firstName,
-      lastName: member.lastName,
-    );
+    final displayName = member.hasName
+        ? member.displayName
+        : CursedText.name(seed: cursedSeed);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -164,7 +172,7 @@ class _PartyPortrait extends StatelessWidget {
               context,
               member: member,
               assetPath: assetPath,
-              imagePlaceholder: placeholder,
+              cursedSeed: cursedSeed,
             ),
             child: Container(
               width: portraitSize,
@@ -197,39 +205,15 @@ class _PartyPortrait extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Text(
-          member.displayName,
+          displayName,
           textAlign: TextAlign.center,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
-          style: context.portraitName(),
+          style: member.hasName
+              ? context.portraitName()
+              : CursedText.portraitNameStyle(context.colorScheme),
         ),
       ],
-    );
-  }
-}
-
-class _PortraitPlaceholder extends StatelessWidget {
-  const _PortraitPlaceholder({
-    required this.firstName,
-    required this.lastName,
-  });
-
-  final String firstName;
-  final String lastName;
-
-  @override
-  Widget build(BuildContext context) {
-    final initials = '${firstName.isNotEmpty ? firstName[0] : ''}'
-        '${lastName.isNotEmpty ? lastName[0] : ''}';
-
-    return ColoredBox(
-      color: context.dustyRose.withValues(alpha: 0.28),
-      child: Center(
-        child: Text(
-          initials.toUpperCase(),
-          style: context.portraitInitials(),
-        ),
-      ),
     );
   }
 }

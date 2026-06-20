@@ -3,14 +3,16 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
 import '../models/content/wedding_content.dart';
+import '../utils/cursed_text.dart';
 import '../utils/extension/context_extension.dart';
+import 'party_member_portrait_placeholder.dart';
 
 /// Full-screen polaroid detail for a wedding party member portrait.
 void showPartyMemberPolaroid(
   BuildContext context, {
   required WeddingPartyMember member,
   required String assetPath,
-  required Widget imagePlaceholder,
+  required String cursedSeed,
 }) {
   showGeneralDialog<void>(
     context: context,
@@ -23,7 +25,7 @@ void showPartyMemberPolaroid(
       return _PartyMemberPolaroidOverlay(
         member: member,
         assetPath: assetPath,
-        imagePlaceholder: imagePlaceholder,
+        cursedSeed: cursedSeed,
       );
     },
     // Animate only the polaroid inside the overlay; backdrop blur is full-screen.
@@ -35,12 +37,12 @@ class _PartyMemberPolaroidOverlay extends StatelessWidget {
   const _PartyMemberPolaroidOverlay({
     required this.member,
     required this.assetPath,
-    required this.imagePlaceholder,
+    required this.cursedSeed,
   });
 
   final WeddingPartyMember member;
   final String assetPath;
-  final Widget imagePlaceholder;
+  final String cursedSeed;
 
   @override
   Widget build(BuildContext context) {
@@ -53,9 +55,12 @@ class _PartyMemberPolaroidOverlay extends StatelessWidget {
     );
     final width = (MediaQuery.sizeOf(context).width * 0.78).clamp(240.0, 300.0);
     final imageHeight = width * 0.92;
-    final caption = member.bio?.trim().isNotEmpty == true
+    final displayName = member.hasName
+        ? member.displayName
+        : CursedText.name(seed: cursedSeed);
+    final caption = member.hasBio
         ? member.bio!.trim()
-        : 'Celebrating with us on our wedding day.';
+        : CursedText.bio(seed: cursedSeed);
 
     return Material(
       type: MaterialType.transparency,
@@ -123,30 +128,37 @@ class _PartyMemberPolaroidOverlay extends StatelessWidget {
                                     errorBuilder: (_, __, ___) => SizedBox(
                                       width: width - 24,
                                       height: imageHeight,
-                                      child: imagePlaceholder,
+                                      child: const PartyMemberPortraitPlaceholder(),
                                     ),
                                   ),
                                 ),
                                 SizedBox(height: width * 0.07),
                                 Text(
-                                  member.displayName,
+                                  displayName,
                                   textAlign: TextAlign.center,
-                                  style: context.scriptQuote(
-                                    fontSize: 26,
-                                    height: 1.15,
-                                  ),
+                                  style: member.hasName
+                                      ? context.scriptQuote(
+                                          fontSize: 26,
+                                          height: 1.15,
+                                        )
+                                      : CursedText.polaroidNameStyle(
+                                          context.colorScheme,
+                                        ),
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
                                   caption,
                                   textAlign: TextAlign.center,
-                                  style:
-                                      context.timelineBody().copyWith(
-                                    fontSize: 13,
-                                    height: 1.45,
-                                    color: context.textCharcoal
-                                        .withValues(alpha: 0.78),
-                                  ),
+                                  style: member.hasBio
+                                      ? context.timelineBody().copyWith(
+                                          fontSize: 13,
+                                          height: 1.45,
+                                          color: context.textCharcoal
+                                              .withValues(alpha: 0.78),
+                                        )
+                                      : CursedText.polaroidBioStyle(
+                                          context.colorScheme,
+                                        ),
                                 ),
                               ],
                             ),

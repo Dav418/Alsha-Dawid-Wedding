@@ -97,6 +97,7 @@ class WeddingPartyRoster with _$WeddingPartyRoster {
     required List<WeddingPartyMember> bridesmaids,
     required List<WeddingPartyMember> groomsmen,
     required List<WeddingPartyMember> parents,
+    required List<WeddingPartyMember> dogs,
   }) = _WeddingPartyRoster;
 
   factory WeddingPartyRoster.fromJson(Map<String, dynamic> json) =>
@@ -116,6 +117,11 @@ class WeddingPartyMember with _$WeddingPartyMember {
 
   factory WeddingPartyMember.fromJson(Map<String, dynamic> json) =>
       _$WeddingPartyMemberFromJson(json);
+
+  bool get hasName =>
+      firstName.trim().isNotEmpty || lastName.trim().isNotEmpty;
+
+  bool get hasBio => bio?.trim().isNotEmpty ?? false;
 
   String get displayName {
     if (honorific != null) {

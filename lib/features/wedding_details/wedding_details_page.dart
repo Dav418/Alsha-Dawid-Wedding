@@ -83,7 +83,7 @@ class WeddingDetailsPage extends HookWidget {
                     ),
                   ),
                   child: Text(
-                    'Contribute to our wedding gift',
+                    'Send us a gift',
                     style: context.buttonLabel(),
                   ),
                 ),
