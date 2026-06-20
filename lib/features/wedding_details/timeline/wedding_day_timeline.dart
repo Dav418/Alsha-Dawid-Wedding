@@ -20,10 +20,13 @@ class WeddingDayTimeline extends HookWidget {
 
   static const _estimatedRowExtent = 180.0;
   static const _rowSpacing = 42.0;
-  static const _railWidth = 42.0;
+  static const _railWidth = 80.0;
   static const _dotCenterY = 32.0;
   static const _focusRadius = _estimatedRowExtent * 0.95;
   static const _focusHoldRadius = _estimatedRowExtent * 0.28;
+  static const _pinImageScale = 1.18;
+  static const _expandStartProgress = 0.42;
+  static const _expandEndProgress = 0.92;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +53,7 @@ class WeddingDayTimeline extends HookWidget {
   }
 }
 
-class _TimelineRowPositionReader extends HookWidget {
+class _TimelineRowPositionReader extends StatelessWidget {
   const _TimelineRowPositionReader({
     required this.scrollListenable,
     required this.scrollableContext,
@@ -69,8 +72,6 @@ class _TimelineRowPositionReader extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final expanded = useState(false);
-
     return LayoutBuilder(
       builder: (rowContext, _) {
         return AnimatedBuilder(
@@ -85,15 +86,14 @@ class _TimelineRowPositionReader extends HookWidget {
               focusHoldRadius: WeddingDayTimeline._focusHoldRadius,
             );
 
+            final expansionProgress = expansionProgressForFocus(progress);
+
             return _TimelineRow(
               entry: entry,
               progress: progress,
-              isExpanded: expanded.value,
+              expansionProgress: expansionProgress,
               isFirst: isFirst,
               isLast: isLast,
-              onTap: () {
-                expanded.value = !expanded.value;
-              },
             );
           },
         );
@@ -129,6 +129,16 @@ double focusProgressForRow({
   final rawProgress = 1 - fadeDistance / fadeRadius;
 
   return rawProgress.clamp(0.0, 1.0).toDouble();
+}
+
+double expansionProgressForFocus(double progress) {
+  final rawProgress = ((progress - WeddingDayTimeline._expandStartProgress) /
+          (WeddingDayTimeline._expandEndProgress -
+              WeddingDayTimeline._expandStartProgress))
+      .clamp(0.0, 1.0)
+      .toDouble();
+
+  return Curves.easeOutCubic.transform(rawProgress);
 }
 
 double _focusYFor({
@@ -170,18 +180,16 @@ class _TimelineRow extends StatelessWidget {
   const _TimelineRow({
     required this.entry,
     required this.progress,
-    required this.isExpanded,
+    required this.expansionProgress,
     required this.isFirst,
     required this.isLast,
-    required this.onTap,
   });
 
   final TimelineEntry entry;
   final double progress;
-  final bool isExpanded;
+  final double expansionProgress;
   final bool isFirst;
   final bool isLast;
-  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -204,8 +212,7 @@ class _TimelineRow extends StatelessWidget {
               child: _TimelineCard(
                 entry: entry,
                 progress: progress,
-                isExpanded: isExpanded,
-                onTap: onTap,
+                expansionProgress: expansionProgress,
               ),
             ),
           ),
@@ -233,7 +240,7 @@ class _TimelineRail extends StatelessWidget {
     final hasImage = imageAssetPath != null;
 
     final dotSize =
-        hasImage ? _lerp(24, 38, progress) : _lerp(13, 26, progress);
+        hasImage ? _lerp(30, 76, progress) : _lerp(13, 26, progress);
 
     final dotColor = Color.lerp(
       context.colorScheme.primary.withValues(alpha: 0.35),
@@ -244,6 +251,7 @@ class _TimelineRail extends StatelessWidget {
     return SizedBox(
       width: WeddingDayTimeline._railWidth,
       child: Stack(
+        clipBehavior: Clip.none,
         children: [
           if (!isFirst)
             const Positioned(
@@ -262,35 +270,44 @@ class _TimelineRail extends StatelessWidget {
           Positioned(
             top: WeddingDayTimeline._dotCenterY - dotSize / 2,
             left: (WeddingDayTimeline._railWidth - dotSize) / 2,
-            child: Opacity(
-              opacity: hasImage ? _lerp(0.58, 1.0, progress) : 1,
-              child: Container(
-                width: dotSize,
-                height: dotSize,
-                padding: EdgeInsets.all(hasImage ? 2 : 0),
-                decoration: BoxDecoration(
-                  color: hasImage
-                      ? context.creamBackground.withValues(alpha: 0.92)
-                      : dotColor,
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: context.goldBrass.withValues(
-                      alpha: _lerp(0.45, 0.8, progress),
+            child: hasImage
+                ? Opacity(
+                    opacity: _lerp(0.58, 1.0, progress),
+                    child: SizedBox(
+                      width: dotSize,
+                      height: dotSize,
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: ClipOval(
+                              child: Transform.scale(
+                                scale: WeddingDayTimeline._pinImageScale,
+                                child: Image.asset(
+                                  imageAssetPath!,
+                                  fit: BoxFit.cover,
+                                  filterQuality: FilterQuality.high,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    width: _lerp(1.5, 2.5, progress),
-                  ),
-                ),
-                child: hasImage
-                    ? ClipOval(
-                        child: Image.asset(
-                          imageAssetPath!,
-                          fit: BoxFit.cover,
-                          filterQuality: FilterQuality.high,
+                  )
+                : Container(
+                    width: dotSize,
+                    height: dotSize,
+                    decoration: BoxDecoration(
+                      color: dotColor,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: context.goldBrass.withValues(
+                          alpha: _lerp(0.45, 0.8, progress),
                         ),
-                      )
-                    : null,
-              ),
-            ),
+                        width: _lerp(1.5, 2.5, progress),
+                      ),
+                    ),
+                  ),
           ),
         ],
       ),
@@ -310,193 +327,115 @@ class _TimelineRailLine extends StatelessWidget {
   }
 }
 
-class _TimelineCard extends HookWidget {
+class _TimelineCard extends StatelessWidget {
   const _TimelineCard({
     required this.entry,
     required this.progress,
-    required this.isExpanded,
-    required this.onTap,
+    required this.expansionProgress,
   });
 
   final TimelineEntry entry;
   final double progress;
-  final bool isExpanded;
-  final VoidCallback onTap;
+  final double expansionProgress;
 
   @override
   Widget build(BuildContext context) {
-
-    final iconController = useAnimationController(
-      duration: const Duration(milliseconds: 950),
-    );
-
-    final iconAnimation = useMemoized(
-      () => iconController.drive(
-        CurveTween(
-          curve: const Interval(
-            0.28,
-            1,
-            curve: Curves.easeOutCubic,
-          ),
-        ),
-      ),
-      [iconController],
-    );
-
-    final iconOpacity = useAnimation(iconAnimation);
-
-    useEffect(
-      () {
-        if (isExpanded) {
-          iconController.forward(from: 0);
-        } else {
-          iconController.stop();
-          iconController.value = 0;
-        }
-
-        return null;
-      },
-      [isExpanded],
-    );
-
     final hasIcon = entry.icon != null;
     final cardOpacity = _lerp(0.36, 1.0, progress);
     final textOpacity = _lerp(0.45, 1.0, progress);
+    final detailsOpacity = textOpacity * expansionProgress;
     final iconMaxOpacity = _lerp(0.04, 0.095, progress);
+    final iconOpacity = expansionProgress * textOpacity * iconMaxOpacity;
 
     return Opacity(
       opacity: cardOpacity,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onTap,
-        child: AnimatedSize(
-          duration: const Duration(milliseconds: 220),
-          curve: Curves.easeOut,
-          alignment: Alignment.topCenter,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: context.creamBackground.withValues(alpha: 0.76),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: context.goldBrass.withValues(
-                  alpha: _lerp(0.14, 0.42, progress),
-                ),
-              ),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: context.creamBackground.withValues(alpha: 0.76),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: context.goldBrass.withValues(
+              alpha: _lerp(0.14, 0.42, progress),
             ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: Stack(
-                children: [
-                  if (hasIcon)
-                    Positioned(
-                      right: -24,
-                      bottom: -28,
-                      child: IgnorePointer(
-                        child: Transform.rotate(
-                          angle: -0.08,
-                          child: Opacity(
-                            opacity: isExpanded
-                                ? iconOpacity * textOpacity * iconMaxOpacity
-                                : 0,
-                            child: Icon(
-                              entry.icon,
-                              size: 104,
-                              color: context.colorScheme.primary,
-                            ),
-                          ),
+          ),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Stack(
+            children: [
+              if (hasIcon)
+                Positioned(
+                  right: -24,
+                  bottom: -28,
+                  child: IgnorePointer(
+                    child: Transform.rotate(
+                      angle: -0.08,
+                      child: Opacity(
+                        opacity: iconOpacity,
+                        child: Icon(
+                          entry.icon,
+                          size: 104,
+                          color: context.colorScheme.primary,
                         ),
                       ),
                     ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(18, 14, 42, 14),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Opacity(
-                          opacity: textOpacity,
-                          child: Text(
-                            entry.time,
-                            textAlign: TextAlign.left,
-                            style: context.cardTime(),
-                          ),
+                  ),
+                ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(18, 14, 42, 14),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Opacity(
+                      opacity: textOpacity,
+                      child: Text(
+                        entry.time,
+                        textAlign: TextAlign.left,
+                        style: context.cardTime(),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Opacity(
+                      opacity: textOpacity,
+                      child: Text(
+                        entry.title,
+                        textAlign: TextAlign.left,
+                        softWrap: true,
+                        style: context.cardTitleCaps(
+                          fontSize: 12,
+                          letterSpacing: 1.3,
                         ),
-                        const SizedBox(height: 4),
-                        Opacity(
-                          opacity: textOpacity,
-                          child: Text(
-                            entry.title,
-                            textAlign: TextAlign.left,
-                            softWrap: true,
-                            style: context.cardTitleCaps(
-                              fontSize: 12,
-                              letterSpacing: 1.3,
-                            ),
-                          ),
-                        ),
-                        if (entry.details != null)
-                          ClipRect(
-                            child: AnimatedAlign(
-                              duration: const Duration(milliseconds: 200),
-                              curve: Curves.easeOut,
-                              alignment: Alignment.topCenter,
-                              heightFactor: isExpanded ? 1 : 0,
-                              child: AnimatedOpacity(
-                                opacity: isExpanded ? textOpacity : 0,
-                                duration: const Duration(milliseconds: 180),
-                                curve: Curves.easeOut,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 8),
-                                  child: Text(
-                                    entry.details!,
-                                    textAlign: TextAlign.left,
-                                    softWrap: true,
-                                    style: context.bodySerif(
-                                      fontSize: 12,
-                                      height: 1.35,
-                                    ),
-                                  ),
+                      ),
+                    ),
+                    if (entry.details != null)
+                      ClipRect(
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          heightFactor: expansionProgress,
+                          child: Opacity(
+                            opacity: detailsOpacity,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 8),
+                              child: Text(
+                                entry.details!,
+                                textAlign: TextAlign.left,
+                                softWrap: true,
+                                style: context.bodySerif(
+                                  fontSize: 12,
+                                  height: 1.35,
                                 ),
                               ),
                             ),
                           ),
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    top: 10,
-                    right: 12,
-                    child: _TimelineCardToggle(
-                      isExpanded: isExpanded,
-                    ),
-                  ),
-                ],
+                        ),
+                      ),
+                  ],
+                ),
               ),
-            ),
+            ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _TimelineCardToggle extends StatelessWidget {
-  const _TimelineCardToggle({
-    required this.isExpanded,
-  });
-
-  final bool isExpanded;
-
-  @override
-  Widget build(BuildContext context) {
-
-    return AnimatedRotation(
-      turns: isExpanded ? 0.125 : 0,
-      duration: const Duration(milliseconds: 200),
-      curve: Curves.easeOut,
-      child: Text(
-        '+',
-        style: context.faqToggle(),
       ),
     );
   }

@@ -9,7 +9,7 @@ const weddingDayTimelineEntries = <TimelineEntry>[
     details:
         'Blessings and bridal sendoff with the closest family and friends.',
     icon: Icons.favorite_border,
-    pinImageAssetPath: 'assets/timeline_pins/blessings.png',
+    pinImageAssetPath: 'lib/assets/timeline_pins/blessings.png',
   ),
   TimelineEntry(
     time: '1:00pm',
