@@ -7,7 +7,6 @@ import '../../router/app_router.gr.dart';
 import '../../utils/extension/context_extension.dart';
 import '../../widgets/heart_divider.dart';
 import '../../widgets/page_availability_gate.dart';
-import 'bank_details_section.dart';
 import 'timeline/wedding_day_timeline.dart';
 import '../../models/wedding_details/wedding_timeline_data.dart';
 
@@ -60,7 +59,35 @@ class WeddingDetailsPage extends HookWidget {
                 style: context.bodySerif(),
               ),
               SizedBox(height: 24),
-              const BankDetailsSection(),
+              Center(
+                child: FilledButton(
+                  onPressed: () async {
+                    final uri = Uri.parse(
+                      'https://pay.collctiv.com/alisha-and-dawid-wedding-53094',
+                    );
+                    final opened = await context.openExternalUrl(uri);
+                    if (!opened && context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Could not open the gift link.'),
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    }
+                  },
+                  style: FilledButton.styleFrom(
+                    minimumSize: const Size(168, 44),
+                    padding: const EdgeInsets.symmetric(horizontal: 28),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Text(
+                    'Contribute to our wedding gift',
+                    style: context.buttonLabel(),
+                  ),
+                ),
+              ),
               SizedBox(height: 100),
             ],
           ),
