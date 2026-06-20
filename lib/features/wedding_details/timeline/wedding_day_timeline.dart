@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
@@ -12,7 +10,6 @@ class WeddingDayTimeline extends HookWidget {
     required this.entries,
     this.topChild,
     this.trailingChild,
-    this.viewportHeightFactor = 0.62,
     this.focusAlignment = 0.42,
     super.key,
   });
@@ -20,7 +17,6 @@ class WeddingDayTimeline extends HookWidget {
   final List<TimelineEntry> entries;
   final Widget? topChild;
   final Widget? trailingChild;
-  final double viewportHeightFactor;
   final double focusAlignment;
 
   static const _estimatedRowExtent = 180.0;
@@ -32,118 +28,58 @@ class WeddingDayTimeline extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scrollController = useScrollController();
-    final expandedIndexes = useState<Set<int>>(<int>{});
+    final scrollableState = Scrollable.maybeOf(context);
+    final scrollListenable =
+        scrollableState?.position ?? kAlwaysDismissedAnimation;
 
-    final viewportHeight =
-        MediaQuery.sizeOf(context).height * viewportHeightFactor;
-
-    final topPadding = topChild == null
-        ? math.max(
-            16.0,
-            viewportHeight * focusAlignment - _dotCenterY,
-          )
-        : 16.0;
-
-    final bottomPadding = trailingChild == null
-        ? math.max(
-            16.0,
-            viewportHeight * (1 - focusAlignment) - _dotCenterY,
-          )
-        : 16.0;
-
-    final itemCount = entries.length +
-        (topChild == null ? 0 : 1) +
-        (trailingChild == null ? 0 : 1);
-
-    return SizedBox(
-      height: viewportHeight,
-      child: LayoutBuilder(
-        builder: (timelineContext, _) {
-          return ListView.builder(
-            controller: scrollController,
-            physics: const ClampingScrollPhysics(),
-            padding: EdgeInsets.only(
-              top: topPadding,
-              bottom: bottomPadding,
-            ),
-            itemCount: itemCount,
-            itemBuilder: (context, index) {
-              if (topChild != null && index == 0) {
-                return topChild!;
-              }
-
-              final timelineIndex = index - (topChild == null ? 0 : 1);
-
-              if (timelineIndex == entries.length) {
-                return trailingChild!;
-              }
-
-              final isExpanded = expandedIndexes.value.contains(timelineIndex);
-
-              return _TimelineRowPositionReader(
-                scrollController: scrollController,
-                timelineContext: timelineContext,
-                viewportHeight: viewportHeight,
-                focusAlignment: focusAlignment,
-                entry: entries[timelineIndex],
-                isExpanded: isExpanded,
-                isFirst: timelineIndex == 0,
-                isLast: timelineIndex == entries.length - 1,
-                onTap: () {
-                  final updatedIndexes = {...expandedIndexes.value};
-
-                  if (isExpanded) {
-                    updatedIndexes.remove(timelineIndex);
-                  } else {
-                    updatedIndexes.add(timelineIndex);
-                  }
-
-                  expandedIndexes.value = updatedIndexes;
-                },
-              );
-            },
-          );
-        },
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (topChild != null) topChild!,
+        for (final indexedEntry in entries.indexed)
+          _TimelineRowPositionReader(
+            scrollListenable: scrollListenable,
+            scrollableContext: scrollableState?.context,
+            focusAlignment: focusAlignment,
+            entry: indexedEntry.$2,
+            isFirst: indexedEntry.$1 == 0,
+            isLast: indexedEntry.$1 == entries.length - 1,
+          ),
+        if (trailingChild != null) trailingChild!,
+      ],
     );
   }
 }
 
-class _TimelineRowPositionReader extends StatelessWidget {
+class _TimelineRowPositionReader extends HookWidget {
   const _TimelineRowPositionReader({
-    required this.scrollController,
-    required this.timelineContext,
-    required this.viewportHeight,
+    required this.scrollListenable,
+    required this.scrollableContext,
     required this.focusAlignment,
     required this.entry,
-    required this.isExpanded,
     required this.isFirst,
     required this.isLast,
-    required this.onTap,
   });
 
-  final ScrollController scrollController;
-  final BuildContext timelineContext;
-  final double viewportHeight;
+  final Listenable scrollListenable;
+  final BuildContext? scrollableContext;
   final double focusAlignment;
   final TimelineEntry entry;
-  final bool isExpanded;
   final bool isFirst;
   final bool isLast;
-  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
+    final expanded = useState(false);
+
     return LayoutBuilder(
       builder: (rowContext, _) {
         return AnimatedBuilder(
-          animation: scrollController,
+          animation: scrollListenable,
           builder: (context, _) {
             final progress = focusProgressForRow(
-              timelineContext: timelineContext,
+              scrollableContext: scrollableContext,
               rowContext: rowContext,
-              viewportHeight: viewportHeight,
               focusAlignment: focusAlignment,
               rowFocusOffset: WeddingDayTimeline._dotCenterY,
               focusRadius: WeddingDayTimeline._focusRadius,
@@ -153,10 +89,12 @@ class _TimelineRowPositionReader extends StatelessWidget {
             return _TimelineRow(
               entry: entry,
               progress: progress,
-              isExpanded: isExpanded,
+              isExpanded: expanded.value,
               isFirst: isFirst,
               isLast: isLast,
-              onTap: onTap,
+              onTap: () {
+                expanded.value = !expanded.value;
+              },
             );
           },
         );
@@ -166,18 +104,20 @@ class _TimelineRowPositionReader extends StatelessWidget {
 }
 
 double focusProgressForRow({
-  required BuildContext timelineContext,
+  required BuildContext? scrollableContext,
   required BuildContext rowContext,
-  required double viewportHeight,
   required double focusAlignment,
   required double rowFocusOffset,
   required double focusRadius,
   required double focusHoldRadius,
 }) {
-  final timelineTopY = _globalTopOf(timelineContext);
   final rowTopY = _globalTopOf(rowContext);
+  final focusY = _focusYFor(
+    scrollableContext: scrollableContext,
+    fallbackContext: rowContext,
+    focusAlignment: focusAlignment,
+  );
 
-  final focusY = timelineTopY + viewportHeight * focusAlignment;
   final rowFocusY = rowTopY + rowFocusOffset;
   final distanceFromFocus = (rowFocusY - focusY).abs();
 
@@ -190,6 +130,27 @@ double focusProgressForRow({
   final rawProgress = 1 - fadeDistance / fadeRadius;
 
   return rawProgress.clamp(0.0, 1.0).toDouble();
+}
+
+double _focusYFor({
+  required BuildContext? scrollableContext,
+  required BuildContext fallbackContext,
+  required double focusAlignment,
+}) {
+  final scrollableRenderObject = scrollableContext?.findRenderObject();
+
+  if (scrollableRenderObject is RenderBox && scrollableRenderObject.hasSize) {
+    return scrollableRenderObject.localToGlobal(Offset.zero).dy +
+        scrollableRenderObject.size.height * focusAlignment;
+  }
+
+  final fallbackSize = MediaQuery.maybeSizeOf(fallbackContext);
+
+  if (fallbackSize == null) {
+    return 0;
+  }
+
+  return fallbackSize.height * focusAlignment;
 }
 
 double _globalTopOf(BuildContext context) {
@@ -233,6 +194,7 @@ class _TimelineRow extends StatelessWidget {
             progress: progress,
             isFirst: isFirst,
             isLast: isLast,
+            imageAssetPath: entry.pinImageAssetPath,
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -259,17 +221,22 @@ class _TimelineRail extends StatelessWidget {
     required this.progress,
     required this.isFirst,
     required this.isLast,
+    required this.imageAssetPath,
   });
 
   final double progress;
   final bool isFirst;
   final bool isLast;
+  final String? imageAssetPath;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final hasImage = imageAssetPath != null;
 
-    final dotSize = _lerp(13, 26, progress);
+    final dotSize =
+        hasImage ? _lerp(24, 38, progress) : _lerp(13, 26, progress);
+
     final dotColor = Color.lerp(
       scheme.primary.withValues(alpha: 0.35),
       scheme.primary,
@@ -297,18 +264,33 @@ class _TimelineRail extends StatelessWidget {
           Positioned(
             top: WeddingDayTimeline._dotCenterY - dotSize / 2,
             left: (WeddingDayTimeline._railWidth - dotSize) / 2,
-            child: Container(
-              width: dotSize,
-              height: dotSize,
-              decoration: BoxDecoration(
-                color: dotColor,
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: AppColors.goldBrass.withValues(
-                    alpha: _lerp(0.45, 0.8, progress),
+            child: Opacity(
+              opacity: hasImage ? _lerp(0.58, 1.0, progress) : 1,
+              child: Container(
+                width: dotSize,
+                height: dotSize,
+                padding: EdgeInsets.all(hasImage ? 2 : 0),
+                decoration: BoxDecoration(
+                  color: hasImage
+                      ? AppColors.creamBackground.withValues(alpha: 0.92)
+                      : dotColor,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppColors.goldBrass.withValues(
+                      alpha: _lerp(0.45, 0.8, progress),
+                    ),
+                    width: _lerp(1.5, 2.5, progress),
                   ),
-                  width: _lerp(1.5, 2.5, progress),
                 ),
+                child: hasImage
+                    ? ClipOval(
+                        child: Image.asset(
+                          imageAssetPath!,
+                          fit: BoxFit.cover,
+                          filterQuality: FilterQuality.high,
+                        ),
+                      )
+                    : null,
               ),
             ),
           ),

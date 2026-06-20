@@ -26,50 +26,45 @@ class WeddingDetailsPage extends HookWidget {
       page: AppPage.itinerary,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const _DetailsHeader(),
-            WeddingDayTimeline(
-              topChild: Column(
-                children: [
-                  SizedBox(height: 40),
-                  Text(
-                    'We are so excited to share our wedding day with you. Below is a guide to the main events of the day, from the ceremony to the evening celebration. Please use this as a gentle overview of what to expect, while allowing a little flexibility for the natural flow of the day.',
-                    textAlign: TextAlign.center,
-                    style: AppTypography.bodySerif(scheme),
-                  ),
-                  SizedBox(height: 40),
-                  HeartDivider(),
-                  SizedBox(height: 40),
-                ],
+        child: WeddingDayTimeline(
+          topChild: Column(
+            children: [
+              const _DetailsHeader(),
+              SizedBox(height: 40),
+              Text(
+                'We are so excited to share our wedding day with you. Below is a guide to the main events of the day, from the ceremony to the evening celebration. Please use this as a gentle overview of what to expect, while allowing a little flexibility for the natural flow of the day.',
+                textAlign: TextAlign.center,
+                style: AppTypography.bodySerif(scheme),
               ),
-              entries: weddingDayTimelineEntries,
-              trailingChild: Column(
-                children: [
-                  SizedBox(height: 40),
-                  HeartDivider(),
-                  SizedBox(height: 12),
-                  Text(
-                    'Dress Code - Formal Attire. Think elegant, timeless, and occasion-worthy. We encourage guests to dress comfortably while embracing the joy and significance of this auspicious occasion.',
-                    textAlign: TextAlign.center,
-                    style: AppTypography.bodySerif(scheme),
-                  ),
-                  SizedBox(height: 12),
-                  HeartDivider(),
-                  SizedBox(height: 12),
-                  Text(
-                    'Your presence is the greatest gift of all. However, if you wish to honour us with a gift, a contribution towards our future together would be greatly appreciated.',
-                    textAlign: TextAlign.center,
-                    style: AppTypography.bodySerif(scheme),
-                  ),
-                  SizedBox(height: 24),
-                  const BankDetailsSection(),
-                  SizedBox(height: 100),
-                ],
+              SizedBox(height: 40),
+              HeartDivider(),
+              SizedBox(height: 40),
+            ],
+          ),
+          entries: weddingDayTimelineEntries,
+          trailingChild: Column(
+            children: [
+              SizedBox(height: 40),
+              HeartDivider(),
+              SizedBox(height: 12),
+              Text(
+                'Dress Code - Formal Attire. Think elegant, timeless, and occasion-worthy. We encourage guests to dress comfortably while embracing the joy and significance of this auspicious occasion.',
+                textAlign: TextAlign.center,
+                style: AppTypography.bodySerif(scheme),
               ),
-            ),
-          ],
+              SizedBox(height: 12),
+              HeartDivider(),
+              SizedBox(height: 12),
+              Text(
+                'Your presence is the greatest gift of all. However, if you wish to honour us with a gift, a contribution towards our future together would be greatly appreciated.',
+                textAlign: TextAlign.center,
+                style: AppTypography.bodySerif(scheme),
+              ),
+              SizedBox(height: 24),
+              const BankDetailsSection(),
+              SizedBox(height: 100),
+            ],
+          ),
         ),
       ),
     );

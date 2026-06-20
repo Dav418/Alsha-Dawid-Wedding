@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class TimelineEntry {
-  const TimelineEntry({
-    required this.time,
-    required this.title,
-    this.details,
-    this.icon,
-  });
+part 'timeline_entry.freezed.dart';
 
-  final String time;
-  final String title;
-  final String? details;
-  final IconData? icon;
+@freezed
+class TimelineEntry with _$TimelineEntry {
+  const factory TimelineEntry({
+    required String time,
+    required String title,
+    String? details,
+    IconData? icon,
+    String? pinImageAssetPath,
+  }) = _TimelineEntry;
 }
