@@ -6,12 +6,10 @@ import 'package:alisha_dawid_wedding_website/assets/home/wedding_assets.dart';
 import '../../content/repositories/wedding_content_repository.dart';
 import '../../models/app_page.dart';
 import '../../router/app_router.gr.dart';
-import '../../theme/app_colors.dart';
-import '../../theme/app_typography.dart';
-import '../../utils/open_external_url.dart';
-import '../../utils/string_extensions.dart';
+import '../../utils/extension/string_extension.dart';
 import '../../widgets/heart_divider.dart';
 import '../../widgets/page_availability_gate.dart';
+import '../../utils/extension/context_extension.dart';
 
 @RoutePage()
 class RsvpPage extends ConsumerWidget {
@@ -54,8 +52,7 @@ class RsvpPage extends ConsumerWidget {
             Text(
               'Please RSVP by 17th July 2026. '.withSuperscriptOrdinals(),
               textAlign: TextAlign.center,
-              style: AppTypography.bodySerif(
-                Theme.of(context).colorScheme,
+              style: context.bodySerif(
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -83,7 +80,7 @@ class RsvpPage extends ConsumerWidget {
       return;
     }
 
-    final opened = await openExternalUrl(uri);
+    final opened = await context.openExternalUrl(uri);
     if (!opened && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -100,22 +97,20 @@ class _RsvpHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
 
     return Column(
       children: [
         Text(
           'RSVP',
           textAlign: TextAlign.center,
-          style: AppTypography.scriptHero(scheme),
+          style: context.scriptHero(),
         ),
         const SizedBox(height: 10),
         Text(
           'LET US KNOW YOU\'RE COMING',
           textAlign: TextAlign.center,
-          style: AppTypography.capsLabel(
-            scheme,
-            color: AppColors.sageGreen,
+          style: context.capsLabel(
+            color: context.sageGreen,
           ),
         ),
       ],
@@ -128,7 +123,6 @@ class _RsvpIntro extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -137,7 +131,7 @@ class _RsvpIntro extends StatelessWidget {
           'We are so excited to celebrate our wedding day with the people '
           'we love most.',
           textAlign: TextAlign.center,
-          style: AppTypography.bodySerif(scheme),
+          style: context.bodySerif(),
         ),
         const SizedBox(height: 18),
         Text(
@@ -145,14 +139,14 @@ class _RsvpIntro extends StatelessWidget {
           'as you will be asked to confirm '
           'your attendance for each part of the event separately. ',
           textAlign: TextAlign.center,
-          style: AppTypography.bodySerif(scheme),
+          style: context.bodySerif(),
         ),
         const SizedBox(height: 18),
         Text(
           'You can respond for yourself, as well as '
           'for any other guests listed in your group. ',
           textAlign: TextAlign.center,
-          style: AppTypography.bodySerif(scheme),
+          style: context.bodySerif(),
         ),
         const SizedBox(height: 18),
         Text(
@@ -161,7 +155,7 @@ class _RsvpIntro extends StatelessWidget {
           'final confirmation screen. After that, it is safe to close the '
           'RSVP tab and return to our wedding website.',
           textAlign: TextAlign.center,
-          style: AppTypography.bodySerif(scheme),
+          style: context.bodySerif(),
         ),
       ],
     );

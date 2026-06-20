@@ -6,12 +6,11 @@ import '../../assets/wedding_party/wedding_party_assets.dart';
 import '../../content/data/wedding_content.dart';
 import '../../content/repositories/wedding_content_repository.dart';
 import '../../models/app_page.dart';
-import '../../theme/app_colors.dart';
-import '../../theme/app_typography.dart';
 import '../../router/app_router.gr.dart';
 import '../../widgets/heart_divider.dart';
 import '../../widgets/page_availability_gate.dart';
 import '../../widgets/party_member_polaroid_overlay.dart';
+import '../../utils/extension/context_extension.dart';
 
 @RoutePage()
 class WeddingPartyPage extends ConsumerWidget {
@@ -72,20 +71,19 @@ class _PartyHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
 
     return Column(
       children: [
         Text(
           'Our Wedding Entourage',
           textAlign: TextAlign.center,
-          style: AppTypography.scriptHero(scheme),
+          style: context.scriptHero(),
         ),
         const SizedBox(height: 10),
         Text(
           'THE PEOPLE BY OUR SIDE',
           textAlign: TextAlign.center,
-          style: AppTypography.capsLabel(scheme),
+          style: context.capsLabel(),
         ),
       ],
     );
@@ -103,14 +101,13 @@ class _PartySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
 
     return Column(
       children: [
         Text(
           title,
           textAlign: TextAlign.center,
-          style: AppTypography.sectionCaps(scheme),
+          style: context.sectionCaps(),
         ),
         const SizedBox(height: 22),
         LayoutBuilder(
@@ -145,7 +142,6 @@ class _PartyPortrait extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
     const portraitSize = 104.0;
     final assetPath = WeddingPartyAssets.portrait(
       member.firstName,
@@ -176,12 +172,12 @@ class _PartyPortrait extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: AppColors.goldBrass.withValues(alpha: 0.35),
+                  color: context.goldBrass.withValues(alpha: 0.35),
                   width: 1.5,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.textCharcoal.withValues(alpha: 0.1),
+                    color: context.textCharcoal.withValues(alpha: 0.1),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -205,7 +201,7 @@ class _PartyPortrait extends StatelessWidget {
           textAlign: TextAlign.center,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
-          style: AppTypography.portraitName(scheme),
+          style: context.portraitName(),
         ),
       ],
     );
@@ -223,16 +219,15 @@ class _PortraitPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
     final initials = '${firstName.isNotEmpty ? firstName[0] : ''}'
         '${lastName.isNotEmpty ? lastName[0] : ''}';
 
     return ColoredBox(
-      color: AppColors.dustyRose.withValues(alpha: 0.28),
+      color: context.dustyRose.withValues(alpha: 0.28),
       child: Center(
         child: Text(
           initials.toUpperCase(),
-          style: AppTypography.portraitInitials(scheme),
+          style: context.portraitInitials(),
         ),
       ),
     );

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-import '../../../theme/app_colors.dart';
-import '../../../theme/app_typography.dart';
 import 'timeline_entry.dart';
+import '../../../utils/extension/context_extension.dart';
 
 class WeddingDayTimeline extends HookWidget {
   const WeddingDayTimeline({
@@ -231,15 +230,14 @@ class _TimelineRail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
     final hasImage = imageAssetPath != null;
 
     final dotSize =
         hasImage ? _lerp(24, 38, progress) : _lerp(13, 26, progress);
 
     final dotColor = Color.lerp(
-      scheme.primary.withValues(alpha: 0.35),
-      scheme.primary,
+      context.colorScheme.primary.withValues(alpha: 0.35),
+      context.colorScheme.primary,
       progress,
     )!;
 
@@ -272,11 +270,11 @@ class _TimelineRail extends StatelessWidget {
                 padding: EdgeInsets.all(hasImage ? 2 : 0),
                 decoration: BoxDecoration(
                   color: hasImage
-                      ? AppColors.creamBackground.withValues(alpha: 0.92)
+                      ? context.creamBackground.withValues(alpha: 0.92)
                       : dotColor,
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: AppColors.goldBrass.withValues(
+                    color: context.goldBrass.withValues(
                       alpha: _lerp(0.45, 0.8, progress),
                     ),
                     width: _lerp(1.5, 2.5, progress),
@@ -307,7 +305,7 @@ class _TimelineRailLine extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 2,
-      color: AppColors.goldBrass.withValues(alpha: 0.25),
+      color: context.goldBrass.withValues(alpha: 0.25),
     );
   }
 }
@@ -327,7 +325,6 @@ class _TimelineCard extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
 
     final iconController = useAnimationController(
       duration: const Duration(milliseconds: 950),
@@ -378,10 +375,10 @@ class _TimelineCard extends HookWidget {
           alignment: Alignment.topCenter,
           child: DecoratedBox(
             decoration: BoxDecoration(
-              color: AppColors.creamBackground.withValues(alpha: 0.76),
+              color: context.creamBackground.withValues(alpha: 0.76),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: AppColors.goldBrass.withValues(
+                color: context.goldBrass.withValues(
                   alpha: _lerp(0.14, 0.42, progress),
                 ),
               ),
@@ -404,7 +401,7 @@ class _TimelineCard extends HookWidget {
                             child: Icon(
                               entry.icon,
                               size: 104,
-                              color: scheme.primary,
+                              color: context.colorScheme.primary,
                             ),
                           ),
                         ),
@@ -421,7 +418,7 @@ class _TimelineCard extends HookWidget {
                           child: Text(
                             entry.time,
                             textAlign: TextAlign.left,
-                            style: AppTypography.cardTime(scheme),
+                            style: context.cardTime(),
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -431,8 +428,7 @@ class _TimelineCard extends HookWidget {
                             entry.title,
                             textAlign: TextAlign.left,
                             softWrap: true,
-                            style: AppTypography.cardTitleCaps(
-                              scheme,
+                            style: context.cardTitleCaps(
                               fontSize: 12,
                               letterSpacing: 1.3,
                             ),
@@ -455,8 +451,7 @@ class _TimelineCard extends HookWidget {
                                     entry.details!,
                                     textAlign: TextAlign.left,
                                     softWrap: true,
-                                    style: AppTypography.bodySerif(
-                                      scheme,
+                                    style: context.bodySerif(
                                       fontSize: 12,
                                       height: 1.35,
                                     ),
@@ -494,7 +489,6 @@ class _TimelineCardToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
 
     return AnimatedRotation(
       turns: isExpanded ? 0.125 : 0,
@@ -502,7 +496,7 @@ class _TimelineCardToggle extends StatelessWidget {
       curve: Curves.easeOut,
       child: Text(
         '+',
-        style: AppTypography.faqToggle(scheme),
+        style: context.faqToggle(),
       ),
     );
   }

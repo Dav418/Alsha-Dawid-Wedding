@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/app_page.dart';
 import '../../providers/page_availability_provider.dart';
 import '../../router/app_router.gr.dart';
-import '../../theme/app_typography.dart';
+import '../../utils/extension/context_extension.dart';
 
 @RoutePage()
 class SecretPage extends ConsumerWidget {
@@ -17,8 +17,6 @@ class SecretPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
     final availability = ref.watch(pageAvailabilityProvider);
 
     return Padding(
@@ -29,15 +27,14 @@ class SecretPage extends ConsumerWidget {
           Text(
             'Page availability',
             textAlign: TextAlign.center,
-            style: AppTypography.sectionCaps(scheme, fontSize: 16),
+            style: context.sectionCaps( fontSize: 16),
           ),
           const SizedBox(height: 8),
           Text(
             'Toggle whether each page is live or under construction.',
             textAlign: TextAlign.center,
-            style: AppTypography.bodySerif(
-              scheme,
-              color: scheme.onSurfaceVariant,
+            style: context.bodySerif(
+              color: context.colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 24),
@@ -49,15 +46,15 @@ class SecretPage extends ConsumerWidget {
                 contentPadding: EdgeInsets.zero,
                 title: Text(
                   page.displayName,
-                  style: theme.textTheme.titleSmall?.copyWith(
+                  style: context.textTheme.titleSmall?.copyWith(
                     letterSpacing: 0.8,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 subtitle: Text(
                   isWorking ? 'Working' : 'Under construction',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: scheme.onSurfaceVariant,
+                  style: context.textTheme.bodySmall?.copyWith(
+                    color: context.colorScheme.onSurfaceVariant,
                   ),
                 ),
                 value: isWorking,

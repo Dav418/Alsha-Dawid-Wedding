@@ -4,7 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../models/app_page.dart';
 import '../../router/app_router.gr.dart';
-import '../../theme/app_typography.dart';
+import '../../utils/extension/context_extension.dart';
 import '../../widgets/heart_divider.dart';
 import '../../widgets/page_availability_gate.dart';
 import 'bank_details_section.dart';
@@ -21,7 +21,6 @@ class WeddingDetailsPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
     return PageAvailabilityGate(
       page: AppPage.itinerary,
       child: Padding(
@@ -34,7 +33,7 @@ class WeddingDetailsPage extends HookWidget {
               Text(
                 'We are so excited to share our wedding day with you. Below is a guide to the main events of the day, from the ceremony to the evening celebration. Please use this as a gentle overview of what to expect, while allowing a little flexibility for the natural flow of the day.',
                 textAlign: TextAlign.center,
-                style: AppTypography.bodySerif(scheme),
+                style: context.bodySerif(),
               ),
               SizedBox(height: 40),
               HeartDivider(),
@@ -50,7 +49,7 @@ class WeddingDetailsPage extends HookWidget {
               Text(
                 'Dress Code - Formal Attire. Think elegant, timeless, and occasion-worthy. We encourage guests to dress comfortably while embracing the joy and significance of this auspicious occasion.',
                 textAlign: TextAlign.center,
-                style: AppTypography.bodySerif(scheme),
+                style: context.bodySerif(),
               ),
               SizedBox(height: 12),
               HeartDivider(),
@@ -58,7 +57,7 @@ class WeddingDetailsPage extends HookWidget {
               Text(
                 'Your presence is the greatest gift of all. However, if you wish to honour us with a gift, a contribution towards our future together would be greatly appreciated.',
                 textAlign: TextAlign.center,
-                style: AppTypography.bodySerif(scheme),
+                style: context.bodySerif(),
               ),
               SizedBox(height: 24),
               const BankDetailsSection(),
@@ -76,14 +75,12 @@ class _DetailsHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-
     return Column(
       children: [
         Text(
           'Wedding Details',
           textAlign: TextAlign.center,
-          style: AppTypography.scriptHero(scheme),
+          style: context.scriptHero(),
         ),
         const SizedBox(height: 10),
         const HeartDivider(),

@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../utils/string_extensions.dart';
+import '../../utils/extension/string_extension.dart';
 
 part 'wedding_content.freezed.dart';
 part 'wedding_content.g.dart';

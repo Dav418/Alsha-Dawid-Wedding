@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 import '../../models/app_page.dart';
 import '../../router/app_router.gr.dart';
-import '../../theme/app_typography.dart';
 import '../../widgets/page_availability_gate.dart';
 import '../../widgets/wedding_countdown.dart';
+import '../../utils/extension/context_extension.dart';
 
 @RoutePage()
 class CountdownPage extends StatelessWidget {
@@ -36,7 +36,6 @@ class _CountdownScriptTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 32, 24, 8),
@@ -49,8 +48,7 @@ class _CountdownScriptTitle extends StatelessWidget {
               Text(
                 'Counting Down',
                 textAlign: TextAlign.center,
-                style: AppTypography.scriptHero(
-                  scheme,
+                style: context.scriptHero(
                   fontSize: fontSize,
                   height: 1.05,
                 ),
@@ -59,8 +57,7 @@ class _CountdownScriptTitle extends StatelessWidget {
               Text(
                 'to Forever',
                 textAlign: TextAlign.center,
-                style: AppTypography.scriptHero(
-                  scheme,
+                style: context.scriptHero(
                   fontSize: fontSize,
                   height: 1.05,
                 ),

@@ -8,13 +8,13 @@ import '../../content/data/wedding_content.dart';
 import '../../content/repositories/wedding_content_repository.dart';
 import '../../models/app_page.dart';
 import '../../router/app_router.gr.dart';
-import '../../theme/app_typography.dart';
 import '../../features/rsvp/rsvp_page.dart';
 import '../../features/secret/secret_page.dart';
 import '../../widgets/heart_divider.dart';
 import '../../widgets/page_availability_gate.dart';
 import '../../widgets/wedding_countdown.dart';
 import '../../widgets/wedding_hero_invite_card.dart';
+import '../../utils/extension/context_extension.dart';
 
 @RoutePage()
 class HomePage extends ConsumerWidget {
@@ -89,7 +89,6 @@ class _HomeInviteContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
     final couple = content.couple;
     final event = content.event;
 
@@ -100,17 +99,17 @@ class _HomeInviteContent extends StatelessWidget {
         Text(
           couple.partner1Name,
           textAlign: TextAlign.center,
-          style: AppTypography.scriptHero(scheme, fontSize: 44, height: 1),
+          style: context.scriptHero( fontSize: 44, height: 1),
         ),
         Text(
           '&',
           textAlign: TextAlign.center,
-          style: AppTypography.scriptHero(scheme, fontSize: 36, height: 1),
+          style: context.scriptHero( fontSize: 36, height: 1),
         ),
         Text(
           couple.partner2Name,
           textAlign: TextAlign.center,
-          style: AppTypography.scriptHero(scheme, fontSize: 44, height: 1),
+          style: context.scriptHero( fontSize: 44, height: 1),
         ),
         const SizedBox(height: 16),
         const HeartDivider(),
@@ -118,11 +117,10 @@ class _HomeInviteContent extends StatelessWidget {
         Text(
           event.weddingDate,
           textAlign: TextAlign.center,
-          style: AppTypography.capsLabel(
-            scheme,
+          style: context.capsLabel(
             fontSize: 16,
             letterSpacing: 2,
-            color: scheme.primary,
+            color: context.colorScheme.primary,
           ),
         ),
         const SizedBox(height: 10),
@@ -131,9 +129,8 @@ class _HomeInviteContent extends StatelessWidget {
         Text(
           event.locationDisplay,
           textAlign: TextAlign.center,
-          style: AppTypography.capsLabel(
-            scheme,
-            color: scheme.primary,
+          style: context.capsLabel(
+            color: context.colorScheme.primary,
           ),
         ),
       ],
@@ -146,7 +143,6 @@ class _HomeWelcomeSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(36, 28, 36, 40),
@@ -156,7 +152,7 @@ class _HomeWelcomeSection extends StatelessWidget {
           Text(
             'Welcome',
             textAlign: TextAlign.center,
-            style: AppTypography.scriptHero(scheme, height: 1.1),
+            style: context.scriptHero( height: 1.1),
           ),
           const SizedBox(height: 12),
           const HeartAccent(),
@@ -166,13 +162,13 @@ class _HomeWelcomeSection extends StatelessWidget {
             'people we love most. Here you\u2019ll find everything you need '
             'for our wedding day in October 2026.',
             textAlign: TextAlign.center,
-            style: AppTypography.bodySerif(scheme),
+            style: context.bodySerif(),
           ),
           const SizedBox(height: 20),
           Text(
             "We can't wait to celebrate with you!",
             textAlign: TextAlign.center,
-            style: AppTypography.scriptQuote(scheme, height: 1.2, fontSize: 28),
+            style: context.scriptQuote( height: 1.2, fontSize: 28),
           ),
           const SizedBox(height: 28),
           const HeartAccent(),

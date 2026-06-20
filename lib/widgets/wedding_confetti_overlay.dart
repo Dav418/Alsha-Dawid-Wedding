@@ -2,15 +2,7 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-import '../theme/app_colors.dart';
-
-const weddingConfettiColors = [
-  AppColors.burgundyAccent,
-  AppColors.goldBrass,
-  AppColors.dustyRose,
-  AppColors.sageGreen,
-  AppColors.blushPeach,
-];
+import '../utils/extension/context_extension.dart';
 
 ConfettiController useWeddingConfettiController({
   Duration duration = const Duration(seconds: 4),
@@ -41,7 +33,7 @@ void useWeddingConfettiOverlay(
       }
 
       overlayEntry.value = OverlayEntry(
-        builder: (_) => Positioned.fill(
+        builder: (overlayContext) => Positioned.fill(
           child: IgnorePointer(
             child: Align(
               alignment: Alignment.topCenter,
@@ -53,7 +45,13 @@ void useWeddingConfettiOverlay(
                 maxBlastForce: 28,
                 minBlastForce: 12,
                 gravity: 0.18,
-                colors: weddingConfettiColors,
+                colors: [
+                  overlayContext.burgundyAccent,
+                  overlayContext.goldBrass,
+                  overlayContext.dustyRose,
+                  overlayContext.sageGreen,
+                  overlayContext.blushPeach,
+                ],
               ),
             ),
           ),

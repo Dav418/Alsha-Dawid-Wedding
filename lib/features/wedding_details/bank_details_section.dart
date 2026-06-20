@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-import '../../theme/app_colors.dart';
-import '../../theme/app_typography.dart';
 import 'bank_details_data.dart';
+import '../../utils/extension/context_extension.dart';
 
 class BankDetailsSection extends HookWidget {
   const BankDetailsSection({super.key});
@@ -24,14 +23,14 @@ class BankDetailsSection extends HookWidget {
         const SizedBox(height: 24),
         DecoratedBox(
           decoration: BoxDecoration(
-            color: AppColors.creamBackground.withValues(alpha: 0.85),
+            color: context.creamBackground.withValues(alpha: 0.85),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: AppColors.goldBrass.withValues(alpha: 0.22),
+              color: context.goldBrass.withValues(alpha: 0.22),
             ),
             boxShadow: [
               BoxShadow(
-                color: AppColors.textCharcoal.withValues(alpha: 0.06),
+                color: context.textCharcoal.withValues(alpha: 0.06),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -72,19 +71,18 @@ class _BankRegionPillSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
     final selectedIndex = _options.indexWhere((option) => option.$1 == selected);
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: AppColors.creamBackground.withValues(alpha: 0.9),
+        color: context.creamBackground.withValues(alpha: 0.9),
         borderRadius: BorderRadius.circular(999),
         border: Border.all(
-          color: AppColors.goldBrass.withValues(alpha: 0.35),
+          color: context.goldBrass.withValues(alpha: 0.35),
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.textCharcoal.withValues(alpha: 0.05),
+            color: context.textCharcoal.withValues(alpha: 0.05),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -107,11 +105,11 @@ class _BankRegionPillSwitch extends StatelessWidget {
                   width: segmentWidth,
                   child: DecoratedBox(
                     decoration: BoxDecoration(
-                      color: scheme.primary,
+                      color: context.colorScheme.primary,
                       borderRadius: BorderRadius.circular(999),
                       boxShadow: [
                         BoxShadow(
-                          color: scheme.primary.withValues(alpha: 0.25),
+                          color: context.colorScheme.primary.withValues(alpha: 0.25),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
@@ -151,7 +149,6 @@ class _BankPillOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
 
     return Expanded(
       child: Material(
@@ -164,11 +161,10 @@ class _BankPillOption extends StatelessWidget {
             child: Text(
               label,
               textAlign: TextAlign.center,
-              style: AppTypography.capsLabel(
-                scheme,
+              style: context.capsLabel(
                 fontSize: 10.5,
                 letterSpacing: 1.6,
-                color: selected ? scheme.onPrimary : scheme.primary,
+                color: selected ? context.colorScheme.onPrimary : context.colorScheme.primary,
               ),
             ),
           ),
@@ -198,9 +194,8 @@ class _BankDetailLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final labelStyle = AppTypography.faqQuestion(scheme);
-    final valueStyle = AppTypography.faqAnswer(scheme);
+    final labelStyle = context.faqQuestion();
+    final valueStyle = context.faqAnswer();
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -225,7 +220,7 @@ class _BankDetailLine extends StatelessWidget {
             child: Icon(
               Icons.copy_rounded,
               size: 18,
-              color: scheme.primary.withValues(alpha: 0.7),
+              color: context.colorScheme.primary.withValues(alpha: 0.7),
             ),
           ),
         ),

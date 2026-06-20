@@ -5,10 +5,9 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../content/repositories/wedding_content_repository.dart';
-import '../theme/app_colors.dart';
-import '../theme/app_typography.dart';
 import 'heart_divider.dart';
 import 'wedding_confetti_overlay.dart';
+import '../utils/extension/context_extension.dart';
 
 /// Full-width wedding countdown banner — target date comes from content JSON (UTC).
 class WeddingCountdown extends ConsumerWidget {
@@ -93,8 +92,6 @@ class _WeddingCountdownTimer extends HookWidget {
       },
       [remaining.value, confettiController],
     );
-
-    final scheme = Theme.of(context).colorScheme;
     final width = MediaQuery.sizeOf(context).width;
     final compact = width < 360;
     final numberSize = compact ? 34.0 : (width < 520 ? 42.0 : 48.0);
@@ -109,8 +106,8 @@ class _WeddingCountdownTimer extends HookWidget {
     final seconds = remaining.value.inSeconds.remainder(60);
 
     return DecoratedBox(
-      decoration: const BoxDecoration(
-        color: AppColors.creamBackground,
+      decoration: BoxDecoration(
+        color: context.creamBackground,
       ),
       child: SizedBox(
         width: double.infinity,
@@ -128,8 +125,7 @@ class _WeddingCountdownTimer extends HookWidget {
                 Text(
                   'COUNTING DOWN TO FOREVER',
                   textAlign: TextAlign.center,
-                  style: AppTypography.countdownBannerTitle(
-                    scheme,
+                  style: context.countdownBannerTitle(
                     fontSize: titleSize,
                     compact: compact,
                   ),
@@ -142,8 +138,7 @@ class _WeddingCountdownTimer extends HookWidget {
                 Text(
                   "Let's get married",
                   textAlign: TextAlign.center,
-                  style: AppTypography.scriptHero(
-                    scheme,
+                  style: context.scriptHero(
                     fontSize: celebrationSize,
                     height: 1.05,
                   ),
@@ -199,14 +194,11 @@ class _CountdownRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final unitStyle = AppTypography.countdownUnit(
-      scheme,
+    final unitStyle = context.countdownUnit(
       fontSize: labelSize,
       compact: compact,
     );
-    final numberStyle = AppTypography.countdownNumber(
-      scheme,
+    final numberStyle = context.countdownNumber(
       fontSize: numberSize,
     );
 
@@ -290,14 +282,13 @@ class _CountdownDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
 
     return SizedBox(
       width: 1,
       height: compact ? 44 : 52,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: scheme.tertiary.withValues(alpha: 0.45),
+          color: context.colorScheme.tertiary.withValues(alpha: 0.45),
         ),
       ),
     );

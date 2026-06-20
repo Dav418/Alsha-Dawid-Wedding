@@ -7,13 +7,9 @@ import '../content/repositories/wedding_content_repository.dart';
 import '../models/footer_nav_action.dart';
 import '../features/wedding_details/wedding_details_page.dart';
 import '../router/app_router.gr.dart';
-import '../theme/app_colors.dart';
-import '../theme/app_typography.dart';
-import '../utils/open_contact_email.dart';
-import '../utils/open_external_url.dart';
-import '../utils/open_venue_map.dart';
 import 'hard_edge_color.dart';
 import 'line_icon.dart';
+import '../utils/extension/context_extension.dart';
 
 /// Fixed footer with quick links — pinned to the bottom of every shell page.
 class WeddingFooter extends ConsumerWidget {
@@ -34,7 +30,7 @@ class WeddingFooter extends ConsumerWidget {
     final contactHorizontalPadding = compact ? 16.0 : 40.0;
 
     return HardEdgeColor(
-      color: AppColors.burgundyAccent,
+      color: context.burgundyAccent,
       child: SafeArea(
         top: false,
         child: Column(
@@ -52,7 +48,7 @@ class WeddingFooter extends ConsumerWidget {
                         thickness: 1,
                         indent: 8,
                         endIndent: 8,
-                        color: AppColors.goldBrass.withValues(alpha: 0.35),
+                        color: context.goldBrass.withValues(alpha: 0.35),
                       ),
                     Expanded(
                       child: _FooterNavButton(
@@ -96,10 +92,10 @@ class WeddingFooter extends ConsumerWidget {
   }) async {
     switch (action) {
       case FooterNavAction.venueMap:
-        await openVenueMap(content.links.venueMapQuery);
+        await context.openVenueMap(content.links.venueMapQuery);
         return;
       case FooterNavAction.liveUpdates:
-        final opened = await openExternalUrl(
+        final opened = await context.openExternalUrl(
           Uri.parse(content.links.liveUpdatesUrl),
         );
         if (!opened && context.mounted) {
@@ -129,9 +125,8 @@ class _FooterContactInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
 
-    final lineStyle = AppTypography.contactLine(scheme).copyWith(
+    final lineStyle = context.contactLine().copyWith(
       fontSize: 12,
       color: Colors.white.withValues(alpha: 0.85),
     );
@@ -145,7 +140,7 @@ class _FooterContactInfo extends StatelessWidget {
           label: content.contact.email,
           style: lineStyle,
           onTap: () async {
-            final opened = await openContactEmail(content.contact.email);
+            final opened = await context.openContactEmail(content.contact.email);
             if (!opened && context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
@@ -188,7 +183,7 @@ class _FooterContactLine extends StatelessWidget {
         LineIcon(
           variant: icon,
           size: _iconSize,
-          color: AppColors.goldBrass,
+          color: context.goldBrass,
         ),
         const SizedBox(width: 8),
         Flexible(
@@ -226,7 +221,7 @@ class _FooterNavButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final labelColor =
-        selected ? AppColors.goldBrass : Colors.white.withValues(alpha: 0.92);
+        selected ? context.goldBrass : Colors.white.withValues(alpha: 0.92);
 
     return Material(
       color:
@@ -243,7 +238,7 @@ class _FooterNavButton extends StatelessWidget {
               LineIcon(
                 variant: action.icon,
                 size: 28,
-                color: AppColors.goldBrass,
+                color: context.goldBrass,
               ),
               const SizedBox(height: 6),
               Text(
@@ -251,8 +246,7 @@ class _FooterNavButton extends StatelessWidget {
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: AppTypography.navCardTitle(
-                  Theme.of(context).colorScheme,
+                style: context.navCardTitle(
                   color: labelColor,
                 ),
               ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../assets/home/wedding_assets.dart';
+import '../utils/extension/context_extension.dart';
 
 /// Collapsing [SliverAppBar] for the shell [CustomScrollView].
 class WeddingAppBar extends StatelessWidget {
@@ -15,7 +16,7 @@ class WeddingAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appBarTheme = Theme.of(context).appBarTheme;
+    final appBarTheme = context.appBarTheme;
 
     return SliverAppBar(
       pinned: true,

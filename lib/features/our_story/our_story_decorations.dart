@@ -1,8 +1,8 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import '../../utils/extension/context_extension.dart';
 
-import '../../theme/app_colors.dart';
 
 /// Five-point star for the footer flourish divider.
 class StoryStarPin extends StatelessWidget {
@@ -16,7 +16,7 @@ class StoryStarPin extends StatelessWidget {
       width: size,
       height: size,
       child: CustomPaint(
-        painter: _StoryStarPinPainter(color: AppColors.goldBrass),
+        painter: _StoryStarPinPainter(color: context.goldBrass),
       ),
     );
   }
@@ -73,7 +73,7 @@ class StoryFooterFlourish extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final gold = Theme.of(context).colorScheme.tertiary;
+    final gold = context.colorScheme.tertiary;
 
     return Row(
       children: [

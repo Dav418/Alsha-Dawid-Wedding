@@ -4,9 +4,9 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../models/app_page.dart';
 import '../../router/app_router.gr.dart';
-import '../../theme/app_typography.dart';
 import '../../widgets/page_availability_gate.dart';
 import '../../widgets/wedding_countdown.dart';
+import '../../utils/extension/context_extension.dart';
 
 const _durationPresets = [5, 10, 15, 30, 60];
 
@@ -20,7 +20,6 @@ class CountdownTestPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
     final durationSeconds = useState(10);
     final activeTarget = useState<DateTime?>(null);
     final runId = useState(0);
@@ -47,8 +46,7 @@ class CountdownTestPage extends HookWidget {
             child: Text(
               'Countdown Test',
               textAlign: TextAlign.center,
-              style: AppTypography.scriptHero(
-                scheme,
+              style: context.scriptHero(
                 fontSize: 46,
                 height: 1.05,
               ),
@@ -59,7 +57,7 @@ class CountdownTestPage extends HookWidget {
             child: Text(
               'Pick a duration, start the timer, and watch confetti when it hits zero.',
               textAlign: TextAlign.center,
-              style: AppTypography.bodySerif(scheme),
+              style: context.bodySerif(),
             ),
           ),
           Padding(

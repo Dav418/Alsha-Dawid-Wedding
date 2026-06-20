@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/app_typography.dart';
+import '../utils/extension/context_extension.dart';
 
 /// Primary call-to-action button used across FAQ, RSVP, home, etc.
 class WeddingActionButton extends StatelessWidget {
@@ -17,8 +17,6 @@ class WeddingActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-
     return FilledButton(
       onPressed: onPressed,
       style: FilledButton.styleFrom(
@@ -30,7 +28,7 @@ class WeddingActionButton extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: AppTypography.buttonLabel(scheme),
+        style: context.buttonLabel(),
       ),
     );
   }

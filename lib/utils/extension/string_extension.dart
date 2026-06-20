@@ -1,6 +1,6 @@
 final _ordinalPattern = RegExp(r'(\d+)(st|nd|rd|th)\b', caseSensitive: false);
 
-extension SuperscriptOrdinalString on String {
+extension StringExtension on String {
   String withSuperscriptOrdinals() {
     return replaceAllMapped(_ordinalPattern, (match) {
       final digits = match.group(1)!;

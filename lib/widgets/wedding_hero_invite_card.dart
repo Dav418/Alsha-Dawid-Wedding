@@ -7,6 +7,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../hooks/use_auto_route_aware.dart';
 import '../models/invite_card_shape.dart';
+import '../utils/extension/context_extension.dart';
 
 class WeddingHeroInviteCard extends HookWidget {
   const WeddingHeroInviteCard({
@@ -111,8 +112,6 @@ class WeddingHeroInviteCard extends HookWidget {
 
     useAutoRouteAware(routeAware);
 
-    final scheme = Theme.of(context).colorScheme;
-
     return AnimatedBuilder(
       animation: controller,
       builder: (context, _) {
@@ -141,11 +140,11 @@ class WeddingHeroInviteCard extends HookWidget {
                       painter: _InviteCardPainter(
                         shape: _shape,
                         withArch: hasImage,
-                        paperFill: scheme.surface.withValues(alpha: 0.86),
-                        outerFrame: scheme.outline.withValues(alpha: 0.95),
+                        paperFill: context.colorScheme.surface.withValues(alpha: 0.86),
+                        outerFrame: context.colorScheme.outline.withValues(alpha: 0.95),
                         innerFrame:
-                            scheme.outlineVariant.withValues(alpha: 0.7),
-                        cardShadow: scheme.shadow.withValues(alpha: 0.16),
+                            context.colorScheme.outlineVariant.withValues(alpha: 0.7),
+                        cardShadow: context.colorScheme.shadow.withValues(alpha: 0.16),
                       ),
                     ),
                   ),

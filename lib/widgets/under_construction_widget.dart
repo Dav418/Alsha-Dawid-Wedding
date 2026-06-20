@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/app_page.dart';
-import '../theme/app_typography.dart';
+import '../utils/extension/context_extension.dart';
 import 'heart_divider.dart';
 
 class UnderConstructionWidget extends StatelessWidget {
@@ -14,8 +14,6 @@ class UnderConstructionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-
     return Padding(
       padding: const EdgeInsets.fromLTRB(36, 32, 36, 48),
       child: Column(
@@ -24,7 +22,7 @@ class UnderConstructionWidget extends StatelessWidget {
           Text(
             page.displayName,
             textAlign: TextAlign.center,
-            style: AppTypography.sectionCaps(scheme, fontSize: 16),
+            style: context.sectionCaps(fontSize: 16),
           ),
           const SizedBox(height: 16),
           const HeartDivider(),
@@ -39,7 +37,7 @@ class UnderConstructionWidget extends StatelessWidget {
           Text(
             'Under Construction',
             textAlign: TextAlign.center,
-            style: AppTypography.scriptHero(scheme, fontSize: 40, height: 1.1),
+            style: context.scriptHero(fontSize: 40, height: 1.1),
           ),
           const SizedBox(height: 16),
           const HeartAccent(),
@@ -47,7 +45,7 @@ class UnderConstructionWidget extends StatelessWidget {
           Text(
             'This page is still being prepared. Please check back soon.',
             textAlign: TextAlign.center,
-            style: AppTypography.bodySerif(scheme),
+            style: context.bodySerif(),
           ),
         ],
       ),

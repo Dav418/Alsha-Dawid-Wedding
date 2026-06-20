@@ -6,14 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../content/repositories/wedding_content_repository.dart';
 import '../../models/app_page.dart';
 import '../../models/faq_item.dart';
-import '../../theme/app_colors.dart';
-import '../../theme/app_typography.dart';
 import '../../router/app_router.gr.dart';
-import '../../utils/open_contact_email.dart';
-import '../../utils/string_extensions.dart';
+import '../../utils/extension/string_extension.dart';
 import '../../widgets/heart_divider.dart';
 import '../../widgets/page_availability_gate.dart';
 import '../../widgets/wedding_action_button.dart';
+import '../../utils/extension/context_extension.dart';
 
 const _faqs = [
   FaqItem(
@@ -95,22 +93,20 @@ class _FaqHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
 
     return Column(
       children: [
         Text(
           'Frequently Asked Questions',
           textAlign: TextAlign.center,
-          style: AppTypography.scriptHero(scheme, fontSize: 48, height: 1.08),
+          style: context.scriptHero( fontSize: 48, height: 1.08),
         ),
         const SizedBox(height: 10),
         Text(
           'EVERYTHING YOU NEED TO KNOW',
           textAlign: TextAlign.center,
-          style: AppTypography.capsLabel(
-            scheme,
-            color: AppColors.sageGreen,
+          style: context.capsLabel(
+            color: context.sageGreen,
           ),
         ),
       ],
@@ -126,18 +122,17 @@ class _FaqAccordionTile extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final expanded = useState(false);
-    final scheme = Theme.of(context).colorScheme;
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: AppColors.creamBackground.withValues(alpha: 0.85),
+        color: context.creamBackground.withValues(alpha: 0.85),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: AppColors.goldBrass.withValues(alpha: 0.22),
+          color: context.goldBrass.withValues(alpha: 0.22),
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.textCharcoal.withValues(alpha: 0.06),
+            color: context.textCharcoal.withValues(alpha: 0.06),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -160,7 +155,7 @@ class _FaqAccordionTile extends HookWidget {
                       Expanded(
                         child: Text(
                           item.question,
-                          style: AppTypography.faqQuestion(scheme),
+                          style: context.faqQuestion(),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -170,7 +165,7 @@ class _FaqAccordionTile extends HookWidget {
                         curve: Curves.easeOut,
                         child: Text(
                           '+',
-                          style: AppTypography.faqToggle(scheme),
+                          style: context.faqToggle(),
                         ),
                       ),
                     ],
@@ -186,7 +181,7 @@ class _FaqAccordionTile extends HookWidget {
                         padding: const EdgeInsets.fromLTRB(18, 0, 18, 18),
                         child: Text(
                           item.answer.withSuperscriptOrdinals(),
-                          style: AppTypography.faqAnswer(scheme),
+                          style: context.faqAnswer(),
                         ),
                       )
                     : const SizedBox(width: double.infinity),
@@ -206,21 +201,20 @@ class _FaqContactSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final email =
         ref.watch(weddingContentRepositoryProvider).requireValue.contact.email;
-    final scheme = Theme.of(context).colorScheme;
 
     return Column(
       children: [
         Text(
           'Still have a question? Feel free to contact us.',
           textAlign: TextAlign.center,
-          style: AppTypography.scriptQuote(scheme, fontSize: 28),
+          style: context.scriptQuote( fontSize: 28),
         ),
         const SizedBox(height: 20),
         Center(
           child: WeddingActionButton(
             label: 'CONTACT US',
             onPressed: () async {
-              final opened = await openContactEmail(email);
+              final opened = await context.openContactEmail(email);
               if (!opened && context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(

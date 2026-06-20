@@ -4,13 +4,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../models/app_page.dart';
 import '../../models/food_item.dart';
-import '../../theme/app_colors.dart';
-import '../../theme/app_typography.dart';
 import '../../router/app_router.gr.dart';
-import '../../utils/open_external_url.dart';
 import '../../widgets/heart_divider.dart';
 import '../../widgets/page_availability_gate.dart';
 import 'food_menu_data.dart';
+import '../../utils/extension/context_extension.dart';
 
 @RoutePage()
 class FoodPage extends StatelessWidget {
@@ -47,22 +45,20 @@ class _FoodHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
 
     return Column(
       children: [
         Text(
           'Food & Menu',
           textAlign: TextAlign.center,
-          style: AppTypography.scriptHero(scheme, fontSize: 48, height: 1.08),
+          style: context.scriptHero( fontSize: 48, height: 1.08),
         ),
         const SizedBox(height: 10),
         Text(
           'A FEAST OF TWO CULTURES',
           textAlign: TextAlign.center,
-          style: AppTypography.capsLabel(
-            scheme,
-            color: AppColors.sageGreen,
+          style: context.capsLabel(
+            color: context.sageGreen,
           ),
         ),
       ],
@@ -90,8 +86,7 @@ class _FoodMenuBody extends HookWidget {
               ? 'Polish classics from Dawid\'s side of the family.'
               : 'Goan flavours from Alisha\'s side of the family.',
           textAlign: TextAlign.center,
-          style: AppTypography.bodySerif(
-            Theme.of(context).colorScheme,
+          style: context.bodySerif(
             fontSize: 14.5,
           ),
         ),
@@ -119,18 +114,17 @@ class _CulturePillSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: AppColors.creamBackground.withValues(alpha: 0.9),
+        color: context.creamBackground.withValues(alpha: 0.9),
         borderRadius: BorderRadius.circular(999),
         border: Border.all(
-          color: AppColors.goldBrass.withValues(alpha: 0.35),
+          color: context.goldBrass.withValues(alpha: 0.35),
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.textCharcoal.withValues(alpha: 0.05),
+            color: context.textCharcoal.withValues(alpha: 0.05),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -153,11 +147,11 @@ class _CulturePillSwitch extends StatelessWidget {
                   width: halfWidth,
                   child: DecoratedBox(
                     decoration: BoxDecoration(
-                      color: scheme.primary,
+                      color: context.colorScheme.primary,
                       borderRadius: BorderRadius.circular(999),
                       boxShadow: [
                         BoxShadow(
-                          color: scheme.primary.withValues(alpha: 0.25),
+                          color: context.colorScheme.primary.withValues(alpha: 0.25),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
@@ -201,7 +195,6 @@ class _CulturePillOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
 
     return Expanded(
       child: Material(
@@ -214,11 +207,10 @@ class _CulturePillOption extends StatelessWidget {
             child: Text(
               label,
               textAlign: TextAlign.center,
-              style: AppTypography.capsLabel(
-                scheme,
+              style: context.capsLabel(
                 fontSize: 11.5,
                 letterSpacing: 2.2,
-                color: selected ? scheme.onPrimary : scheme.primary,
+                color: selected ? context.colorScheme.onPrimary : context.colorScheme.primary,
               ),
             ),
           ),
@@ -239,7 +231,6 @@ class _FoodCourseSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
     final items = FoodMenuData.forCultureAndCourse(culture, course);
 
     if (items.isEmpty) {
@@ -252,11 +243,10 @@ class _FoodCourseSection extends StatelessWidget {
         Text(
           _courseLabel(course),
           textAlign: TextAlign.center,
-          style: AppTypography.cardTitleCaps(
-            scheme,
+          style: context.cardTitleCaps(
             fontSize: 14,
             letterSpacing: 2.4,
-            color: AppColors.sageGreen,
+            color: context.sageGreen,
           ),
         ),
         const SizedBox(height: 14),
@@ -283,18 +273,17 @@ class _FoodAccordionTile extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final expanded = useState(false);
-    final scheme = Theme.of(context).colorScheme;
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: AppColors.creamBackground.withValues(alpha: 0.85),
+        color: context.creamBackground.withValues(alpha: 0.85),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: AppColors.goldBrass.withValues(alpha: 0.22),
+          color: context.goldBrass.withValues(alpha: 0.22),
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.textCharcoal.withValues(alpha: 0.06),
+            color: context.textCharcoal.withValues(alpha: 0.06),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -323,7 +312,7 @@ class _FoodAccordionTile extends HookWidget {
                       Expanded(
                         child: Text(
                           item.name,
-                          style: AppTypography.faqQuestion(scheme),
+                          style: context.faqQuestion(),
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -333,7 +322,7 @@ class _FoodAccordionTile extends HookWidget {
                         curve: Curves.easeOut,
                         child: Text(
                           '+',
-                          style: AppTypography.faqToggle(scheme),
+                          style: context.faqToggle(),
                         ),
                       ),
                     ],
@@ -358,7 +347,7 @@ class _FoodAccordionTile extends HookWidget {
                             const SizedBox(height: 14),
                             Text(
                               item.description,
-                              style: AppTypography.faqAnswer(scheme),
+                              style: context.faqAnswer(),
                             ),
                             const SizedBox(height: 14),
                             _FoodDetailLine(
@@ -380,7 +369,7 @@ class _FoodAccordionTile extends HookWidget {
                               alignment: Alignment.centerLeft,
                               child: TextButton.icon(
                                 onPressed: () async {
-                                  final opened = await openExternalUrl(
+                                  final opened = await context.openExternalUrl(
                                     Uri.parse(item.wikipediaUrl),
                                   );
                                   if (!opened && context.mounted) {
@@ -397,15 +386,14 @@ class _FoodAccordionTile extends HookWidget {
                                 icon: Icon(
                                   Icons.open_in_new_rounded,
                                   size: 16,
-                                  color: scheme.primary,
+                                  color: context.colorScheme.primary,
                                 ),
                                 label: Text(
                                   'READ MORE ON WIKIPEDIA',
-                                  style: AppTypography.capsLabel(
-                                    scheme,
+                                  style: context.capsLabel(
                                     fontSize: 10.5,
                                     letterSpacing: 1.6,
-                                    color: scheme.primary,
+                                    color: context.colorScheme.primary,
                                   ),
                                 ),
                               ),
@@ -434,24 +422,22 @@ class _FoodDetailLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: AppTypography.capsLabel(
-            scheme,
+          style: context.capsLabel(
             fontSize: 10,
             letterSpacing: 1.8,
-            color: AppColors.sageGreen,
+            color: context.sageGreen,
           ),
         ),
         const SizedBox(height: 4),
         Text(
           value,
-          style: AppTypography.faqAnswer(scheme),
+          style: context.faqAnswer(),
         ),
       ],
     );
@@ -473,7 +459,6 @@ class _FoodItemImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
@@ -484,7 +469,6 @@ class _FoodItemImage extends StatelessWidget {
           assetPath,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) => _FoodImagePlaceholder(
-            scheme: scheme,
             height: height,
           ),
         ),
@@ -495,11 +479,9 @@ class _FoodItemImage extends StatelessWidget {
 
 class _FoodImagePlaceholder extends StatelessWidget {
   const _FoodImagePlaceholder({
-    required this.scheme,
     required this.height,
   });
 
-  final ColorScheme scheme;
   final double height;
 
   @override
@@ -510,19 +492,19 @@ class _FoodImagePlaceholder extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppColors.sageGreen.withValues(alpha: 0.25),
-            AppColors.goldBrass.withValues(alpha: 0.18),
+            context.sageGreen.withValues(alpha: 0.25),
+            context.goldBrass.withValues(alpha: 0.18),
           ],
         ),
         border: Border.all(
-          color: AppColors.goldBrass.withValues(alpha: 0.2),
+          color: context.goldBrass.withValues(alpha: 0.2),
         ),
       ),
       child: Center(
         child: Icon(
           Icons.restaurant_menu_rounded,
           size: height < 100 ? 24 : 36,
-          color: scheme.primary.withValues(alpha: 0.45),
+          color: context.colorScheme.primary.withValues(alpha: 0.45),
         ),
       ),
     );

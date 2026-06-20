@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../utils/extension/context_extension.dart';
 
-import '../theme/app_colors.dart';
 
 /// Custom stroke-drawn icons for navigation, contact, and other UI affordances.
 class LineIcon extends StatelessWidget {
@@ -8,29 +8,31 @@ class LineIcon extends StatelessWidget {
     super.key,
     required this.variant,
     this.size = 52,
-    this.color = AppColors.goldBrass,
+    this.color,
   });
 
   final LineIconVariant variant;
   final double size;
-  final Color color;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
+    final effectiveColor = color ?? context.goldBrass;
+
     return SizedBox(
       width: size,
       height: size,
       child: CustomPaint(
         painter: switch (variant) {
-          LineIconVariant.calendar => _CalendarIconPainter(color: color),
-          LineIconVariant.mapPin => _MapPinIconPainter(color: color),
-          LineIconVariant.megaphone => _MegaphoneIconPainter(color: color),
-          LineIconVariant.email => _EmailIconPainter(color: color),
-          LineIconVariant.instagram => _InstagramIconPainter(color: color),
-          LineIconVariant.church => _ChurchIconPainter(color: color),
-          LineIconVariant.manor => _ManorIconPainter(color: color),
-          LineIconVariant.dress => _DressIconPainter(color: color),
-          LineIconVariant.car => _CarIconPainter(color: color),
+          LineIconVariant.calendar => _CalendarIconPainter(color: effectiveColor),
+          LineIconVariant.mapPin => _MapPinIconPainter(color: effectiveColor),
+          LineIconVariant.megaphone => _MegaphoneIconPainter(color: effectiveColor),
+          LineIconVariant.email => _EmailIconPainter(color: effectiveColor),
+          LineIconVariant.instagram => _InstagramIconPainter(color: effectiveColor),
+          LineIconVariant.church => _ChurchIconPainter(color: effectiveColor),
+          LineIconVariant.manor => _ManorIconPainter(color: effectiveColor),
+          LineIconVariant.dress => _DressIconPainter(color: effectiveColor),
+          LineIconVariant.car => _CarIconPainter(color: effectiveColor),
         },
       ),
     );

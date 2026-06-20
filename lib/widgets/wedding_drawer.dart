@@ -15,7 +15,7 @@ import '../features/travel/travel_page.dart';
 import '../features/wedding_details/wedding_details_page.dart';
 import '../features/wedding_party/wedding_party_page.dart';
 import '../models/app_page.dart';
-import '../utils/open_external_url.dart';
+import '../utils/extension/context_extension.dart';
 
 /// Side drawer with all sections — tuned for phones (large tap targets).
 ///
@@ -42,8 +42,6 @@ class WeddingDrawer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
     final router = routerContext.router;
     final active = router.current.name;
     final liveUpdatesUrl = ref
@@ -61,10 +59,10 @@ class WeddingDrawer extends ConsumerWidget {
 
       return ListTile(
         selected: selected,
-        selectedTileColor: scheme.primaryContainer.withValues(alpha: 0.35),
+        selectedTileColor: context.colorScheme.primaryContainer.withValues(alpha: 0.35),
         title: Text(
           page.displayName,
-          style: theme.textTheme.titleSmall?.copyWith(
+          style: context.textTheme.titleSmall?.copyWith(
             letterSpacing: 0.8,
             fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
           ),
@@ -78,7 +76,7 @@ class WeddingDrawer extends ConsumerWidget {
     }
 
     return Drawer(
-      backgroundColor: scheme.surface,
+      backgroundColor: context.colorScheme.surface,
       child: SafeArea(
         child: ListView(
           padding: const EdgeInsets.only(bottom: 24),
@@ -88,14 +86,14 @@ class WeddingDrawer extends ConsumerWidget {
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
               decoration: BoxDecoration(
                 border: Border(
-                  bottom: BorderSide(color: scheme.outlineVariant),
+                  bottom: BorderSide(color: context.colorScheme.outlineVariant),
                 ),
               ),
               child: Align(
                 alignment: Alignment.bottomLeft,
                 child: Text(
                   'Menu',
-                  style: theme.textTheme.titleLarge?.copyWith(
+                  style: context.textTheme.titleLarge?.copyWith(
                     letterSpacing: 2,
                     fontWeight: FontWeight.w600,
                   ),
@@ -145,14 +143,14 @@ class WeddingDrawer extends ConsumerWidget {
             ListTile(
               title: Text(
                 'LIVE UPDATES',
-                style: theme.textTheme.titleSmall?.copyWith(
+                style: context.textTheme.titleSmall?.copyWith(
                   letterSpacing: 0.8,
                   fontWeight: FontWeight.w500,
                 ),
               ),
               onTap: () async {
                 Navigator.of(context).pop();
-                await openExternalUrl(Uri.parse(liveUpdatesUrl));
+                await context.openExternalUrl(Uri.parse(liveUpdatesUrl));
               },
             ),
             tile(

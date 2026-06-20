@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/extension/context_extension.dart';
+
 /// Shared skeleton section content for placeholder routes.
 class WeddingSectionPlaceholder extends StatelessWidget {
   const WeddingSectionPlaceholder({
@@ -13,14 +15,12 @@ class WeddingSectionPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
           title,
-          style: textTheme.headlineSmall?.copyWith(
+          style: context.textTheme.headlineSmall?.copyWith(
             letterSpacing: 2,
             fontWeight: FontWeight.w600,
           ),
@@ -29,15 +29,15 @@ class WeddingSectionPlaceholder extends StatelessWidget {
         const SizedBox(height: 16),
         Text(
           subtitle,
-          style: textTheme.bodyLarge?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          style: context.textTheme.bodyLarge?.copyWith(
+            color: context.colorScheme.onSurfaceVariant,
           ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 48),
         Placeholder(
           fallbackHeight: 180,
-          color: Theme.of(context).colorScheme.outlineVariant,
+          color: context.colorScheme.outlineVariant,
         ),
       ],
     );

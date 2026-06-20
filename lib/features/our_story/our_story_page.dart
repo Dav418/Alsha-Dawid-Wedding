@@ -8,12 +8,11 @@ import '../../content/repositories/wedding_content_repository.dart';
 import '../../models/app_page.dart';
 import '../../models/polaroid_layout.dart';
 import '../../models/story_timeline_entry.dart';
-import '../../theme/app_colors.dart';
-import '../../theme/app_typography.dart';
 import '../../router/app_router.gr.dart';
 import '../../widgets/heart_divider.dart';
 import '../../widgets/page_availability_gate.dart';
 import 'our_story_decorations.dart';
+import '../../utils/extension/context_extension.dart';
 
 const _storyTimeline = [
   StoryTimelineEntry(
@@ -117,14 +116,13 @@ class _StoryHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
 
     return Column(
       children: [
         Text(
           'Our Story',
           textAlign: TextAlign.center,
-          style: AppTypography.scriptHero(scheme),
+          style: context.scriptHero(),
         ),
         const SizedBox(height: 10),
         const HeartAccent(),
@@ -132,7 +130,7 @@ class _StoryHeader extends StatelessWidget {
         Text(
           'A LITTLE BIT OF OUR JOURNEY',
           textAlign: TextAlign.center,
-          style: AppTypography.capsLabel(scheme),
+          style: context.capsLabel(),
         ),
       ],
     );
@@ -336,7 +334,6 @@ class _PolaroidPhoto extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
     final imageHeight = width * 0.92;
 
     return Transform.rotate(
@@ -344,10 +341,10 @@ class _PolaroidPhoto extends StatelessWidget {
       child: Container(
         width: width,
         decoration: BoxDecoration(
-          color: AppColors.polaroidWhite,
+          color: context.polaroidWhite,
           boxShadow: [
             BoxShadow(
-              color: AppColors.textCharcoal.withValues(alpha: 0.14),
+              color: context.textCharcoal.withValues(alpha: 0.14),
               blurRadius: 14,
               offset: const Offset(0, 6),
             ),
@@ -366,14 +363,14 @@ class _PolaroidPhoto extends StatelessWidget {
             return Container(
               width: width - 20,
               height: imageHeight,
-              color: AppColors.creamBackground,
+              color: context.creamBackground,
               alignment: Alignment.center,
               child: SizedBox(
                 width: 22,
                 height: 22,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  color: scheme.tertiary.withValues(alpha: 0.7),
+                  color: context.colorScheme.tertiary.withValues(alpha: 0.7),
                 ),
               ),
             );
@@ -381,11 +378,11 @@ class _PolaroidPhoto extends StatelessWidget {
           errorBuilder: (_, __, ___) => Container(
             width: width - 20,
             height: imageHeight,
-            color: AppColors.dustyRose.withValues(alpha: 0.35),
+            color: context.dustyRose.withValues(alpha: 0.35),
             alignment: Alignment.center,
             child: Icon(
               Icons.image_outlined,
-              color: scheme.primary.withValues(alpha: 0.45),
+              color: context.colorScheme.primary.withValues(alpha: 0.45),
             ),
           ),
         ),
@@ -401,8 +398,7 @@ class _StoryTimeline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final gold = scheme.tertiary;
+    final gold = context.colorScheme.tertiary;
 
     return Column(
       children: [
@@ -437,12 +433,12 @@ class _StoryTimeline extends StatelessWidget {
                       children: [
                         Text(
                           entries[i].title,
-                          style: AppTypography.timelineTitle(scheme),
+                          style: context.timelineTitle(),
                         ),
                         const SizedBox(height: 6),
                         Text(
                           entries[i].description,
-                          style: AppTypography.timelineBody(scheme),
+                          style: context.timelineBody(),
                         ),
                       ],
                     ),
@@ -461,7 +457,6 @@ class _StoryFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
 
     return Column(
       children: [
@@ -474,7 +469,7 @@ class _StoryFooter extends StatelessWidget {
             child: Text(
               'From the moment we met, we knew our story was worth writing.',
               textAlign: TextAlign.center,
-              style: AppTypography.scriptQuote(scheme),
+              style: context.scriptQuote(),
             ),
           ),
         ),

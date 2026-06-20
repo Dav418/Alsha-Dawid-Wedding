@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
+import '../utils/extension/context_extension.dart';
+
 /// Horizontal lines with a centered heart — uses [ColorScheme.tertiary].
 class HeartDivider extends StatelessWidget {
   const HeartDivider({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final gold = Theme.of(context).colorScheme.tertiary;
+    final gold = context.colorScheme.tertiary;
 
     return Row(
       children: [
@@ -44,7 +46,7 @@ class HeartAccent extends StatelessWidget {
     return Icon(
       Icons.favorite_rounded,
       size: 11,
-      color: Theme.of(context).colorScheme.tertiary,
+      color: context.colorScheme.tertiary,
     );
   }
 }

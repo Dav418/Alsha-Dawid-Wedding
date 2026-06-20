@@ -4,11 +4,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../features/home/home_page.dart';
 import '../router/app_router.gr.dart';
-import '../theme/app_colors.dart';
 import '../widgets/hard_edge_color.dart';
 import '../widgets/wedding_app_bar.dart';
 import '../widgets/wedding_drawer.dart';
 import '../widgets/wedding_footer.dart';
+import '../utils/extension/context_extension.dart';
 
 const _footerTopSpacing = 40.0;
 
@@ -85,7 +85,7 @@ class _WeddingShellScaffold extends HookWidget {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.creamBackground,
+      backgroundColor: context.creamBackground,
       drawer: WeddingDrawer(
         routerContext: routerContext,
         onNavigate: onNavigate,
@@ -104,7 +104,7 @@ class _WeddingShellScaffold extends HookWidget {
                     WeddingAppBar(onHomeTap: goHome),
                     SliverToBoxAdapter(
                       child: HardEdgeColor(
-                        color: AppColors.creamBackground,
+                        color: context.creamBackground,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [

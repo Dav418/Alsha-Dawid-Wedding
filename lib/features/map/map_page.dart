@@ -10,14 +10,12 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../models/app_page.dart';
 import '../../router/app_router.gr.dart';
 import '../../config/google_maps_api_key.dart';
-import '../../theme/app_colors.dart';
-import '../../theme/app_typography.dart';
-import '../../utils/open_external_url.dart';
 import '../../widgets/heart_divider.dart';
 import '../../widgets/page_availability_gate.dart';
 import '../../widgets/wedding_action_button.dart';
 import 'map_poi.dart';
 import 'map_poi_data.dart';
+import '../../utils/extension/context_extension.dart';
 
 const _maxPageWidth = 920.0;
 
@@ -61,22 +59,20 @@ class _MapHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
 
     return Column(
       children: [
         Text(
           'If you want to rest your head...',
           textAlign: TextAlign.center,
-          style: AppTypography.scriptHero(scheme, fontSize: 48, height: 1.08),
+          style: context.scriptHero( fontSize: 48, height: 1.08),
         ),
         const SizedBox(height: 10),
         Text(
           'CLICK THE RED DOTS ON THE MAP TO VIEW AND BOOK NEARBY ACCOMMODATION',
           textAlign: TextAlign.center,
-          style: AppTypography.capsLabel(
-            scheme,
-            color: AppColors.sageGreen,
+          style: context.capsLabel(
+            color: context.sageGreen,
           ),
         ),
       ],
@@ -167,7 +163,7 @@ class _InteractiveMapSection extends HookWidget {
             child: DecoratedBox(
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: AppColors.goldBrass.withValues(alpha: 0.32),
+                  color: context.goldBrass.withValues(alpha: 0.32),
                 ),
                 borderRadius: BorderRadius.circular(14),
               ),
@@ -200,7 +196,7 @@ class _InteractiveMapSection extends HookWidget {
                         poi: selectedPoi,
                         onClose: () => selectedPoiId.value = null,
                         onOpenInMaps: () async {
-                          final opened = await openExternalUrl(
+                          final opened = await context.openExternalUrl(
                             Uri.parse(selectedPoi.googleMapsUrl),
                           );
                           if (!opened && context.mounted) {
@@ -231,7 +227,6 @@ class _MapSetupRequiredPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -245,10 +240,10 @@ class _MapSetupRequiredPlaceholder extends StatelessWidget {
           height: mapHeight,
           child: DecoratedBox(
             decoration: BoxDecoration(
-              color: AppColors.creamBackground.withValues(alpha: 0.85),
+              color: context.creamBackground.withValues(alpha: 0.85),
               borderRadius: BorderRadius.circular(14),
               border: Border.all(
-                color: AppColors.goldBrass.withValues(alpha: 0.32),
+                color: context.goldBrass.withValues(alpha: 0.32),
               ),
             ),
             child: Padding(
@@ -260,16 +255,15 @@ class _MapSetupRequiredPlaceholder extends StatelessWidget {
                   Text(
                     'MAP SETUP REQUIRED',
                     textAlign: TextAlign.center,
-                    style: AppTypography.capsLabel(
-                      scheme,
-                      color: AppColors.sageGreen,
+                    style: context.capsLabel(
+                      color: context.sageGreen,
                     ),
                   ),
                   const SizedBox(height: 12),
                   Text(
                     'Add a Google Maps API key to run this page locally.',
                     textAlign: TextAlign.center,
-                    style: AppTypography.scriptQuote(scheme, fontSize: 26),
+                    style: context.scriptQuote( fontSize: 26),
                   ),
                   const SizedBox(height: 16),
                   Text(
@@ -279,7 +273,7 @@ class _MapSetupRequiredPlaceholder extends StatelessWidget {
                     'python3 scripts/merge_dart_defines.py\n'
                     'flutter run -d chrome --dart-define-from-file=dart_defines.json',
                     textAlign: TextAlign.center,
-                    style: AppTypography.faqAnswer(scheme),
+                    style: context.faqAnswer(),
                   ),
                 ],
               ),
@@ -304,20 +298,19 @@ class _MapPoiInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
 
     return Material(
       color: Colors.transparent,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: AppColors.creamBackground.withValues(alpha: 0.96),
+          color: context.creamBackground.withValues(alpha: 0.96),
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: AppColors.goldBrass.withValues(alpha: 0.32),
+            color: context.goldBrass.withValues(alpha: 0.32),
           ),
           boxShadow: [
             BoxShadow(
-              color: AppColors.textCharcoal.withValues(alpha: 0.14),
+              color: context.textCharcoal.withValues(alpha: 0.14),
               blurRadius: 18,
               offset: const Offset(0, 6),
             ),
@@ -338,15 +331,14 @@ class _MapPoiInfoCard extends StatelessWidget {
                       children: [
                         Text(
                           poi.categoryLabel,
-                          style: AppTypography.capsLabel(
-                            scheme,
-                            color: AppColors.sageGreen,
+                          style: context.capsLabel(
+                            color: context.sageGreen,
                           ),
                         ),
                         const SizedBox(height: 6),
                         Text(
                           poi.title,
-                          style: AppTypography.cardTitleCaps(scheme),
+                          style: context.cardTitleCaps(),
                         ),
                       ],
                     ),
@@ -356,7 +348,7 @@ class _MapPoiInfoCard extends StatelessWidget {
                     tooltip: 'Close',
                     icon: Icon(
                       Icons.close_rounded,
-                      color: scheme.onSurface.withValues(alpha: 0.72),
+                      color: context.colorScheme.onSurface.withValues(alpha: 0.72),
                     ),
                   ),
                 ],
@@ -364,8 +356,7 @@ class _MapPoiInfoCard extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 poi.address,
-                style: AppTypography.cardBody(
-                  scheme,
+                style: context.cardBody(
                   fontSize: 14,
                   height: 1.45,
                 ),
@@ -373,11 +364,10 @@ class _MapPoiInfoCard extends StatelessWidget {
               const SizedBox(height: 10),
               Text(
                 poi.description,
-                style: AppTypography.cardBody(
-                  scheme,
+                style: context.cardBody(
                   fontSize: 14,
                   height: 1.5,
-                  color: AppColors.textCharcoal.withValues(alpha: 0.88),
+                  color: context.textCharcoal.withValues(alpha: 0.88),
                 ),
               ),
               const SizedBox(height: 18),

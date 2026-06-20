@@ -3,8 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
 import '../content/data/wedding_content.dart';
-import '../theme/app_colors.dart';
-import '../theme/app_typography.dart';
+import '../utils/extension/context_extension.dart';
 
 /// Full-screen polaroid detail for a wedding party member portrait.
 void showPartyMemberPolaroid(
@@ -45,7 +44,6 @@ class _PartyMemberPolaroidOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
     final routeAnimation =
         ModalRoute.of(context)?.animation ?? kAlwaysCompleteAnimation;
     final polaroidAnimation = CurvedAnimation(
@@ -77,7 +75,7 @@ class _PartyMemberPolaroidOverlay extends StatelessWidget {
                     sigmaY: 12 * t,
                   ),
                   child: ColoredBox(
-                    color: AppColors.textCharcoal.withValues(alpha: 0.32 * t),
+                    color: context.textCharcoal.withValues(alpha: 0.32 * t),
                   ),
                 ),
               );
@@ -100,10 +98,10 @@ class _PartyMemberPolaroidOverlay extends StatelessWidget {
                           child: Container(
                             width: width,
                             decoration: BoxDecoration(
-                              color: AppColors.polaroidWhite,
+                              color: context.polaroidWhite,
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppColors.textCharcoal
+                                  color: context.textCharcoal
                                       .withValues(alpha: 0.2 * t),
                                   blurRadius: 24,
                                   offset: const Offset(0, 10),
@@ -133,8 +131,7 @@ class _PartyMemberPolaroidOverlay extends StatelessWidget {
                                 Text(
                                   member.displayName,
                                   textAlign: TextAlign.center,
-                                  style: AppTypography.scriptQuote(
-                                    scheme,
+                                  style: context.scriptQuote(
                                     fontSize: 26,
                                     height: 1.15,
                                   ),
@@ -144,10 +141,10 @@ class _PartyMemberPolaroidOverlay extends StatelessWidget {
                                   caption,
                                   textAlign: TextAlign.center,
                                   style:
-                                      AppTypography.timelineBody(scheme).copyWith(
+                                      context.timelineBody().copyWith(
                                     fontSize: 13,
                                     height: 1.45,
-                                    color: AppColors.textCharcoal
+                                    color: context.textCharcoal
                                         .withValues(alpha: 0.78),
                                   ),
                                 ),
