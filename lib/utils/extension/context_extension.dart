@@ -42,10 +42,9 @@ extension ContextExtension on BuildContext {
     Color? color,
   }) =>
       AppTypography.scriptHero(
-        colorScheme,
+        color: color ?? colorScheme.primary,
         fontSize: fontSize,
         height: height,
-        color: color,
       );
 
   TextStyle scriptQuote({
@@ -54,10 +53,9 @@ extension ContextExtension on BuildContext {
     Color? color,
   }) =>
       AppTypography.scriptQuote(
-        colorScheme,
+        color: color ?? colorScheme.primary,
         fontSize: fontSize,
         height: height,
-        color: color,
       );
 
   TextStyle capsLabel({
@@ -68,11 +66,10 @@ extension ContextExtension on BuildContext {
     FontWeight fontWeight = FontWeight.w600,
   }) =>
       AppTypography.capsLabel(
-        colorScheme,
+        color: color ?? colorScheme.onSurfaceVariant,
         fontSize: fontSize,
         letterSpacing: letterSpacing,
         height: height,
-        color: color,
         fontWeight: fontWeight,
       );
 
@@ -82,10 +79,9 @@ extension ContextExtension on BuildContext {
     Color? color,
   }) =>
       AppTypography.sectionCaps(
-        colorScheme,
+        color: color ?? colorScheme.primary,
         fontSize: fontSize,
         letterSpacing: letterSpacing,
-        color: color,
       );
 
   TextStyle bodySerif({
@@ -95,10 +91,9 @@ extension ContextExtension on BuildContext {
     FontWeight fontWeight = FontWeight.w400,
   }) =>
       AppTypography.bodySerif(
-        colorScheme,
+        color: color ?? colorScheme.primary,
         fontSize: fontSize,
         height: height,
-        color: color,
         fontWeight: fontWeight,
       );
 
@@ -107,20 +102,23 @@ extension ContextExtension on BuildContext {
     bool compact = false,
   }) =>
       AppTypography.countdownBannerTitle(
-        colorScheme,
+        color: colorScheme.primary,
         fontSize: fontSize,
         compact: compact,
       );
 
   TextStyle countdownNumber({required double fontSize}) =>
-      AppTypography.countdownNumber(colorScheme, fontSize: fontSize);
+      AppTypography.countdownNumber(
+        color: colorScheme.primary,
+        fontSize: fontSize,
+      );
 
   TextStyle countdownUnit({
     required double fontSize,
     bool compact = false,
   }) =>
       AppTypography.countdownUnit(
-        colorScheme,
+        color: colorScheme.primary.withValues(alpha: 0.85),
         fontSize: fontSize,
         compact: compact,
       );
@@ -131,10 +129,9 @@ extension ContextExtension on BuildContext {
     Color? color,
   }) =>
       AppTypography.cardTitleCaps(
-        colorScheme,
+        color: color ?? colorScheme.primary,
         fontSize: fontSize,
         letterSpacing: letterSpacing,
-        color: color,
       );
 
   TextStyle cardTime({
@@ -142,9 +139,8 @@ extension ContextExtension on BuildContext {
     Color? color,
   }) =>
       AppTypography.cardTime(
-        colorScheme,
+        color: color ?? colorScheme.primary,
         fontSize: fontSize,
-        color: color,
       );
 
   TextStyle cardBody({
@@ -153,43 +149,60 @@ extension ContextExtension on BuildContext {
     Color? color,
   }) =>
       AppTypography.cardBody(
-        colorScheme,
+        color: color ?? colorScheme.primary.withValues(alpha: 0.92),
         fontSize: fontSize,
         height: height,
-        color: color,
       );
 
-  TextStyle navCardTitle({Color? color}) =>
-      AppTypography.navCardTitle(colorScheme, color: color);
+  TextStyle navCardTitle({Color? color}) => AppTypography.navCardTitle(
+        color: color ?? colorScheme.tertiary,
+      );
 
-  TextStyle navCardSubtitle({Color? color}) =>
-      AppTypography.navCardSubtitle(colorScheme, color: color);
+  TextStyle navCardSubtitle({Color? color}) => AppTypography.navCardSubtitle(
+        color: color ?? colorScheme.primary.withValues(alpha: 0.9),
+      );
 
-  TextStyle contactLine() => AppTypography.contactLine(colorScheme);
+  TextStyle contactLine() => AppTypography.contactLine(
+        color: colorScheme.onSurfaceVariant,
+      );
 
-  TextStyle faqQuestion() => AppTypography.faqQuestion(colorScheme);
+  TextStyle faqQuestion() => AppTypography.faqQuestion(
+        color: colorScheme.primary,
+      );
 
-  TextStyle faqToggle() => AppTypography.faqToggle(colorScheme);
+  TextStyle faqToggle() => AppTypography.faqToggle(
+        color: colorScheme.primary.withValues(alpha: 0.75),
+      );
 
-  TextStyle faqAnswer() => AppTypography.faqAnswer(colorScheme);
+  TextStyle faqAnswer() => AppTypography.faqAnswer(
+        color: colorScheme.onSurfaceVariant,
+      );
 
   TextStyle buttonLabel({
     double fontSize = 12.5,
     double letterSpacing = 1.6,
   }) =>
       AppTypography.buttonLabel(
-        colorScheme,
+        color: colorScheme.onPrimary,
         fontSize: fontSize,
         letterSpacing: letterSpacing,
       );
 
-  TextStyle timelineTitle() => AppTypography.timelineTitle(colorScheme);
+  TextStyle timelineTitle() => AppTypography.timelineTitle(
+        color: colorScheme.primary,
+      );
 
-  TextStyle timelineBody() => AppTypography.timelineBody(colorScheme);
+  TextStyle timelineBody() => AppTypography.timelineBody(
+        color: colorScheme.onSurfaceVariant,
+      );
 
-  TextStyle portraitName() => AppTypography.portraitName(colorScheme);
+  TextStyle portraitName() => AppTypography.portraitName(
+        color: colorScheme.onSurface,
+      );
 
-  TextStyle portraitInitials() => AppTypography.portraitInitials(colorScheme);
+  TextStyle portraitInitials() => AppTypography.portraitInitials(
+        color: colorScheme.primary.withValues(alpha: 0.55),
+      );
 
   Future<bool> openExternalUrl(Uri uri) {
     return launchUrl(

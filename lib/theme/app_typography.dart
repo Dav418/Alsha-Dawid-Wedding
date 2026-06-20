@@ -6,36 +6,33 @@ import 'app_colors.dart';
 abstract final class AppTypography {
   AppTypography._();
 
-  static TextStyle scriptHero(
-    ColorScheme scheme, {
+  static TextStyle scriptHero({
+    required Color color,
     double fontSize = 52,
     double height = 1.05,
-    Color? color,
   }) =>
       GoogleFonts.allura(
         fontSize: fontSize,
         height: height,
-        color: color ?? scheme.primary,
+        color: color,
       );
 
-  static TextStyle scriptQuote(
-    ColorScheme scheme, {
+  static TextStyle scriptQuote({
+    required Color color,
     double fontSize = 30,
     double height = 1.35,
-    Color? color,
   }) =>
       GoogleFonts.greatVibes(
         fontSize: fontSize,
         height: height,
-        color: color ?? scheme.primary,
+        color: color,
       );
 
-  static TextStyle capsLabel(
-    ColorScheme scheme, {
+  static TextStyle capsLabel({
+    required Color color,
     double fontSize = 12,
     double letterSpacing = 2.6,
     double height = 1.25,
-    Color? color,
     FontWeight fontWeight = FontWeight.w600,
   }) =>
       GoogleFonts.playfairDisplay(
@@ -43,39 +40,37 @@ abstract final class AppTypography {
         height: height,
         fontWeight: fontWeight,
         letterSpacing: letterSpacing,
-        color: color ?? scheme.onSurfaceVariant,
+        color: color,
       );
 
-  static TextStyle sectionCaps(
-    ColorScheme scheme, {
+  static TextStyle sectionCaps({
+    required Color color,
     double fontSize = 14,
     double letterSpacing = 2.2,
-    Color? color,
   }) =>
       GoogleFonts.playfairDisplay(
         fontSize: fontSize,
         height: 1.2,
         fontWeight: FontWeight.w600,
         letterSpacing: letterSpacing,
-        color: color ?? scheme.primary,
+        color: color,
       );
 
-  static TextStyle bodySerif(
-    ColorScheme scheme, {
+  static TextStyle bodySerif({
+    required Color color,
     double fontSize = 15,
     double height = 1.55,
-    Color? color,
     FontWeight fontWeight = FontWeight.w400,
   }) =>
       GoogleFonts.playfairDisplay(
         fontSize: fontSize,
         height: height,
         fontWeight: fontWeight,
-        color: color ?? scheme.primary,
+        color: color,
       );
 
-  static TextStyle countdownBannerTitle(
-    ColorScheme scheme, {
+  static TextStyle countdownBannerTitle({
+    required Color color,
     required double fontSize,
     bool compact = false,
   }) =>
@@ -84,22 +79,22 @@ abstract final class AppTypography {
         height: 1.3,
         fontWeight: FontWeight.w600,
         letterSpacing: compact ? 2.2 : 2.8,
-        color: scheme.primary,
+        color: color,
       );
 
-  static TextStyle countdownNumber(
-    ColorScheme scheme, {
+  static TextStyle countdownNumber({
+    required Color color,
     required double fontSize,
   }) =>
       GoogleFonts.playfairDisplay(
         fontSize: fontSize,
         height: 1,
         fontWeight: FontWeight.w500,
-        color: scheme.primary,
+        color: color,
       );
 
-  static TextStyle countdownUnit(
-    ColorScheme scheme, {
+  static TextStyle countdownUnit({
+    required Color color,
     required double fontSize,
     bool compact = false,
   }) =>
@@ -108,98 +103,95 @@ abstract final class AppTypography {
         height: 1.2,
         fontWeight: FontWeight.w600,
         letterSpacing: compact ? 1.4 : 1.8,
-        color: scheme.primary.withValues(alpha: 0.85),
+        color: color,
       );
 
-  static TextStyle cardTitleCaps(
-    ColorScheme scheme, {
+  static TextStyle cardTitleCaps({
+    required Color color,
     double fontSize = 13,
     double letterSpacing = 1.8,
-    Color? color,
   }) =>
       GoogleFonts.playfairDisplay(
         fontSize: fontSize,
         height: 1.2,
         fontWeight: FontWeight.w600,
         letterSpacing: letterSpacing,
-        color: color ?? scheme.primary,
+        color: color,
       );
 
-  static TextStyle cardTime(
-    ColorScheme scheme, {
+  static TextStyle cardTime({
+    required Color color,
     double fontSize = 20,
-    Color? color,
   }) =>
       GoogleFonts.playfairDisplay(
         fontSize: fontSize,
         height: 1.1,
         fontWeight: FontWeight.w600,
-        color: color ?? scheme.primary,
+        color: color,
       );
 
-  static TextStyle cardBody(
-    ColorScheme scheme, {
+  static TextStyle cardBody({
+    required Color color,
     double fontSize = 14.5,
     double height = 1.45,
-    Color? color,
   }) =>
       GoogleFonts.playfairDisplay(
         fontSize: fontSize,
         height: height,
         fontWeight: FontWeight.w400,
-        color: color ?? scheme.primary.withValues(alpha: 0.92),
+        color: color,
       );
 
-  static TextStyle navCardTitle(ColorScheme scheme, {Color? color}) =>
+  static TextStyle navCardTitle({required Color color}) =>
       GoogleFonts.playfairDisplay(
         fontSize: 11,
         height: 1.15,
         fontWeight: FontWeight.w600,
         letterSpacing: 1.2,
-        color: color ?? scheme.tertiary,
+        color: color,
       );
 
-  static TextStyle navCardSubtitle(ColorScheme scheme, {Color? color}) =>
+  static TextStyle navCardSubtitle({required Color color}) =>
       GoogleFonts.playfairDisplay(
         fontSize: 10,
         height: 1.3,
         fontWeight: FontWeight.w400,
-        color: color ?? scheme.primary.withValues(alpha: 0.9),
+        color: color,
       );
 
-  static TextStyle contactLine(ColorScheme scheme) =>
+  static TextStyle contactLine({required Color color}) =>
       GoogleFonts.playfairDisplay(
         fontSize: 15,
         height: 1.45,
         fontWeight: FontWeight.w400,
-        color: scheme.onSurfaceVariant,
+        color: color,
       );
 
-  static TextStyle faqQuestion(ColorScheme scheme) =>
+  static TextStyle faqQuestion({required Color color}) =>
       GoogleFonts.playfairDisplay(
         fontSize: 12.5,
         height: 1.35,
         fontWeight: FontWeight.w600,
         letterSpacing: 1.4,
-        color: scheme.primary,
+        color: color,
       );
 
-  static TextStyle faqToggle(ColorScheme scheme) => GoogleFonts.playfairDisplay(
+  static TextStyle faqToggle({required Color color}) => GoogleFonts.playfairDisplay(
         fontSize: 22,
         height: 1,
         fontWeight: FontWeight.w400,
-        color: scheme.primary.withValues(alpha: 0.75),
+        color: color,
       );
 
-  static TextStyle faqAnswer(ColorScheme scheme) => GoogleFonts.playfairDisplay(
+  static TextStyle faqAnswer({required Color color}) => GoogleFonts.playfairDisplay(
         fontSize: 14.5,
         height: 1.55,
         fontWeight: FontWeight.w400,
-        color: scheme.onSurfaceVariant,
+        color: color,
       );
 
-  static TextStyle buttonLabel(
-    ColorScheme scheme, {
+  static TextStyle buttonLabel({
+    required Color color,
     double fontSize = 12.5,
     double letterSpacing = 1.6,
   }) =>
@@ -208,39 +200,39 @@ abstract final class AppTypography {
         height: 1,
         fontWeight: FontWeight.w600,
         letterSpacing: letterSpacing,
-        color: scheme.onPrimary,
+        color: color,
       );
 
-  static TextStyle timelineTitle(ColorScheme scheme) =>
+  static TextStyle timelineTitle({required Color color}) =>
       GoogleFonts.playfairDisplay(
         fontSize: 12.5,
         height: 1.2,
         fontWeight: FontWeight.w600,
         letterSpacing: 1.6,
-        color: scheme.primary,
+        color: color,
       );
 
-  static TextStyle timelineBody(ColorScheme scheme) =>
+  static TextStyle timelineBody({required Color color}) =>
       GoogleFonts.playfairDisplay(
         fontSize: 14.5,
         height: 1.5,
         fontWeight: FontWeight.w400,
-        color: scheme.onSurfaceVariant,
+        color: color,
       );
 
-  static TextStyle portraitName(ColorScheme scheme) =>
+  static TextStyle portraitName({required Color color}) =>
       GoogleFonts.playfairDisplay(
         fontSize: 13.5,
         height: 1.3,
         fontWeight: FontWeight.w500,
-        color: scheme.onSurface,
+        color: color,
       );
 
-  static TextStyle portraitInitials(ColorScheme scheme) =>
+  static TextStyle portraitInitials({required Color color}) =>
       GoogleFonts.playfairDisplay(
         fontSize: 28,
         fontWeight: FontWeight.w600,
-        color: scheme.primary.withValues(alpha: 0.55),
+        color: color,
       );
 
   static TextTheme textTheme(TextTheme base, ColorScheme scheme) {
