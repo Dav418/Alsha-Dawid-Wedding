@@ -4,8 +4,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../content/repositories/wedding_content_repository.dart';
-import '../../models/app_page.dart';
-import '../../models/faq_item.dart';
+import '../../models/app/app_page.dart';
+import '../../models/faq/faq_item.dart';
 import '../../router/app_router.gr.dart';
 import '../../utils/extension/string_extension.dart';
 import '../../widgets/heart_divider.dart';

@@ -1,5 +1,5 @@
 import 'package:alisha_dawid_wedding_website/app.dart';
-import 'package:alisha_dawid_wedding_website/content/data/wedding_content.dart';
+import 'package:alisha_dawid_wedding_website/models/content/wedding_content.dart';
 import 'package:alisha_dawid_wedding_website/content/repositories/wedding_content_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

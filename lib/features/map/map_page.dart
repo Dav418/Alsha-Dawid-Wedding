@@ -7,14 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../../models/app_page.dart';
+import '../../models/app/app_page.dart';
 import '../../router/app_router.gr.dart';
 import '../../config/google_maps_api_key.dart';
 import '../../widgets/heart_divider.dart';
 import '../../widgets/page_availability_gate.dart';
 import '../../widgets/wedding_action_button.dart';
-import 'map_poi.dart';
-import 'map_poi_data.dart';
+import '../../models/map/map_poi.dart';
+import '../../models/map/map_poi_data.dart';
 import '../../utils/extension/context_extension.dart';
 
 const _maxPageWidth = 920.0;

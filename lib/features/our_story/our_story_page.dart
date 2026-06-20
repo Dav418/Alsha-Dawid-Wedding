@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../content/repositories/wedding_content_repository.dart';
-import '../../models/app_page.dart';
-import '../../models/polaroid_layout.dart';
-import '../../models/story_timeline_entry.dart';
+import '../../models/app/app_page.dart';
+import '../../models/our_story/polaroid_layout.dart';
+import '../../models/our_story/story_timeline_entry.dart';
 import '../../router/app_router.gr.dart';
 import '../../widgets/heart_divider.dart';
 import '../../widgets/page_availability_gate.dart';

@@ -2,7 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
-import '../content/data/wedding_content.dart';
+import '../models/content/wedding_content.dart';
 import '../utils/extension/context_extension.dart';
 
 /// Full-screen polaroid detail for a wedding party member portrait.

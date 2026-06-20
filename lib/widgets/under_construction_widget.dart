@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../models/app_page.dart';
+import '../models/app/app_page.dart';
 import '../utils/extension/context_extension.dart';
 import 'heart_divider.dart';
 

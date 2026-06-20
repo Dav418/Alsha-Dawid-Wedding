@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
-import '../../models/app_page.dart';
+import '../../models/app/app_page.dart';
 import '../../router/app_router.gr.dart';
 import '../../widgets/page_availability_gate.dart';
 import '../placeholder_body.dart';

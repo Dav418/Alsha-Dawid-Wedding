@@ -14,7 +14,7 @@ import '../features/rsvp/rsvp_page.dart';
 import '../features/travel/travel_page.dart';
 import '../features/wedding_details/wedding_details_page.dart';
 import '../features/wedding_party/wedding_party_page.dart';
-import '../models/app_page.dart';
+import '../models/app/app_page.dart';
 import '../utils/extension/context_extension.dart';
 
 /// Side drawer with all sections — tuned for phones (large tap targets).

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../hooks/use_auto_route_aware.dart';
-import '../models/invite_card_shape.dart';
+import '../models/home/invite_card_shape.dart';
 import '../utils/extension/context_extension.dart';
 
 class WeddingHeroInviteCard extends HookWidget {

@@ -1,4 +1,4 @@
-import '../widgets/line_icon.dart';
+import '../../widgets/line_icon.dart';
 
 enum FooterNavAction {
   schedule(

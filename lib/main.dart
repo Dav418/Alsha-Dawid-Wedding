@@ -4,7 +4,7 @@ import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'app.dart';
-import 'content/data/wedding_content.dart';
+import 'models/content/wedding_content.dart';
 import 'content/repositories/wedding_content_repository.dart';
 import 'utils/google_maps_web_loader.dart';
 

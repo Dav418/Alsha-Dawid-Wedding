@@ -1,6 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../models/app_page.dart';
+import '../models/app/app_page.dart';
 
 part 'page_availability_provider.g.dart';
 

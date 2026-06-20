@@ -2,14 +2,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-import '../../models/app_page.dart';
+import '../../models/app/app_page.dart';
 import '../../router/app_router.gr.dart';
 import '../../utils/extension/context_extension.dart';
 import '../../widgets/heart_divider.dart';
 import '../../widgets/page_availability_gate.dart';
 import 'bank_details_section.dart';
 import 'timeline/wedding_day_timeline.dart';
-import 'wedding_timeline_data.dart';
+import '../../models/wedding_details/wedding_timeline_data.dart';
 
 @RoutePage()
 class WeddingDetailsPage extends HookWidget {

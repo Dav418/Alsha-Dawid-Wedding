@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../config/wedding_content_config.dart';
-import '../data/wedding_content.dart';
+import '../../models/content/wedding_content.dart';
 
 part 'wedding_content_repository.g.dart';
 

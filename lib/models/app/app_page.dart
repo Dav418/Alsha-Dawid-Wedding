@@ -1,4 +1,4 @@
-import '../router/app_router.gr.dart';
+import '../../router/app_router.gr.dart';
 
 enum AppPage {
   home,

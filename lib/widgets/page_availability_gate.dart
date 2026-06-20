@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../models/app_page.dart';
+import '../models/app/app_page.dart';
 import '../providers/page_availability_provider.dart';
 import 'under_construction_widget.dart';
 

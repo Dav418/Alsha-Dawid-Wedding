@@ -1,5 +1,5 @@
 import '../../assets/food/food_assets.dart';
-import '../../models/food_item.dart';
+import 'food_item.dart';
 
 abstract final class FoodMenuData {
   FoodMenuData._();
