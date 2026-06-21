@@ -17,17 +17,6 @@ abstract final class AppTypography {
         color: color,
       );
 
-  static TextStyle scriptQuote({
-    required Color color,
-    double fontSize = 30,
-    double height = 1.35,
-  }) =>
-      GoogleFonts.greatVibes(
-        fontSize: fontSize,
-        height: height,
-        color: color,
-      );
-
   static TextStyle capsLabel({
     required Color color,
     double fontSize = 12,
@@ -176,14 +165,16 @@ abstract final class AppTypography {
         color: color,
       );
 
-  static TextStyle faqToggle({required Color color}) => GoogleFonts.playfairDisplay(
+  static TextStyle faqToggle({required Color color}) =>
+      GoogleFonts.playfairDisplay(
         fontSize: 22,
         height: 1,
         fontWeight: FontWeight.w400,
         color: color,
       );
 
-  static TextStyle faqAnswer({required Color color}) => GoogleFonts.playfairDisplay(
+  static TextStyle faqAnswer({required Color color}) =>
+      GoogleFonts.playfairDisplay(
         fontSize: 14.5,
         height: 1.55,
         fontWeight: FontWeight.w400,

@@ -263,7 +263,7 @@ class _MapSetupRequiredPlaceholder extends StatelessWidget {
                   Text(
                     'Add a Google Maps API key to run this page locally.',
                     textAlign: TextAlign.center,
-                    style: context.scriptQuote( fontSize: 26),
+                    style: context.scriptHero(fontSize: 26, height: 1.35),
                   ),
                   const SizedBox(height: 16),
                   Text(

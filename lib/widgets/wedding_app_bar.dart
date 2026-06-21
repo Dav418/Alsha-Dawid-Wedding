@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../assets/home/wedding_assets.dart';
+import '../assets/home/home_assets.dart';
 import '../utils/extension/context_extension.dart';
 
 /// Collapsing [SliverAppBar] for the shell [CustomScrollView].
@@ -75,7 +75,7 @@ class _MonogramLockup extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             child: Image.asset(
-              WeddingAssets.monogramAdWreath,
+              HomeAssets.image('monogram_ad_wreath')!,
               height: height,
               fit: BoxFit.contain,
             ),

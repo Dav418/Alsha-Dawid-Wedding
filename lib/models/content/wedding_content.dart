@@ -95,13 +95,63 @@ class WeddingVenueSlot with _$WeddingVenueSlot {
 class WeddingPartyRoster with _$WeddingPartyRoster {
   const factory WeddingPartyRoster({
     required List<WeddingPartyMember> bridesmaids,
+    required List<WeddingPartyMember> bridesquad,
     required List<WeddingPartyMember> groomsmen,
     required List<WeddingPartyMember> parents,
+    required WeddingPartyMember maidOfHonor,
+    required WeddingPartyMember bestMan,
     required List<WeddingPartyMember> dogs,
   }) = _WeddingPartyRoster;
 
   factory WeddingPartyRoster.fromJson(Map<String, dynamic> json) =>
       _$WeddingPartyRosterFromJson(json);
+}
+
+enum WeddingPartySection {
+  bridesmaids('BRIDESMAIDS'),
+  bridesquad('BRIDE SQUAD'),
+  groomsmen('GROOMSMEN'),
+  parents('PARENTS'),
+  maidOfHonor('MAID OF HONOR'),
+  bestMan('BEST MAN'),
+  dogs('PAWS OF HONOR');
+
+  const WeddingPartySection(this.title);
+
+  final String title;
+}
+
+enum PortraitGender {
+  male,
+  female;
+
+  /// Fallback portrait when no named asset exists.
+  static PortraitGender forMember(
+    WeddingPartyMember member,
+    WeddingPartySection section,
+  ) {
+    switch (section) {
+      case WeddingPartySection.bridesmaids:
+      case WeddingPartySection.bridesquad:
+        return PortraitGender.female;
+      case WeddingPartySection.groomsmen:
+        return PortraitGender.male;
+      case WeddingPartySection.parents:
+        final honorific = member.honorific?.trim().toLowerCase() ?? '';
+        if (honorific.startsWith('mrs')) return PortraitGender.female;
+        if (honorific.startsWith('mr')) return PortraitGender.male;
+        return PortraitGender.male;
+      case WeddingPartySection.maidOfHonor:
+        return PortraitGender.female;
+      case WeddingPartySection.bestMan:
+        return PortraitGender.male;
+      case WeddingPartySection.dogs:
+        final bio = member.bio?.trim().toLowerCase() ?? '';
+        if (bio.contains('girl')) return PortraitGender.female;
+        if (bio.contains('boy')) return PortraitGender.male;
+        return PortraitGender.male;
+    }
+  }
 }
 
 @freezed
@@ -118,8 +168,7 @@ class WeddingPartyMember with _$WeddingPartyMember {
   factory WeddingPartyMember.fromJson(Map<String, dynamic> json) =>
       _$WeddingPartyMemberFromJson(json);
 
-  bool get hasName =>
-      firstName.trim().isNotEmpty || lastName.trim().isNotEmpty;
+  bool get hasName => firstName.trim().isNotEmpty || lastName.trim().isNotEmpty;
 
   bool get hasBio => bio?.trim().isNotEmpty ?? false;
 

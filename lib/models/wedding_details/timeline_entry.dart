@@ -10,6 +10,5 @@ class TimelineEntry with _$TimelineEntry {
     required String title,
     String? details,
     IconData? icon,
-    String? pinImageAssetPath,
   }) = _TimelineEntry;
 }

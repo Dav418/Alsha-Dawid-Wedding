@@ -32,7 +32,11 @@ final _testWeddingContent = WeddingContent(
   weddingParty: WeddingPartyRoster(
     bridesmaids: [],
     groomsmen: [],
+    bridesquad: [],
     parents: [],
+    maidOfHonor: const WeddingPartyMember(firstName: '', lastName: ''),
+    bestMan: const WeddingPartyMember(firstName: '', lastName: ''),
+    dogs: [],
   ),
   ourStoryPhotoUrls: [],
 );

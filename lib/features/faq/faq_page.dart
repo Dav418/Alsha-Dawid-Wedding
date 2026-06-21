@@ -207,7 +207,7 @@ class _FaqContactSection extends ConsumerWidget {
         Text(
           'Still have a question? Feel free to contact us.',
           textAlign: TextAlign.center,
-          style: context.scriptQuote( fontSize: 28),
+          style: context.scriptHero(fontSize: 28, height: 1.35),
         ),
         const SizedBox(height: 20),
         Center(

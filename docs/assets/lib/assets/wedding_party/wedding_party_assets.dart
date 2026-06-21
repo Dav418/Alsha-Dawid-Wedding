@@ -1,15 +1,22 @@
-/// Portrait paths under [lib/assets/wedding_party] — `firstname_surname.png`.
-abstract final class WeddingPartyAssets {
+import '../directory_assets.dart';
+
+/// Portrait paths under [lib/assets/wedding_party] — `firstname_surname.{jpeg,png}`.
+abstract final class WeddingPartyAssets extends DirectoryAssets {
   WeddingPartyAssets._();
 
-  static const String _base = 'lib/assets/wedding_party';
+  static const String base = '${DirectoryAssets.libRoot}/wedding_party';
 
-  /// e.g. portrait('Sonia', "D'Souza") → `lib/assets/wedding_party/sonia_dsouza.png`
-  static String portrait(String firstName, String lastName) {
-    return '$_base/${_slug(firstName)}_${_slug(lastName)}.jpeg';
+  static String portraitStem(String firstName, String lastName) {
+    return DirectoryAssets.resolve(
+      base,
+      '${DirectoryAssets.slug(firstName)}_${DirectoryAssets.slug(lastName)}',
+    );
   }
 
-  static String _slug(String value) {
-    return value.toLowerCase().replaceAll(RegExp(r"[^a-z0-9]+"), '').trim();
+  static List<String> portraitCandidates(String firstName, String lastName) {
+    return DirectoryAssets.extensionCandidates(
+      portraitStem(firstName, lastName),
+      DirectoryAssets.extensions,
+    );
   }
 }

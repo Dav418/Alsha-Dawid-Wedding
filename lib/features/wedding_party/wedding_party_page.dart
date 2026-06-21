@@ -2,16 +2,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../assets/wedding_party/wedding_party_assets.dart';
 import '../../models/content/wedding_content.dart';
 import '../../content/repositories/wedding_content_repository.dart';
 import '../../models/app/app_page.dart';
 import '../../router/app_router.gr.dart';
 import '../../widgets/heart_divider.dart';
 import '../../widgets/page_availability_gate.dart';
+import '../../assets/wedding_party/wedding_party_assets.dart';
 import '../../widgets/party_member_polaroid_overlay.dart';
-import '../../widgets/party_member_portrait_placeholder.dart';
-import '../../utils/cursed_text.dart';
 import '../../utils/extension/context_extension.dart';
 
 @RoutePage()
@@ -37,29 +35,45 @@ class WeddingPartyPage extends ConsumerWidget {
             const _PartyHeader(),
             const SizedBox(height: 28),
             _PartySection(
-              title: 'BRIDESMAIDS',
-              members: party.bridesmaids,
+              section: WeddingPartySection.dogs,
+              members: party.dogs,
             ),
             const SizedBox(height: 28),
             const HeartDivider(),
             const SizedBox(height: 28),
             _PartySection(
-              title: 'GROOMSMEN',
+              section: WeddingPartySection.parents,
+              members: party.parents,
+            ),
+            const SizedBox(height: 28),
+            const HeartDivider(),
+            const SizedBox(height: 28),
+            _PartySectionPair(
+              leftSection: WeddingPartySection.maidOfHonor,
+              rightSection: WeddingPartySection.bestMan,
+              leftMembers: [party.maidOfHonor],
+              rightMembers: [party.bestMan],
+            ),
+            const SizedBox(height: 28),
+            const HeartDivider(),
+            const SizedBox(height: 28),
+            _PartySection(
+              section: WeddingPartySection.groomsmen,
               members: party.groomsmen,
             ),
             const SizedBox(height: 28),
             const HeartDivider(),
             const SizedBox(height: 28),
             _PartySection(
-              title: 'PARENTS',
-              members: party.parents,
+              section: WeddingPartySection.bridesmaids,
+              members: party.bridesmaids,
             ),
             const SizedBox(height: 28),
             const HeartDivider(),
             const SizedBox(height: 28),
             _PartySection(
-              title: 'PAWS OF HONOR',
-              members: party.dogs,
+              section: WeddingPartySection.bridesquad,
+              members: party.bridesquad,
             ),
           ],
         ),
@@ -73,7 +87,6 @@ class _PartyHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       children: [
         Text(
@@ -92,46 +105,90 @@ class _PartyHeader extends StatelessWidget {
   }
 }
 
-class _PartySection extends StatelessWidget {
-  const _PartySection({
-    required this.title,
-    required this.members,
+class _PartySectionPair extends StatelessWidget {
+  const _PartySectionPair({
+    required this.leftSection,
+    required this.rightSection,
+    required this.leftMembers,
+    required this.rightMembers,
   });
 
-  final String title;
-  final List<WeddingPartyMember> members;
+  final WeddingPartySection leftSection;
+  final WeddingPartySection rightSection;
+  final List<WeddingPartyMember> leftMembers;
+  final List<WeddingPartyMember> rightMembers;
 
   @override
   Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: _PartySection(
+            section: leftSection,
+            members: leftMembers,
+            crossAxisCount: 1,
+          ),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: _PartySection(
+            section: rightSection,
+            members: rightMembers,
+            crossAxisCount: 1,
+          ),
+        ),
+      ],
+    );
+  }
+}
 
+class _PartySection extends StatelessWidget {
+  const _PartySection({
+    required this.section,
+    required this.members,
+    this.crossAxisCount,
+  });
+
+  final WeddingPartySection section;
+  final List<WeddingPartyMember> members;
+  final int? crossAxisCount;
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
         Text(
-          title,
+          section.title,
           textAlign: TextAlign.center,
           style: context.sectionCaps(),
         ),
         const SizedBox(height: 22),
         LayoutBuilder(
           builder: (context, constraints) {
-            final columns = constraints.maxWidth >= 520 ? 4 : 2;
+            final columns =
+                crossAxisCount ?? (constraints.maxWidth >= 520 ? 4 : 2);
+            const spacing = 12.0;
+            const runSpacing = 20.0;
+            final mainAxisExtent = columns == 4 ? 168.0 : 176.0;
+            final itemWidth =
+                (constraints.maxWidth - (columns - 1) * spacing) / columns;
 
-            return GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: members.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: columns,
-                mainAxisExtent: columns == 4 ? 168 : 176,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 20,
-              ),
-              itemBuilder: (context, index) {
-                return _PartyPortrait(
-                  member: members[index],
-                  cursedSeed: '$title-$index',
-                );
-              },
+            return Wrap(
+              alignment: WrapAlignment.center,
+              spacing: spacing,
+              runSpacing: runSpacing,
+              children: [
+                for (final member in members)
+                  SizedBox(
+                    width: itemWidth,
+                    height: mainAxisExtent,
+                    child: _PartyPortrait(
+                      member: member,
+                      section: section,
+                    ),
+                  ),
+              ],
             );
           },
         ),
@@ -143,23 +200,16 @@ class _PartySection extends StatelessWidget {
 class _PartyPortrait extends StatelessWidget {
   const _PartyPortrait({
     required this.member,
-    required this.cursedSeed,
+    required this.section,
   });
 
   final WeddingPartyMember member;
-  final String cursedSeed;
+  final WeddingPartySection section;
 
   @override
   Widget build(BuildContext context) {
     const portraitSize = 104.0;
-    const placeholder = PartyMemberPortraitPlaceholder();
-    final assetPath = WeddingPartyAssets.portrait(
-      member.firstName,
-      member.lastName,
-    );
-    final displayName = member.hasName
-        ? member.displayName
-        : CursedText.name(seed: cursedSeed);
+    final displayName = member.hasName ? member.displayName : '?';
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -171,8 +221,7 @@ class _PartyPortrait extends StatelessWidget {
             onTap: () => showPartyMemberPolaroid(
               context,
               member: member,
-              assetPath: assetPath,
-              cursedSeed: cursedSeed,
+              section: section,
             ),
             child: Container(
               width: portraitSize,
@@ -193,11 +242,13 @@ class _PartyPortrait extends StatelessWidget {
               ),
               child: ClipOval(
                 child: Image.asset(
-                  assetPath,
+                  WeddingPartyAssets.portrait(
+                    member: member,
+                    section: section,
+                  ),
                   width: portraitSize,
                   height: portraitSize,
                   fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => placeholder,
                 ),
               ),
             ),
@@ -209,9 +260,7 @@ class _PartyPortrait extends StatelessWidget {
           textAlign: TextAlign.center,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
-          style: member.hasName
-              ? context.portraitName()
-              : CursedText.portraitNameStyle(context.colorScheme),
+          style: context.portraitName(),
         ),
       ],
     );

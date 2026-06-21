@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:alisha_dawid_wedding_website/assets/timeline_pins/timeline_assets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
@@ -489,7 +490,9 @@ class _TimelineRow extends StatelessWidget {
             progress: progress,
             isFirst: isFirst,
             isLast: isLast,
-            imageAssetPath: entry.pinImageAssetPath,
+            imageAssetPath: TimelineAssets.image(
+              entry.title,
+            ),
           ),
           const SizedBox(width: 14),
           Expanded(

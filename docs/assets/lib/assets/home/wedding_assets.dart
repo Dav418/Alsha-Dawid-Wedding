@@ -1,19 +1,26 @@
+import '../directory_assets.dart';
+
 /// Paths for home hero florals (transparent PNGs under [lib/assets/home]).
-abstract final class WeddingAssets {
+abstract final class WeddingAssets extends DirectoryAssets {
   WeddingAssets._();
 
-  static const String leftFloralCluster =
-      'lib/assets/home/left_floral_cluster.png';
-  static const String rightFloralCluster =
-      'lib/assets/home/right_floral_cluster.png';
-  static const String bottomFloralRibbon =
-      'lib/assets/home/bottom_floral_ribbon.png';
+  static const String base = '${DirectoryAssets.libRoot}/home';
+  static const List<String> _extensions = ['png'];
 
-  /// Gold monogram PNG (transparent); source magenta stripped via [tool/strip_magenta_bg.py].
-  static const String monogramAdWreath =
-      'lib/assets/home/monogram_ad_wreath.png';
+  static String get leftFloralCluster =>
+      DirectoryAssets.image(base, 'left_floral_cluster', _extensions);
 
-  static const String seal = 'lib/assets/home/seal.png';
+  static String get rightFloralCluster =>
+      DirectoryAssets.image(base, 'right_floral_cluster', _extensions);
 
-  static const String rsvpButton = 'lib/assets/home/rsvp_button.png';
+  static String get bottomFloralRibbon =>
+      DirectoryAssets.image(base, 'bottom_floral_ribbon', _extensions);
+
+  static String get monogramAdWreath =>
+      DirectoryAssets.image(base, 'monogram_ad_wreath', _extensions);
+
+  static String get seal => DirectoryAssets.image(base, 'seal', _extensions);
+
+  static String get rsvpButton =>
+      DirectoryAssets.image(base, 'rsvp_button', _extensions);
 }

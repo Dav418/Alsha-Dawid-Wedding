@@ -45,13 +45,12 @@ class _FoodHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       children: [
         Text(
           'Food & Menu',
           textAlign: TextAlign.center,
-          style: context.scriptHero( fontSize: 48, height: 1.08),
+          style: context.scriptHero(fontSize: 48, height: 1.08),
         ),
         const SizedBox(height: 10),
         Text(
@@ -114,7 +113,6 @@ class _CulturePillSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return DecoratedBox(
       decoration: BoxDecoration(
         color: context.creamBackground.withValues(alpha: 0.9),
@@ -151,7 +149,8 @@ class _CulturePillSwitch extends StatelessWidget {
                       borderRadius: BorderRadius.circular(999),
                       boxShadow: [
                         BoxShadow(
-                          color: context.colorScheme.primary.withValues(alpha: 0.25),
+                          color: context.colorScheme.primary
+                              .withValues(alpha: 0.25),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
@@ -195,7 +194,6 @@ class _CulturePillOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Expanded(
       child: Material(
         color: Colors.transparent,
@@ -210,7 +208,9 @@ class _CulturePillOption extends StatelessWidget {
               style: context.capsLabel(
                 fontSize: 11.5,
                 letterSpacing: 2.2,
-                color: selected ? context.colorScheme.onPrimary : context.colorScheme.primary,
+                color: selected
+                    ? context.colorScheme.onPrimary
+                    : context.colorScheme.primary,
               ),
             ),
           ),
@@ -422,7 +422,6 @@ class _FoodDetailLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -452,13 +451,16 @@ class _FoodItemImage extends StatelessWidget {
     required this.borderRadius,
   });
 
-  final String assetPath;
+  final String? assetPath;
   final double? width;
   final double height;
   final double borderRadius;
 
   @override
   Widget build(BuildContext context) {
+    if (assetPath == null) {
+      return _FoodImagePlaceholder(height: height);
+    }
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
@@ -466,7 +468,7 @@ class _FoodItemImage extends StatelessWidget {
         width: width,
         height: height,
         child: Image.asset(
-          assetPath,
+          assetPath!,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) => _FoodImagePlaceholder(
             height: height,

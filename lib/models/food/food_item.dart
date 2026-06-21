@@ -15,7 +15,7 @@ class FoodItem with _$FoodItem {
     required String allergens,
     required String spiceLevel,
     required String wikipediaUrl,
-    required String imageAsset,
+    String? imageAsset,
     required FoodCourse course,
     required FoodCulture culture,
   }) = _FoodItem;

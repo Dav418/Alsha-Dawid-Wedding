@@ -1,7 +1,7 @@
+import 'package:alisha_dawid_wedding_website/assets/home/home_assets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:alisha_dawid_wedding_website/assets/home/wedding_assets.dart';
 
 import '../../content/repositories/wedding_content_repository.dart';
 import '../../models/app/app_page.dart';
@@ -43,7 +43,7 @@ class RsvpPage extends ConsumerWidget {
                 onTap: () => openExternalRsvp(context, rsvpUrl),
                 borderRadius: BorderRadius.circular(24),
                 child: Image.asset(
-                  WeddingAssets.rsvpButton,
+                  HomeAssets.image('rsvp_button')!,
                   height: 100,
                   fit: BoxFit.contain,
                 ),

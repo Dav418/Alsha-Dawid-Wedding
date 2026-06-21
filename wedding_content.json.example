@@ -31,7 +31,18 @@
   "weddingParty": {
     "bridesmaids": [],
     "groomsmen": [],
-    "parents": []
+    "parents": [],
+    "maidOfHonor": {
+      "firstName": "",
+      "lastName": "",
+      "bio": ""
+    },
+    "bestMan": {
+      "firstName": "",
+      "lastName": "",
+      "bio": ""
+    },
+    "dogs": []
   },
   "ourStoryPhotoUrls": []
 }

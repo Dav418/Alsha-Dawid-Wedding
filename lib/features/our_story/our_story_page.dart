@@ -468,7 +468,7 @@ class _StoryFooter extends StatelessWidget {
             child: Text(
               'From the moment we met, we knew our story was worth writing.',
               textAlign: TextAlign.center,
-              style: context.scriptQuote(),
+              style: context.scriptHero(fontSize: 30, height: 1.35),
             ),
           ),
         ),

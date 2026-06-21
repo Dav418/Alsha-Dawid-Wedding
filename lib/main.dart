@@ -4,6 +4,7 @@ import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'app.dart';
+import 'assets/directory_assets.dart';
 import 'models/content/wedding_content.dart';
 import 'content/repositories/wedding_content_repository.dart';
 import 'utils/google_maps_web_loader.dart';
@@ -14,7 +15,6 @@ Future<void> main() async {
 
   await GoogleFonts.pendingFonts([
     GoogleFonts.allura(),
-    GoogleFonts.greatVibes(),
     GoogleFonts.montserrat(fontWeight: FontWeight.w400),
     GoogleFonts.montserrat(fontWeight: FontWeight.w500),
     GoogleFonts.montserrat(fontWeight: FontWeight.w600),
@@ -27,6 +27,8 @@ Future<void> main() async {
   final weddingContent = await loadWeddingContent();
 
   await ensureGoogleMapsLoaded();
+
+  await DirectoryAssets.ensureLoaded();
 
   runApp(
     ProviderScope(

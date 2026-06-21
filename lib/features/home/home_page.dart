@@ -1,4 +1,4 @@
-import 'package:alisha_dawid_wedding_website/assets/home/wedding_assets.dart';
+import 'package:alisha_dawid_wedding_website/assets/home/home_assets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -41,7 +41,7 @@ class HomePage extends ConsumerWidget {
               onTap: () => RsvpPage.push(context),
               borderRadius: BorderRadius.circular(24),
               child: Image.asset(
-                WeddingAssets.rsvpButton,
+                HomeAssets.image('rsvp_button')!,
                 height: 100,
                 fit: BoxFit.contain,
               ),
@@ -75,7 +75,7 @@ class _HomeHeroInviteCard extends HookWidget {
     }
 
     return WeddingHeroInviteCard(
-      imageAssetPath: WeddingAssets.seal,
+      imageAssetPath: HomeAssets.image('seal'),
       onImageTap: onSealTap,
       child: _HomeInviteContent(content: content),
     );
@@ -167,7 +167,7 @@ class _HomeWelcomeSection extends StatelessWidget {
           Text(
             "We can't wait to celebrate with you!",
             textAlign: TextAlign.center,
-            style: context.scriptQuote(height: 1.2, fontSize: 28),
+            style: context.scriptHero(height: 1.2, fontSize: 28),
           ),
           const SizedBox(height: 28),
           const HeartAccent(),

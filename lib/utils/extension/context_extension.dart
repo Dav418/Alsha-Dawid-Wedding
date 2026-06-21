@@ -47,17 +47,6 @@ extension ContextExtension on BuildContext {
         height: height,
       );
 
-  TextStyle scriptQuote({
-    double fontSize = 30,
-    double height = 1.35,
-    Color? color,
-  }) =>
-      AppTypography.scriptQuote(
-        color: color ?? colorScheme.primary,
-        fontSize: fontSize,
-        height: height,
-      );
-
   TextStyle capsLabel({
     double fontSize = 12,
     double letterSpacing = 2.6,
