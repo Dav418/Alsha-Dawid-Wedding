@@ -1,8 +1,62 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../../models/wedding_details/timeline_entry.dart';
 import '../../../utils/extension/context_extension.dart';
+
+enum _TimelineTransitionPhase {
+  idle,
+  closing,
+  scrolling,
+  opening,
+  selected;
+
+  double expansionProgress({
+    required int entryIndex,
+    required int? selectedEntryIndex,
+    required double naturalExpansionProgress,
+    required double closingExpansionProgress,
+    required double closeProgress,
+    required double openProgress,
+  }) =>
+      switch (this) {
+        idle => naturalExpansionProgress,
+        closing => closingExpansionProgress * (1 - closeProgress),
+        scrolling => 0,
+        opening => selectedEntryIndex == entryIndex ? openProgress : 0,
+        selected => selectedEntryIndex == entryIndex ? 1 : 0,
+      };
+}
+
+enum _TimelineMetric {
+  estimatedRowExtent(180),
+  rowSpacing(42),
+  railWidth(80),
+  dotCenterY(32),
+  pinImageScale(1.18),
+  expandStartProgress(0.42),
+  expandEndProgress(0.92);
+
+  const _TimelineMetric(this.value);
+
+  final double value;
+
+  static double get focusRadius => estimatedRowExtent.value * 0.95;
+
+  static double get focusHoldRadius => estimatedRowExtent.value * 0.28;
+}
+
+enum _TimelineDuration {
+  close(Duration(milliseconds: 120)),
+  scroll(Duration(milliseconds: 500)),
+  open(Duration(milliseconds: 170));
+
+  const _TimelineDuration(this.value);
+
+  final Duration value;
+}
 
 class WeddingDayTimeline extends HookWidget {
   const WeddingDayTimeline({
@@ -18,21 +72,203 @@ class WeddingDayTimeline extends HookWidget {
   final Widget? trailingChild;
   final double focusAlignment;
 
-  static const _estimatedRowExtent = 180.0;
-  static const _rowSpacing = 42.0;
-  static const _railWidth = 80.0;
-  static const _dotCenterY = 32.0;
-  static const _focusRadius = _estimatedRowExtent * 0.95;
-  static const _focusHoldRadius = _estimatedRowExtent * 0.28;
-  static const _pinImageScale = 1.18;
-  static const _expandStartProgress = 0.42;
-  static const _expandEndProgress = 0.92;
-
   @override
   Widget build(BuildContext context) {
     final scrollableState = Scrollable.maybeOf(context);
-    final scrollListenable =
-        scrollableState?.position ?? kAlwaysDismissedAnimation;
+    final scrollPosition = scrollableState?.position;
+    final scrollListenable = scrollPosition ?? kAlwaysDismissedAnimation;
+
+    final transitionPhase = useState(_TimelineTransitionPhase.idle);
+    final transitionPhaseRef = useRef(transitionPhase.value);
+    final selectedEntryIndex = useState<int?>(null);
+    final selectedScrollOffset = useRef<double?>(null);
+
+    final renderedExpansionValues = useRef<List<double>>(
+      List.filled(entries.length, 0),
+    );
+
+    final closingExpansionValues = useRef<List<double>>(
+      List.filled(entries.length, 0),
+    );
+
+    if (renderedExpansionValues.value.length != entries.length) {
+      renderedExpansionValues.value = List.filled(entries.length, 0);
+      closingExpansionValues.value = List.filled(entries.length, 0);
+    }
+
+    final closeController = useAnimationController(
+      duration: _TimelineDuration.close.value,
+    );
+
+    final openController = useAnimationController(
+      duration: _TimelineDuration.open.value,
+    );
+
+    final closeProgress = Curves.easeInCubic.transform(
+      useAnimation(closeController),
+    );
+
+    final openProgress = Curves.easeOutCubic.transform(
+      useAnimation(openController),
+    );
+
+    void setTransitionPhase(_TimelineTransitionPhase phase) {
+      transitionPhaseRef.value = phase;
+      transitionPhase.value = phase;
+    }
+
+    void returnToNaturalScrolling() {
+      selectedEntryIndex.value = null;
+      selectedScrollOffset.value = null;
+
+      closeController
+        ..stop()
+        ..value = 0;
+
+      openController
+        ..stop()
+        ..value = 0;
+
+      setTransitionPhase(_TimelineTransitionPhase.idle);
+    }
+
+    useEffect(
+      () {
+        if (scrollPosition == null) {
+          return null;
+        }
+
+        void handleScrollPositionChanged() {
+          if (transitionPhaseRef.value != _TimelineTransitionPhase.selected) {
+            return;
+          }
+
+          final lockedOffset = selectedScrollOffset.value;
+
+          if (lockedOffset == null) {
+            return;
+          }
+
+          final hasMovedAway = (scrollPosition.pixels - lockedOffset).abs() > 2;
+
+          if (hasMovedAway) {
+            returnToNaturalScrolling();
+          }
+        }
+
+        scrollPosition.addListener(handleScrollPositionChanged);
+
+        return () {
+          scrollPosition.removeListener(handleScrollPositionChanged);
+        };
+      },
+      [
+        scrollPosition,
+        closeController,
+        openController,
+      ],
+    );
+
+    Future<void> scrollToEntry({
+      required int entryIndex,
+      required BuildContext rowContext,
+    }) async {
+      if (scrollPosition == null) {
+        return;
+      }
+
+      final scrollableContext = scrollableState?.context;
+
+      final currentPhase = transitionPhaseRef.value;
+
+      if (currentPhase == _TimelineTransitionPhase.closing ||
+          currentPhase == _TimelineTransitionPhase.scrolling ||
+          currentPhase == _TimelineTransitionPhase.opening) {
+        return;
+      }
+
+      selectedEntryIndex.value = entryIndex;
+      selectedScrollOffset.value = null;
+
+      closingExpansionValues.value =
+          List<double>.of(renderedExpansionValues.value);
+
+      openController
+        ..stop()
+        ..value = 0;
+
+      setTransitionPhase(_TimelineTransitionPhase.closing);
+
+      await closeController.forward(from: 0);
+
+      if (!rowContext.mounted) {
+        returnToNaturalScrolling();
+        return;
+      }
+
+      setTransitionPhase(_TimelineTransitionPhase.scrolling);
+
+      await WidgetsBinding.instance.endOfFrame;
+
+      if (!rowContext.mounted) {
+        returnToNaturalScrolling();
+        return;
+      }
+
+      if (scrollableContext != null && !scrollableContext.mounted) {
+        returnToNaturalScrolling();
+        return;
+      }
+
+      final rowRenderObject = rowContext.findRenderObject();
+      final scrollableRenderObject = scrollableContext?.findRenderObject();
+
+      if (rowRenderObject is! RenderBox ||
+          !rowRenderObject.hasSize ||
+          scrollableRenderObject is! RenderBox ||
+          !scrollableRenderObject.hasSize) {
+        returnToNaturalScrolling();
+        return;
+      }
+
+      final focusY = scrollableRenderObject.localToGlobal(Offset.zero).dy +
+          scrollableRenderObject.size.height * focusAlignment;
+
+      final rowFocusY = rowRenderObject.localToGlobal(Offset.zero).dy +
+          _TimelineMetric.dotCenterY.value;
+
+      final requiredOffsetChange = rowFocusY - focusY;
+
+      final targetOffset = (scrollPosition.pixels + requiredOffsetChange)
+          .clamp(
+            scrollPosition.minScrollExtent,
+            scrollPosition.maxScrollExtent,
+          )
+          .toDouble();
+
+      await scrollPosition.animateTo(
+        targetOffset,
+        duration: _TimelineDuration.scroll.value,
+        curve: Curves.easeInOutCubic,
+      );
+
+      if (!rowContext.mounted) {
+        returnToNaturalScrolling();
+        return;
+      }
+
+      setTransitionPhase(_TimelineTransitionPhase.opening);
+
+      await openController.forward(from: 0);
+
+      if (!rowContext.mounted) {
+        returnToNaturalScrolling();
+        return;
+      }
+
+      selectedScrollOffset.value = scrollPosition.pixels;
+      setTransitionPhase(_TimelineTransitionPhase.selected);
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -43,9 +279,28 @@ class WeddingDayTimeline extends HookWidget {
             scrollListenable: scrollListenable,
             scrollableContext: scrollableState?.context,
             focusAlignment: focusAlignment,
+            entryIndex: indexedEntry.$1,
             entry: indexedEntry.$2,
+            transitionPhase: transitionPhase.value,
+            selectedEntryIndex: selectedEntryIndex.value,
+            closeProgress: closeProgress,
+            openProgress: openProgress,
+            closingExpansionProgress:
+                closingExpansionValues.value[indexedEntry.$1],
             isFirst: indexedEntry.$1 == 0,
             isLast: indexedEntry.$1 == entries.length - 1,
+            onExpansionResolved: (expansionProgress) {
+              renderedExpansionValues.value[indexedEntry.$1] =
+                  expansionProgress;
+            },
+            onTap: (rowContext) {
+              unawaited(
+                scrollToEntry(
+                  entryIndex: indexedEntry.$1,
+                  rowContext: rowContext,
+                ),
+              );
+            },
           ),
         if (trailingChild != null) trailingChild!,
       ],
@@ -58,17 +313,33 @@ class _TimelineRowPositionReader extends StatelessWidget {
     required this.scrollListenable,
     required this.scrollableContext,
     required this.focusAlignment,
+    required this.entryIndex,
     required this.entry,
+    required this.transitionPhase,
+    required this.selectedEntryIndex,
+    required this.closeProgress,
+    required this.openProgress,
+    required this.closingExpansionProgress,
     required this.isFirst,
     required this.isLast,
+    required this.onExpansionResolved,
+    required this.onTap,
   });
 
   final Listenable scrollListenable;
   final BuildContext? scrollableContext;
   final double focusAlignment;
+  final int entryIndex;
   final TimelineEntry entry;
+  final _TimelineTransitionPhase transitionPhase;
+  final int? selectedEntryIndex;
+  final double closeProgress;
+  final double openProgress;
+  final double closingExpansionProgress;
   final bool isFirst;
   final bool isLast;
+  final ValueChanged<double> onExpansionResolved;
+  final ValueChanged<BuildContext> onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -81,12 +352,24 @@ class _TimelineRowPositionReader extends StatelessWidget {
               scrollableContext: scrollableContext,
               rowContext: rowContext,
               focusAlignment: focusAlignment,
-              rowFocusOffset: WeddingDayTimeline._dotCenterY,
-              focusRadius: WeddingDayTimeline._focusRadius,
-              focusHoldRadius: WeddingDayTimeline._focusHoldRadius,
+              rowFocusOffset: _TimelineMetric.dotCenterY.value,
+              focusRadius: _TimelineMetric.focusRadius,
+              focusHoldRadius: _TimelineMetric.focusHoldRadius,
             );
 
-            final expansionProgress = expansionProgressForFocus(progress);
+            final naturalExpansionProgress =
+                expansionProgressForFocus(progress);
+
+            final expansionProgress = transitionPhase.expansionProgress(
+              entryIndex: entryIndex,
+              selectedEntryIndex: selectedEntryIndex,
+              naturalExpansionProgress: naturalExpansionProgress,
+              closingExpansionProgress: closingExpansionProgress,
+              closeProgress: closeProgress,
+              openProgress: openProgress,
+            );
+
+            onExpansionResolved(expansionProgress);
 
             return _TimelineRow(
               entry: entry,
@@ -94,6 +377,9 @@ class _TimelineRowPositionReader extends StatelessWidget {
               expansionProgress: expansionProgress,
               isFirst: isFirst,
               isLast: isLast,
+              onTap: () {
+                onTap(rowContext);
+              },
             );
           },
         );
@@ -132,9 +418,9 @@ double focusProgressForRow({
 }
 
 double expansionProgressForFocus(double progress) {
-  final rawProgress = ((progress - WeddingDayTimeline._expandStartProgress) /
-          (WeddingDayTimeline._expandEndProgress -
-              WeddingDayTimeline._expandStartProgress))
+  final rawProgress = ((progress - _TimelineMetric.expandStartProgress.value) /
+          (_TimelineMetric.expandEndProgress.value -
+              _TimelineMetric.expandStartProgress.value))
       .clamp(0.0, 1.0)
       .toDouble();
 
@@ -183,6 +469,7 @@ class _TimelineRow extends StatelessWidget {
     required this.expansionProgress,
     required this.isFirst,
     required this.isLast,
+    required this.onTap,
   });
 
   final TimelineEntry entry;
@@ -190,6 +477,7 @@ class _TimelineRow extends StatelessWidget {
   final double expansionProgress;
   final bool isFirst;
   final bool isLast;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -207,12 +495,13 @@ class _TimelineRow extends StatelessWidget {
           Expanded(
             child: Padding(
               padding: EdgeInsets.only(
-                bottom: isLast ? 0 : WeddingDayTimeline._rowSpacing,
+                bottom: isLast ? 0 : _TimelineMetric.rowSpacing.value,
               ),
               child: _TimelineCard(
                 entry: entry,
                 progress: progress,
                 expansionProgress: expansionProgress,
+                onTap: onTap,
               ),
             ),
           ),
@@ -249,27 +538,27 @@ class _TimelineRail extends StatelessWidget {
     )!;
 
     return SizedBox(
-      width: WeddingDayTimeline._railWidth,
+      width: _TimelineMetric.railWidth.value,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
           if (!isFirst)
-            const Positioned(
+            Positioned(
               top: 0,
-              height: WeddingDayTimeline._dotCenterY,
-              left: (WeddingDayTimeline._railWidth - 2) / 2,
-              child: _TimelineRailLine(),
+              height: _TimelineMetric.dotCenterY.value,
+              left: (_TimelineMetric.railWidth.value - 2) / 2,
+              child: const _TimelineRailLine(),
             ),
           if (!isLast)
-            const Positioned(
-              top: WeddingDayTimeline._dotCenterY,
+            Positioned(
+              top: _TimelineMetric.dotCenterY.value,
               bottom: 0,
-              left: (WeddingDayTimeline._railWidth - 2) / 2,
-              child: _TimelineRailLine(),
+              left: (_TimelineMetric.railWidth.value - 2) / 2,
+              child: const _TimelineRailLine(),
             ),
           Positioned(
-            top: WeddingDayTimeline._dotCenterY - dotSize / 2,
-            left: (WeddingDayTimeline._railWidth - dotSize) / 2,
+            top: _TimelineMetric.dotCenterY.value - dotSize / 2,
+            left: (_TimelineMetric.railWidth.value - dotSize) / 2,
             child: hasImage
                 ? Opacity(
                     opacity: _lerp(0.58, 1.0, progress),
@@ -281,7 +570,7 @@ class _TimelineRail extends StatelessWidget {
                           Positioned.fill(
                             child: ClipOval(
                               child: Transform.scale(
-                                scale: WeddingDayTimeline._pinImageScale,
+                                scale: _TimelineMetric.pinImageScale.value,
                                 child: Image.asset(
                                   imageAssetPath!,
                                   fit: BoxFit.cover,
@@ -332,11 +621,13 @@ class _TimelineCard extends StatelessWidget {
     required this.entry,
     required this.progress,
     required this.expansionProgress,
+    required this.onTap,
   });
 
   final TimelineEntry entry;
   final double progress;
   final double expansionProgress;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -349,91 +640,95 @@ class _TimelineCard extends StatelessWidget {
 
     return Opacity(
       opacity: cardOpacity,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: context.creamBackground.withValues(alpha: 0.76),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: context.goldBrass.withValues(
-              alpha: _lerp(0.14, 0.42, progress),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: context.creamBackground.withValues(alpha: 0.76),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: context.goldBrass.withValues(
+                alpha: _lerp(0.14, 0.42, progress),
+              ),
             ),
           ),
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: Stack(
-            children: [
-              if (hasIcon)
-                Positioned(
-                  right: -24,
-                  bottom: -28,
-                  child: IgnorePointer(
-                    child: Transform.rotate(
-                      angle: -0.08,
-                      child: Opacity(
-                        opacity: iconOpacity,
-                        child: Icon(
-                          entry.icon,
-                          size: 104,
-                          color: context.colorScheme.primary,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Stack(
+              children: [
+                if (hasIcon)
+                  Positioned(
+                    right: -24,
+                    bottom: -28,
+                    child: IgnorePointer(
+                      child: Transform.rotate(
+                        angle: -0.08,
+                        child: Opacity(
+                          opacity: iconOpacity,
+                          child: Icon(
+                            entry.icon,
+                            size: 104,
+                            color: context.colorScheme.primary,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(18, 14, 42, 14),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Opacity(
-                      opacity: textOpacity,
-                      child: Text(
-                        entry.title,
-                        textAlign: TextAlign.left,
-                        softWrap: true,
-                        style: context.cardTime(),
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Opacity(
-                      opacity: textOpacity,
-                      child: Text(
-                        entry.time,
-                        textAlign: TextAlign.left,
-                        style: context.cardTitleCaps(
-                          fontSize: 12,
-                          letterSpacing: 1.3,
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(18, 14, 42, 14),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Opacity(
+                        opacity: textOpacity,
+                        child: Text(
+                          entry.time,
+                          textAlign: TextAlign.left,
+                          style: context.cardTime(),
                         ),
                       ),
-                    ),
-                    if (entry.details != null)
-                      ClipRect(
-                        child: Align(
-                          alignment: Alignment.topCenter,
-                          heightFactor: expansionProgress,
-                          child: Opacity(
-                            opacity: detailsOpacity,
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 8),
-                              child: Text(
-                                entry.details!,
-                                textAlign: TextAlign.left,
-                                softWrap: true,
-                                style: context.bodySerif(
-                                  fontSize: 12,
-                                  height: 1.35,
+                      const SizedBox(height: 4),
+                      Opacity(
+                        opacity: textOpacity,
+                        child: Text(
+                          entry.title,
+                          textAlign: TextAlign.left,
+                          softWrap: true,
+                          style: context.cardTitleCaps(
+                            fontSize: 12,
+                            letterSpacing: 1.3,
+                          ),
+                        ),
+                      ),
+                      if (entry.details != null)
+                        ClipRect(
+                          child: Align(
+                            alignment: Alignment.topCenter,
+                            heightFactor: expansionProgress,
+                            child: Opacity(
+                              opacity: detailsOpacity,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 8),
+                                child: Text(
+                                  entry.details!,
+                                  textAlign: TextAlign.left,
+                                  softWrap: true,
+                                  style: context.bodySerif(
+                                    fontSize: 12,
+                                    height: 1.35,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
