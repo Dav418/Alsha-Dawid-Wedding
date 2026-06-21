@@ -34,32 +34,40 @@ class WeddingWebsiteApp extends ConsumerWidget {
       );
     }
 
-    if (contentAsync.isLoading) {
-      return MaterialApp(
-        key: const ValueKey('loading-app'),
-        theme: AppTheme.light,
-        home: const Scaffold(
-          body: Center(
-            child: CircularProgressIndicator(),
-          ),
-        ),
-      );
-    }
-
-    final content = contentAsync.requireValue;
-    final siteTitle = content.couple.siteTitle;
+    final isLoading = contentAsync.isLoading;
+    final content = contentAsync.valueOrNull;
+    final siteTitle = content?.couple.siteTitle;
 
     return MaterialApp.router(
-      key: ValueKey(siteTitle),
-      title: siteTitle,
+      key: const ValueKey('wedding-app'),
+      title: siteTitle ?? 'Loading...',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       themeMode: ThemeMode.light,
       builder: (context, child) {
-        return Title(
-          title: siteTitle,
+        final routedChild = isLoading
+            ? const SizedBox.shrink()
+            : (child ?? const SizedBox.shrink());
+
+        final app = Title(
+          title: siteTitle ?? 'Loading...',
           color: Colors.black,
-          child: child ?? const SizedBox.shrink(),
+          child: routedChild,
+        );
+
+        if (!isLoading) {
+          return app;
+        }
+
+        return Stack(
+          children: [
+            app,
+            const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          ],
         );
       },
       routerConfig: router.config(
