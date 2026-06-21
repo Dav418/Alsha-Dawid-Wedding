@@ -6,7 +6,7 @@ abstract final class WeddingPartyAssets {
 
   /// e.g. portrait('Sonia', "D'Souza") → `lib/assets/wedding_party/sonia_dsouza.png`
   static String portrait(String firstName, String lastName) {
-    return '$_base/${_slug(firstName)}_${_slug(lastName)}.png';
+    return '$_base/${_slug(firstName)}_${_slug(lastName)}.jpeg';
   }
 
   static String _slug(String value) {
