@@ -123,7 +123,7 @@ class _WeddingCountdownTimer extends HookWidget {
             children: [
               if (showTitle) ...[
                 Text(
-                  'COUNTING DOWN TO FOREVER',
+                  'COUNTING DOWN TO FOREVER...',
                   textAlign: TextAlign.center,
                   style: context.countdownBannerTitle(
                     fontSize: titleSize,
@@ -282,7 +282,6 @@ class _CountdownDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return SizedBox(
       width: 1,
       height: compact ? 44 : 52,

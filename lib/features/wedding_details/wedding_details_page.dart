@@ -30,7 +30,7 @@ class WeddingDetailsPage extends HookWidget {
               const _DetailsHeader(),
               SizedBox(height: 40),
               Text(
-                'We are so excited to share our wedding day with you. Below is a guide to the main events of the day, from the ceremony to the evening celebration. Please use this as a gentle overview of what to expect, while allowing a little flexibility for the natural flow of the day.',
+                'Below is a guide to the main events of the day, from the ceremony to the evening celebration. Please use this as a gentle overview of what to expect, while allowing a little flexibility for the natural flow of the day.',
                 textAlign: TextAlign.center,
                 style: context.bodySerif(),
               ),

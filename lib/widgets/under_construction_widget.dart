@@ -22,7 +22,7 @@ class UnderConstructionWidget extends StatelessWidget {
           Text(
             page.displayName,
             textAlign: TextAlign.center,
-            style: context.sectionCaps(fontSize: 16),
+            style: context.scriptHero(fontSize: 40, height: 1.1),
           ),
           const SizedBox(height: 16),
           const HeartDivider(),
@@ -43,7 +43,7 @@ class UnderConstructionWidget extends StatelessWidget {
           const HeartAccent(),
           const SizedBox(height: 20),
           Text(
-            'This page is still being prepared. Please check back soon.',
+            'More details coming soon. Check back after receiving your formal invite!',
             textAlign: TextAlign.center,
             style: context.bodySerif(),
           ),

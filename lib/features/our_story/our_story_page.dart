@@ -78,7 +78,8 @@ class OurStoryPage extends ConsumerWidget {
             constraints: const BoxConstraints(maxWidth: _maxPageWidth),
             child: LayoutBuilder(
               builder: (context, constraints) {
-                final sideBySide = constraints.maxWidth >= _sideBySideBreakpoint;
+                final sideBySide =
+                    constraints.maxWidth >= _sideBySideBreakpoint;
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -116,13 +117,12 @@ class _StoryHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       children: [
         Text(
           'Our Story',
           textAlign: TextAlign.center,
-          style: context.scriptHero(),
+          style: context.scriptHero(fontSize: 40, height: 1.1),
         ),
         const SizedBox(height: 10),
         const HeartAccent(),
@@ -457,7 +457,6 @@ class _StoryFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       children: [
         const StoryFooterFlourish(),

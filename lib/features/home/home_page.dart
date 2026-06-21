@@ -99,17 +99,17 @@ class _HomeInviteContent extends StatelessWidget {
         Text(
           couple.partner1Name,
           textAlign: TextAlign.center,
-          style: context.scriptHero( fontSize: 44, height: 1),
+          style: context.scriptHero(fontSize: 36, height: 1),
         ),
         Text(
           '&',
           textAlign: TextAlign.center,
-          style: context.scriptHero( fontSize: 36, height: 1),
+          style: context.scriptHero(fontSize: 28, height: 1),
         ),
         Text(
           couple.partner2Name,
           textAlign: TextAlign.center,
-          style: context.scriptHero( fontSize: 44, height: 1),
+          style: context.scriptHero(fontSize: 36, height: 1),
         ),
         const SizedBox(height: 16),
         const HeartDivider(),
@@ -143,7 +143,6 @@ class _HomeWelcomeSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Padding(
       padding: const EdgeInsets.fromLTRB(36, 28, 36, 40),
       child: Column(
@@ -152,7 +151,7 @@ class _HomeWelcomeSection extends StatelessWidget {
           Text(
             'Welcome',
             textAlign: TextAlign.center,
-            style: context.scriptHero( height: 1.1),
+            style: context.scriptHero(height: 1.1),
           ),
           const SizedBox(height: 12),
           const HeartAccent(),
@@ -168,7 +167,7 @@ class _HomeWelcomeSection extends StatelessWidget {
           Text(
             "We can't wait to celebrate with you!",
             textAlign: TextAlign.center,
-            style: context.scriptQuote( height: 1.2, fontSize: 28),
+            style: context.scriptQuote(height: 1.2, fontSize: 28),
           ),
           const SizedBox(height: 28),
           const HeartAccent(),

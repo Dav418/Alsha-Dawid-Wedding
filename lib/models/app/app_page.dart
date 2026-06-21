@@ -1,3 +1,17 @@
+import 'package:flutter/material.dart';
+
+import '../../features/countdown/countdown_page.dart';
+import '../../features/countdown/countdown_test_page.dart';
+import '../../features/faq/faq_page.dart';
+import '../../features/food/food_page.dart';
+import '../../features/gallery/gallery_page.dart';
+import '../../features/home/home_page.dart';
+import '../../features/map/map_page.dart';
+import '../../features/our_story/our_story_page.dart';
+import '../../features/rsvp/rsvp_page.dart';
+import '../../features/travel/travel_page.dart';
+import '../../features/wedding_details/wedding_details_page.dart';
+import '../../features/wedding_party/wedding_party_page.dart';
 import '../../router/app_router.gr.dart';
 
 enum AppPage {
@@ -44,6 +58,21 @@ extension AppPageX on AppPage {
         AppPage.vendors => TravelRoute.name,
         AppPage.countdown => CountdownRoute.name,
         AppPage.countdownTest => CountdownTestRoute.name,
+      };
+
+  void push(BuildContext context) => switch (this) {
+        AppPage.home => HomePage.push(context),
+        AppPage.ourStory => OurStoryPage.push(context),
+        AppPage.gallery => GalleryPage.push(context),
+        AppPage.itinerary => WeddingDetailsPage.push(context),
+        AppPage.map => MapPage.push(context),
+        AppPage.food => FoodPage.push(context),
+        AppPage.rsvp => RsvpPage.push(context),
+        AppPage.faq => FaqPage.push(context),
+        AppPage.weddingParty => WeddingPartyPage.push(context),
+        AppPage.vendors => TravelPage.push(context),
+        AppPage.countdown => CountdownPage.push(context),
+        AppPage.countdownTest => CountdownTestPage.push(context),
       };
 }
 

@@ -6,14 +6,15 @@ const weddingDayTimelineEntries = <TimelineEntry>[
     time: '11:00am',
     title: 'Blessings and Bridal sendoff',
     details:
-        'Blessings and bridal sendoff with the closest family and friends.',
+        "At the Bride's residence, family and friends wish her well before she makes her way to the church.",
     icon: Icons.favorite_border,
     pinImageAssetPath: 'lib/assets/timeline_pins/1.Blessings.png',
   ),
   TimelineEntry(
     time: '1:00pm',
     title: 'Nuptial Mass',
-    details: 'Our wedding ceremony begins with the Nuptial Mass.',
+    details:
+        'Witness the exchange of vows before God, family and friends as we enter into the sacred covenant of Holy Matrimony.',
     icon: Icons.church_outlined,
     pinImageAssetPath: 'lib/assets/timeline_pins/2.Nuptials.png',
   ),
@@ -21,7 +22,7 @@ const weddingDayTimelineEntries = <TimelineEntry>[
     time: '2:15pm',
     title: 'Receiving Line & Group Photo',
     details:
-        'Guests are warmly invited to enjoy light refreshments, tea & coffee in the Church Hall while the newly weds go off to a private photoshoot. If you have booked nearby accommodation, please feel free to take this opportunity to freshen up and relax before returning for the reception celebrations.',
+        'Guests are warmly invited to enjoy light refreshments, tea & coffee in the Church Hall while the newlyweds go off to a private photo shoot. If you have booked nearby accommodation, please feel free to take this opportunity to freshen up and relax before returning for the reception celebrations.',
     icon: Icons.groups_2_outlined,
     pinImageAssetPath: 'lib/assets/timeline_pins/3.GroupPhotos.png',
   ),
@@ -50,7 +51,7 @@ const weddingDayTimelineEntries = <TimelineEntry>[
     time: '6:30pm',
     title: 'Toasts & Speeches',
     details:
-        'Family and friends share speeches, stories, toasts and cake cutting.',
+        'Pop some bubbly and raise a glass. Its time to toast the newlyweds!',
     icon: Icons.campaign_outlined,
     pinImageAssetPath: 'lib/assets/timeline_pins/7.Toast&Speeches.png',
   ),
@@ -64,8 +65,17 @@ const weddingDayTimelineEntries = <TimelineEntry>[
   TimelineEntry(
     time: '7:30pm',
     title: 'Opening of the Buffet',
-    details: 'The buffet opens and guests are invited to enjoy the meal.',
+    details:
+        'Help yourselves to a selection of Goan and Polish cuisine, embracing the union of our two cultures.',
     icon: Icons.restaurant_menu_outlined,
     pinImageAssetPath: 'lib/assets/timeline_pins/9.Buffet Open.png',
+  ),
+  TimelineEntry(
+    time: '11:00pm',
+    title: 'Send Off',
+    details:
+        'As the celebrations draw to a close, it is time to bid farewell to the newlyweds as they drive off into the moonlight, embarking on their happily ever after together.',
+    icon: Icons.drive_eta_outlined,
+    pinImageAssetPath: 'lib/assets/timeline_pins/10.CakeCutting.png',
   ),
 ];
