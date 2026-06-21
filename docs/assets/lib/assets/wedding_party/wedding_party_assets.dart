@@ -1,22 +1,36 @@
+import '../../models/content/wedding_content.dart';
 import '../directory_assets.dart';
 
-/// Portrait paths under [lib/assets/wedding_party] — `firstname_surname.{jpeg,png}`.
 abstract final class WeddingPartyAssets extends DirectoryAssets {
   WeddingPartyAssets._();
 
   static const String base = '${DirectoryAssets.libRoot}/wedding_party';
 
-  static String portraitStem(String firstName, String lastName) {
-    return DirectoryAssets.resolve(
-      base,
-      '${DirectoryAssets.slug(firstName)}_${DirectoryAssets.slug(lastName)}',
-    );
-  }
+  static String portrait({
+    required WeddingPartyMember member,
+    required WeddingPartySection section,
+  }) {
+    final gender = PortraitGender.forMember(member, section);
 
-  static List<String> portraitCandidates(String firstName, String lastName) {
-    return DirectoryAssets.extensionCandidates(
-      portraitStem(firstName, lastName),
-      DirectoryAssets.extensions,
+    var path = DirectoryAssets.image(
+      base,
+      '${DirectoryAssets.slug(member.firstName)}_${DirectoryAssets.slug(member.lastName)}',
     );
+
+    if (path != null) return path;
+
+    switch (gender) {
+      case PortraitGender.male:
+        return DirectoryAssets.image(
+          base,
+          'unknown_male',
+        )!;
+
+      case PortraitGender.female:
+        return DirectoryAssets.image(
+          base,
+          'unknown_female',
+        )!;
+    }
   }
 }
