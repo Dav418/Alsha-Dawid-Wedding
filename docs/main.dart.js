@@ -42868,7 +42868,7 @@ F(a){var s,r,q,p,o,n=null,m=t.p,l=A.bt(A.c([B.aua,A.cb(n,40,n),A.az("Below is a 
 i=A.aHl(A.rp(A.c([A.rp(n,n,A.ha(a,n,15,B.m,1.55).akl(B.bO),"Dress Code"),B.anJ],t.VO),n,i,n),n,B.x)
 s=A.cb(n,12,n)
 r=A.cb(n,12,n)
-q=A.az("Your presence is the greatest gift of all. However, if you wish to honour us with a gift, a contribution towards our future together would be greatly appreciated.",n,n,n,A.ha(a,n,15,B.m,1.55),B.x)
+q=A.az("Your presence is the greatest gift of all. However, if you wish to honour us with a gift, a contribution towards our future together would be a wonderful blessing.",n,n,n,A.ha(a,n,15,B.m,1.55),B.x)
 p=A.cb(n,24,n)
 o=A.azW(n,n,B.FF,B.pW,new A.d0(A.dK(8),B.u),n)
 return A.jl(new A.bi(B.cS,new A.Rn(B.OS,l,A.bt(A.c([k,new A.q6(n),j,i,s,new A.q6(n),r,q,p,A.hL(A.azV(A.az("Send a Gift",n,n,n,A.aEl(a),n),new A.am4(a),o),n,n),A.cb(n,100,n)],m),B.G,B.q,B.y),n),n),B.hG)}}
