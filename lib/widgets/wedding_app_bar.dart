@@ -23,6 +23,7 @@ class WeddingAppBar extends StatelessWidget {
       expandedHeight: expandedHeight,
       leading: IconButton(
         icon: const Icon(Icons.menu),
+        iconSize: 40,
         tooltip: 'Open menu',
         onPressed: () => Scaffold.of(context).openDrawer(),
       ),
