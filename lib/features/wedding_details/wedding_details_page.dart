@@ -67,7 +67,7 @@ class WeddingDetailsPage extends HookWidget {
               HeartDivider(),
               SizedBox(height: 12),
               Text(
-                'Your presence is the greatest gift of all. However, if you wish to honour us with a gift, a contribution towards our future together would be greatly appreciated.',
+                'Your presence is the greatest gift of all. However, if you wish to honour us with a gift, a contribution towards our future together would be a wonderful blessing.',
                 textAlign: TextAlign.center,
                 style: context.bodySerif(),
               ),
