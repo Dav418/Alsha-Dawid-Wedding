@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 const weddingDayTimelineEntries = <TimelineEntry>[
   TimelineEntry(
     time: '11:00am',
-    title: 'Blessings & Bridal sendoff',
+    title: 'Blessings & Bride\'s sendoff',
     details:
         "At the Bride's residence, family and friends wish her well before she makes her way to the church.",
     icon: Icons.favorite_border,
@@ -44,7 +44,7 @@ const weddingDayTimelineEntries = <TimelineEntry>[
   ),
   TimelineEntry(
     time: '6:30pm',
-    title: 'Toasts & Speeches',
+    title: 'Toast & Speeches',
     details:
         'Pop some bubbly and raise a glass. Its time to toast the newlyweds!',
     icon: Icons.campaign_outlined,
@@ -57,7 +57,7 @@ const weddingDayTimelineEntries = <TimelineEntry>[
   ),
   TimelineEntry(
     time: '7:30pm',
-    title: 'Opening of the Buffet',
+    title: 'Buffet Opens',
     details:
         'Help yourselves to a selection of Goan and Polish cuisine, embracing the union of our two cultures.',
     icon: Icons.restaurant_menu_outlined,
