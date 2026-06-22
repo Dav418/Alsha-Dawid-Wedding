@@ -1,8 +1,11 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../features/home/home_page.dart';
+import '../utils/website_refresh.dart';
 import '../router/app_router.gr.dart';
 import '../widgets/hard_edge_color.dart';
 import '../widgets/wedding_app_bar.dart';
@@ -29,7 +32,7 @@ class WeddingShellPage extends StatelessWidget {
   }
 }
 
-class _WeddingShellScaffold extends HookWidget {
+class _WeddingShellScaffold extends HookConsumerWidget {
   const _WeddingShellScaffold({
     required this.routerContext,
     required this.child,
@@ -39,7 +42,7 @@ class _WeddingShellScaffold extends HookWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final scrollController = useScrollController();
     final activeRouteName = routerContext.router.current.name;
     final previousRouteName = useRef(activeRouteName);
@@ -99,9 +102,46 @@ class _WeddingShellScaffold extends HookWidget {
               Expanded(
                 child: CustomScrollView(
                   controller: scrollController,
-                  physics: const ClampingScrollPhysics(),
+                  physics: const AlwaysScrollableScrollPhysics(
+                    parent: BouncingScrollPhysics(),
+                  ),
                   slivers: [
                     WeddingAppBar(onHomeTap: goHome),
+                    CupertinoSliverRefreshControl(
+                      onRefresh: () =>
+                          ref.read(websiteRefreshProvider.notifier).refresh(),
+                      builder: (
+                        context,
+                        refreshState,
+                        pulledExtent,
+                        refreshTriggerPullDistance,
+                        refreshIndicatorExtent,
+                      ) {
+                        final progress =
+                            (pulledExtent / refreshTriggerPullDistance)
+                                .clamp(0.0, 1.0);
+                        final isRefreshing =
+                            refreshState == RefreshIndicatorMode.refresh ||
+                                refreshState == RefreshIndicatorMode.done;
+
+                        return SizedBox(
+                          height: pulledExtent,
+                          child: Center(
+                            child: isRefreshing
+                                ? CircularProgressIndicator(
+                                    color: context.colorScheme.primary,
+                                  )
+                                : Opacity(
+                                    opacity: progress,
+                                    child: CircularProgressIndicator(
+                                      value: progress == 1.0 ? null : progress,
+                                      color: context.colorScheme.primary,
+                                    ),
+                                  ),
+                          ),
+                        );
+                      },
+                    ),
                     SliverToBoxAdapter(
                       child: HardEdgeColor(
                         color: context.creamBackground,
