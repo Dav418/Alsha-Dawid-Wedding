@@ -31,18 +31,18 @@ enum AppPage {
 
 extension AppPageX on AppPage {
   String get displayName => switch (this) {
-        AppPage.home => 'HOME',
-        AppPage.ourStory => 'OUR STORY',
-        AppPage.gallery => 'GALLERY',
-        AppPage.itinerary => 'ITINERARY',
-        AppPage.map => 'TRAVEL & ACCOMMODATION',
-        AppPage.food => 'FOOD & DRINKS',
+        AppPage.home => 'Home',
+        AppPage.ourStory => 'Our Story',
+        AppPage.gallery => 'Gallery',
+        AppPage.itinerary => 'Itinerary',
+        AppPage.map => 'Travel & Accommodation',
+        AppPage.food => 'Food & Drinks',
         AppPage.rsvp => 'RSVP',
         AppPage.faq => 'FAQ',
-        AppPage.weddingParty => 'OUR ENTOURAGE',
-        AppPage.vendors => 'VENDORS',
-        AppPage.countdown => 'COUNTDOWN',
-        AppPage.countdownTest => 'COUNTDOWN TEST',
+        AppPage.weddingParty => 'Our Entourage',
+        AppPage.vendors => 'Vendors',
+        AppPage.countdown => 'Countdown',
+        AppPage.countdownTest => 'Countdown Test',
       };
 
   String get routeName => switch (this) {

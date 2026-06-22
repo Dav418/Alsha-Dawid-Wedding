@@ -39,7 +39,7 @@ class WeddingDrawer extends ConsumerWidget {
           ),
           liveUpdates: () => ListTile(
             title: Text(
-              'LIVE UPDATES',
+              'Live Updates',
               style: context.textTheme.titleSmall?.copyWith(
                 letterSpacing: 0.8,
                 fontWeight: FontWeight.w500,

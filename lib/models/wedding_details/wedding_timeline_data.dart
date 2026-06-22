@@ -24,7 +24,7 @@ const weddingDayTimelineEntries = <TimelineEntry>[
     icon: Icons.groups_2_outlined,
   ),
   TimelineEntry(
-    time: '3:30pm',
+    time: '3:00pm',
     title: 'Refreshments & Private Photos',
     details:
         'Guests are warmly invited to enjoy light refreshments, tea & coffee in the Church Hall while the newlyweds go off to a private photo shoot. If you have booked nearby accommodation, please feel free to take this opportunity to freshen up and relax before returning for the reception celebrations.',

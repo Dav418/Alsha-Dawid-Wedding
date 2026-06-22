@@ -45,10 +45,23 @@ class WeddingDetailsPage extends HookWidget {
               SizedBox(height: 40),
               HeartDivider(),
               SizedBox(height: 12),
-              Text(
-                'Dress Code - Formal Attire. Think elegant, timeless, and occasion-worthy. We encourage guests to dress comfortably while embracing the joy and significance of this auspicious occasion.',
+              Text.rich(
+                TextSpan(
+                  style: context.bodySerif(),
+                  children: [
+                    TextSpan(
+                      text: 'Dress Code',
+                      style: context.bodySerif().copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                    const TextSpan(
+                      text:
+                          ' - Formal Attire. Think elegant, timeless, and occasion-worthy. We encourage guests to dress comfortably while embracing the joy and significance of this auspicious occasion.',
+                    ),
+                  ],
+                ),
                 textAlign: TextAlign.center,
-                style: context.bodySerif(),
               ),
               SizedBox(height: 12),
               HeartDivider(),

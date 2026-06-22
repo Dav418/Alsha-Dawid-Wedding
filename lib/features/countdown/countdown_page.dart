@@ -36,7 +36,6 @@ class _CountdownScriptTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 32, 24, 8),
       child: LayoutBuilder(
@@ -55,7 +54,7 @@ class _CountdownScriptTitle extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                'to Forever',
+                'to Forever...',
                 textAlign: TextAlign.center,
                 style: context.scriptHero(
                   fontSize: fontSize,
