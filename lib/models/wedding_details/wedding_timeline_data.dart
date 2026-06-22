@@ -20,13 +20,14 @@ const weddingDayTimelineEntries = <TimelineEntry>[
     time: '2:15pm',
     title: 'Receiving Line & Group Photo',
     details:
-        'Guests are warmly invited to enjoy light refreshments, tea & coffee in the Church Hall while the newlyweds go off to a private photo shoot. If you have booked nearby accommodation, please feel free to take this opportunity to freshen up and relax before returning for the reception celebrations.',
+        'A wonderful opportunity to personally congratulate the newlyweds, share your well wishes, and create lasting memories together before the reception begins.',
     icon: Icons.groups_2_outlined,
   ),
   TimelineEntry(
     time: '3:30pm',
     title: 'Refreshments & Private Photos',
-    details: 'Guests can enjoy refreshments while family photos are taken.',
+    details:
+        'Guests are warmly invited to enjoy light refreshments, tea & coffee in the Church Hall while the newlyweds go off to a private photo shoot. If you have booked nearby accommodation, please feel free to take this opportunity to freshen up and relax before returning for the reception celebrations.',
     icon: Icons.local_cafe_outlined,
   ),
   TimelineEntry(

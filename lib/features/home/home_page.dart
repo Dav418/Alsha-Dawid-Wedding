@@ -167,7 +167,7 @@ class _HomeWelcomeSection extends StatelessWidget {
           Text(
             "We can't wait to celebrate with you!",
             textAlign: TextAlign.center,
-            style: context.scriptHero(height: 1.2, fontSize: 28),
+            style: context.scriptHero(height: 1.2, fontSize: 20),
           ),
           const SizedBox(height: 28),
           const HeartAccent(),
