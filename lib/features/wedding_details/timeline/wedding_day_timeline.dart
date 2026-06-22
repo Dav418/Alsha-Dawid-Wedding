@@ -687,7 +687,7 @@ class _TimelineCard extends StatelessWidget {
                       Opacity(
                         opacity: textOpacity,
                         child: Text(
-                          entry.time,
+                          entry.title,
                           textAlign: TextAlign.left,
                           style: context.cardTime(),
                         ),
@@ -696,7 +696,7 @@ class _TimelineCard extends StatelessWidget {
                       Opacity(
                         opacity: textOpacity,
                         child: Text(
-                          entry.title,
+                          entry.time,
                           textAlign: TextAlign.left,
                           softWrap: true,
                           style: context.cardTitleCaps(
