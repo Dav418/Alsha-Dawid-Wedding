@@ -7598,7 +7598,7 @@ a3N:function a3N(){},
 aVq(){return new A.mg()},
 aye(){var s=0,r=A.F(t.TP),q
 var $async$aye=A.G(function(a,b){if(a===1)return A.C(b,r)
-while(true)switch(s){case 0:q=A.aVt(t.d.a(B.dl.G8('{"couple":{"partner1Name":"Alisha Fernandes","partner2Name":"Dawid Gorski"},"event":{"dateDisplay":"17th OCTOBER 2026","locationDisplay":"RICKMANSWORTH, UK","countdownUtc":"2026-10-17T09:00:00.000Z"},"contact":{"email":"dawishagorski@gmail.com"},"links":{"liveUpdatesUrl":"https://padlet.com/gorskidawid98/my-glorious-padlet-nh7dv7ohems19mue","venueMapQuery":"Rickmansworth, UK","rsvpUrl":"https://withjoy.com/alisha-fernandes-and-dawid/rsvp"},"ceremony":{"time":"1:00 PM","addressLines":["Rickmansworth WD3 1RR"]},"reception":{"time":"4:00 PM","addressLines":["The Grove","Chorleywood Road","Rickmansworth WD3 5LQ"]},"weddingParty":{"bridesmaids":[{"firstName":"","lastName":"","bio":""},{"firstName":"","lastName":"","bio":""},{"firstName":"","lastName":"","bio":""}],"bridesquad":[{"firstName":"","lastName":"","bio":""},{"firstName":"","lastName":"","bio":""},{"firstName":"","lastName":"","bio":""},{"firstName":"","lastName":"","bio":""}],"groomsmen":[{"firstName":"","lastName":"","bio":""},{"firstName":"","lastName":"","bio":""},{"firstName":"","lastName":"","bio":""}],"maidOfHonor":{"firstName":"","lastName":"","bio":""},"bestMan":{"firstName":"","lastName":"","bio":""},"parents":[{"firstName":"Brenda","lastName":"Fernandes","honorific":"Mrs.","bio":"With endless warmth and grace - thank you for raising our bride."},{"firstName":"Orlando","lastName":"Fernandes","honorific":"Mr.","bio":"Quiet wisdom and a kind heart - the best kind of anchor."},{"firstName":"Monika","lastName":"Oleszak","honorific":"Mrs.","bio":"Full of love, laughter, and just the right amount of chaos - thank you for raising our groom."},{"firstName":"Jacek","lastName":"Oleszak","honorific":"Mr.","bio":"Strength, humour, and love in every word - proud to call you dad."}],"dogs":[{"firstName":"Amora","lastName":"Fernandes","bio":"The best girl in the world."},{"firstName":"Rex","lastName":"Oleszak","bio":"The best boy in the world."}]},"ourStoryPhotoUrls":["https://placekittens.com/220/240","https://placekittens.com/220/240","https://placekittens.com/210/230","https://placekittens.com/215/235"]}',null)))
+while(true)switch(s){case 0:q=A.aVt(t.d.a(B.dl.G8('{"couple":{"partner1Name":"Alisha Fernandes","partner2Name":"Dawid Gorski"},"event":{"dateDisplay":"17th OCTOBER 2026","locationDisplay":"RICKMANSWORTH, UK","countdownUtc":"2026-10-17T09:00:00.000Z"},"contact":{"email":"dawishagorski@gmail.com"},"links":{"liveUpdatesUrl":"https://padlet.com/gorskidawid98/my-glorious-padlet-nh7dv7ohems19mue","venueMapQuery":"Rickmansworth, UK","rsvpUrl":"https://withjoy.com/alisha-fernandes-and-dawid/rsvp"},"ceremony":{"time":"1:00 PM","addressLines":["Rickmansworth WD3 1RR"]},"reception":{"time":"4:00 PM","addressLines":["The Grove","Chorleywood Road","Rickmansworth WD3 5LQ"]},"weddingParty":{"bridesmaids":[{"firstName":"","lastName":"","bio":""},{"firstName":"","lastName":"","bio":""},{"firstName":"","lastName":"","bio":""}],"bridesquad":[{"firstName":"","lastName":"","bio":""},{"firstName":"","lastName":"","bio":""},{"firstName":"","lastName":"","bio":""},{"firstName":"","lastName":"","bio":""}],"groomsmen":[{"firstName":"","lastName":"","bio":""},{"firstName":"","lastName":"","bio":""},{"firstName":"","lastName":"","bio":""}],"maidOfHonor":{"firstName":"","lastName":"","bio":""},"bestMan":{"firstName":"","lastName":"","bio":""},"parents":[{"firstName":"Brenda","lastName":"Fernandes","honorific":"Mrs.","bio":"With endless warmth and grace - thank you for raising our bride."},{"firstName":"Orlando","lastName":"Fernandes","honorific":"Mr.","bio":"Quiet wisdom and a kind heart - the best kind of anchor."},{"firstName":"Monika","lastName":"Oleszak","honorific":"Mrs.","bio":"Full of love, laughter, and just the right amount of chaos - thank you for raising our groom."},{"firstName":"Jacek","lastName":"Oleszak","honorific":"Mr.","bio":"Strength, humour, and love in every word - proud to call you dad."}],"dogs":[{"firstName":"Amora","lastName":"Fernandes","bio":"She will steal your heart along with your shoe lace."},{"firstName":"Rex","lastName":"Oleszak","bio":"He may look big and scary but he\'s the biggest softie around."}]},"ourStoryPhotoUrls":["https://placekittens.com/220/240","https://placekittens.com/220/240","https://placekittens.com/210/230","https://placekittens.com/215/235"]}',null)))
 s=1
 break
 case 1:return A.D(q,r)}})
@@ -7991,29 +7991,29 @@ ayi:function ayi(a){this.a=a},
 xh:function xh(a){this.d=a
 this.a=$},
 azj(a){var s
-switch(a.a){case 0:s="HOME"
+switch(a.a){case 0:s="Home"
 break
-case 1:s="OUR STORY"
+case 1:s="Our Story"
 break
-case 2:s="GALLERY"
+case 2:s="Gallery"
 break
-case 3:s="ITINERARY"
+case 3:s="Itinerary"
 break
-case 4:s="TRAVEL & ACCOMMODATION"
+case 4:s="Travel & Accommodation"
 break
-case 5:s="FOOD & DRINKS"
+case 5:s="Food & Drinks"
 break
 case 6:s="RSVP"
 break
 case 7:s="FAQ"
 break
-case 8:s="OUR ENTOURAGE"
+case 8:s="Our Entourage"
 break
-case 9:s="VENDORS"
+case 9:s="Vendors"
 break
-case 10:s="COUNTDOWN"
+case 10:s="Countdown"
 break
-case 11:s="COUNTDOWN TEST"
+case 11:s="Countdown Test"
 break
 default:s=null}return s},
 aOs(a){var s
@@ -42251,7 +42251,7 @@ A.T5.prototype={
 F(a){return new A.bi(B.pV,A.lG(new A.aoT()),null)}}
 A.aoT.prototype={
 $2(a,b){var s=null,r=b.b<360?46:58
-return A.bt(A.c([A.az("Counting Down",s,s,s,A.e7(a,r,1.05),B.x),B.nK,A.az("to Forever",s,s,s,A.e7(a,r,1.05),B.x)],t.p),B.G,B.q,B.y)},
+return A.bt(A.c([A.az("Counting Down",s,s,s,A.e7(a,r,1.05),B.x),B.nK,A.az("to Forever...",s,s,s,A.e7(a,r,1.05),B.x)],t.p),B.G,B.q,B.y)},
 $S:165}
 A.tV.prototype={
 F(a){var s,r,q,p,o,n,m,l,k=null,j=t.Om,i=t.N8,h=$.bT.bX(new A.di(10,k,j),i),g=$.bT.bX(new A.di(k,k,t.OI),t.rP)
@@ -43955,7 +43955,7 @@ return new A.rY(a,s.e,s.f,null)},
 $S:116}
 A.am7.prototype={
 $0(){var s=null,r=this.a,q=A.Q(r).ok.x
-return A.aAp(!1,s,s,s,!0,s,s,!0,s,s,s,new A.am6(r,this.b),!1,s,s,s,s,s,A.az("LIVE UPDATES",s,s,s,q==null?s:q.tQ(B.S,0.8),s),s,s)},
+return A.aAp(!1,s,s,s,!0,s,s,!0,s,s,s,new A.am6(r,this.b),!1,s,s,s,s,s,A.az("Live Updates",s,s,s,q==null?s:q.tQ(B.S,0.8),s),s,s)},
 $S:487}
 A.am6.prototype={
 $0(){var s=0,r=A.F(t.H),q=this
