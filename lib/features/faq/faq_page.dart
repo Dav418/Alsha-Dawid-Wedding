@@ -49,8 +49,8 @@ const _faqs = [
   FaqItem(
     question: 'WHEN SHOULD I RSVP BY?',
     answer:
-        'Please respond by 17th July 2026 through the RSVP page on this site. '
-        'If your plans change, please let us know as soon as possible.',
+        'RSVPs closed on 17th July 2026. The guest list is now final — '
+        'if you still need to get in touch about attendance, please contact us directly.',
   ),
 ];
 

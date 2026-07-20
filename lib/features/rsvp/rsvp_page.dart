@@ -1,18 +1,14 @@
-import 'package:alisha_dawid_wedding_website/assets/home/home_assets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../content/repositories/wedding_content_repository.dart';
 import '../../models/app/app_page.dart';
 import '../../router/app_router.gr.dart';
-import '../../utils/extension/string_extension.dart';
 import '../../widgets/heart_divider.dart';
 import '../../widgets/page_availability_gate.dart';
 import '../../utils/extension/context_extension.dart';
 
 @RoutePage()
-class RsvpPage extends ConsumerWidget {
+class RsvpPage extends StatelessWidget {
   const RsvpPage({super.key});
 
   static void push(BuildContext context) {
@@ -20,10 +16,7 @@ class RsvpPage extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final rsvpUrl =
-        ref.watch(weddingContentRepositoryProvider).requireValue.links.rsvpUrl;
-
+  Widget build(BuildContext context) {
     return PageAvailabilityGate(
       page: AppPage.rsvp,
       child: Padding(
@@ -35,60 +28,43 @@ class RsvpPage extends ConsumerWidget {
             const SizedBox(height: 28),
             const HeartDivider(),
             const SizedBox(height: 28),
-            const _RsvpIntro(),
-            Semantics(
-              button: true,
-              label: 'RSVP',
-              child: InkWell(
-                onTap: () => openExternalRsvp(context, rsvpUrl),
-                borderRadius: BorderRadius.circular(24),
-                child: Image.asset(
-                  HomeAssets.image('rsvp_button')!,
-                  height: 100,
-                  fit: BoxFit.contain,
-                ),
-              ),
+            Image.asset(
+              'lib/assets/bouncer_dog.png',
+              height: 280,
+              fit: BoxFit.contain,
+              filterQuality: FilterQuality.high,
             ),
+            const SizedBox(height: 24),
             Text(
-              'Please RSVP by 17th July 2026. '.withSuperscriptOrdinals(),
+              'RSVPs are now closed',
               textAlign: TextAlign.center,
               style: context.bodySerif(
+                fontSize: 18,
                 fontWeight: FontWeight.w600,
               ),
+            ),
+            const SizedBox(height: 18),
+            Text(
+              'Our four-legged German shepherd is on duty, and we\'re afraid '
+              'the guest list is firmly sealed. If you\'re just arriving '
+              'at this page, we\'re sorry to say it\'s a little too late '
+              'to RSVP — and without a response, we\'re unable to include '
+              'you on the day.',
+              textAlign: TextAlign.center,
+              style: context.bodySerif(),
+            ),
+            const SizedBox(height: 18),
+            Text(
+              'If you believe this is a mistake or your plans have changed, '
+              'please reach out to us directly and we\'ll do our best to help.',
+              textAlign: TextAlign.center,
+              style: context.bodySerif(),
             ),
             const SizedBox(height: 40),
           ],
         ),
       ),
     );
-  }
-
-  static Future<void> openExternalRsvp(
-    BuildContext context,
-    String url,
-  ) async {
-    final uri = Uri.tryParse(url);
-    if (uri == null) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('RSVP link is not configured yet.'),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      }
-      return;
-    }
-
-    final opened = await context.openExternalUrl(uri);
-    if (!opened && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Could not open the RSVP page.'),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-    }
   }
 }
 
@@ -97,7 +73,6 @@ class _RsvpHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       children: [
         Text(
@@ -107,55 +82,11 @@ class _RsvpHeader extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         Text(
-          'LET US KNOW YOU\'RE COMING',
+          'GUEST LIST CLOSED',
           textAlign: TextAlign.center,
           style: context.capsLabel(
             color: context.sageGreen,
           ),
-        ),
-      ],
-    );
-  }
-}
-
-class _RsvpIntro extends StatelessWidget {
-  const _RsvpIntro();
-
-  @override
-  Widget build(BuildContext context) {
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(
-          'We are so excited to celebrate our wedding day with the people '
-          'we love most.',
-          textAlign: TextAlign.center,
-          style: context.bodySerif(),
-        ),
-        const SizedBox(height: 18),
-        Text(
-          'When filling out the response form, please read each question carefully '
-          'as you will be asked to confirm '
-          'your attendance for each part of the event separately. ',
-          textAlign: TextAlign.center,
-          style: context.bodySerif(),
-        ),
-        const SizedBox(height: 18),
-        Text(
-          'You can respond for yourself, as well as '
-          'for any other guests listed in your group. ',
-          textAlign: TextAlign.center,
-          style: context.bodySerif(),
-        ),
-        const SizedBox(height: 18),
-        Text(
-          'When you click the RSVP button, the form will open in a new tab. '
-          'Please complete the form all the way through until you reach the '
-          'final confirmation screen. After that, it is safe to close the '
-          'RSVP tab and return to our wedding website.',
-          textAlign: TextAlign.center,
-          style: context.bodySerif(),
         ),
       ],
     );
