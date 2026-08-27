@@ -5,7 +5,15 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-python3 scripts/merge_dart_defines.py
+$python = if (Get-Command python -ErrorAction SilentlyContinue) {
+    "python"
+} elseif (Get-Command py -ErrorAction SilentlyContinue) {
+    "py -3"
+} else {
+    "python3"
+}
+
+Invoke-Expression "$python scripts/merge_dart_defines.py"
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 $flutter = if (Get-Command fvm -ErrorAction SilentlyContinue) { "fvm flutter" } else { "flutter" }
