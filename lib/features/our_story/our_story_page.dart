@@ -1,57 +1,15 @@
-import 'dart:math' as math;
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../content/repositories/wedding_content_repository.dart';
 import '../../models/app/app_page.dart';
-import '../../models/our_story/polaroid_layout.dart';
-import '../../models/our_story/story_timeline_entry.dart';
+import '../../models/content/our_story_photo.dart';
 import '../../router/app_router.gr.dart';
+import '../../utils/extension/context_extension.dart';
 import '../../widgets/heart_divider.dart';
 import '../../widgets/page_availability_gate.dart';
 import 'our_story_decorations.dart';
-import '../../utils/extension/context_extension.dart';
-
-const _storyTimeline = [
-  StoryTimelineEntry(
-    title: 'HOW WE MET',
-    description:
-        'A chance meeting turned into a conversation that never ended.',
-  ),
-  StoryTimelineEntry(
-    title: 'FIRST DATE',
-    description: 'Good food, laughter and butterflies.',
-  ),
-  StoryTimelineEntry(
-    title: 'THE PROPOSAL',
-    description: 'The moment I said yes to forever.',
-  ),
-  StoryTimelineEntry(
-    title: 'FAVOURITE MEMORIES',
-    description: 'All the little moments that mean everything.',
-  ),
-  StoryTimelineEntry(
-    title: "WHAT WE'RE LOOKING FORWARD TO",
-    description: 'A lifetime of love, adventures and memories together.',
-  ),
-];
-
-const _polaroidLayouts = [
-  PolaroidLayout(top: 12, left: 8, rotation: -0.07),
-  PolaroidLayout(top: 130, left: 30, rotation: 0.05),
-  PolaroidLayout(top: 240, left: 10, rotation: -0.04),
-  PolaroidLayout(top: 350, left: 34, rotation: 0.06),
-];
-
-/// Keeps copy readable on full-width browser windows.
-const _maxPageWidth = 920.0;
-
-/// Side-by-side only when the constrained column is wide enough.
-const _sideBySideBreakpoint = 680.0;
-
-const _basePolaroidWidth = 168.0;
 
 @RoutePage()
 class OurStoryPage extends ConsumerWidget {
@@ -63,10 +21,8 @@ class OurStoryPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final photoUrls = ref
-        .watch(weddingContentRepositoryProvider)
-        .requireValue
-        .ourStoryPhotoUrls;
+    final entries =
+        ref.watch(weddingContentRepositoryProvider).requireValue.ourStoryPhotos;
 
     return PageAvailabilityGate(
       page: AppPage.ourStory,
@@ -75,35 +31,24 @@ class OurStoryPage extends ConsumerWidget {
         child: Align(
           alignment: Alignment.topCenter,
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: _maxPageWidth),
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                final sideBySide =
-                    constraints.maxWidth >= _sideBySideBreakpoint;
-
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const _StoryHeader(),
-                    const SizedBox(height: 28),
-                    if (sideBySide)
-                      _StorySideBySide(
-                        photoUrls: photoUrls,
-                        timeline: _storyTimeline,
-                      )
-                    else ...[
-                      _StoryPhotoStack(
-                        photoUrls: photoUrls,
-                        compact: true,
-                      ),
-                      const SizedBox(height: 28),
-                      _StoryTimeline(entries: _storyTimeline),
-                    ],
-                    const SizedBox(height: 36),
-                    const _StoryFooter(),
-                  ],
-                );
-              },
+            constraints: const BoxConstraints(
+              maxWidth: 680,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const _StoryHeader(),
+                const SizedBox(height: 42),
+                for (var i = 0; i < entries.length; i++) ...[
+                  _StoryEntry(
+                    entry: entries[i],
+                    index: i,
+                  ),
+                  if (i < entries.length - 1) const _StoryConnector(),
+                ],
+                const SizedBox(height: 48),
+                const _StoryFooter(),
+              ],
             ),
           ),
         ),
@@ -122,7 +67,10 @@ class _StoryHeader extends StatelessWidget {
         Text(
           'Our Story',
           textAlign: TextAlign.center,
-          style: context.scriptHero(fontSize: 40, height: 1.1),
+          style: context.scriptHero(
+            fontSize: 40,
+            height: 1.1,
+          ),
         ),
         const SizedBox(height: 10),
         const HeartAccent(),
@@ -137,134 +85,70 @@ class _StoryHeader extends StatelessWidget {
   }
 }
 
-class _StorySideBySide extends StatelessWidget {
-  const _StorySideBySide({
-    required this.photoUrls,
-    required this.timeline,
+class _StoryEntry extends StatelessWidget {
+  const _StoryEntry({
+    required this.entry,
+    required this.index,
   });
 
-  final List<String> photoUrls;
-  final List<StoryTimelineEntry> timeline;
+  final OurStoryPhoto entry;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    final title = entry.title?.trim() ?? '';
+    final description = entry.description?.trim() ?? '';
+    final imageUrl = entry.imageUrl;
+
+    final rotation = switch (index % 4) {
+      0 => -0.035,
+      1 => 0.025,
+      2 => -0.02,
+      _ => 0.035,
+    };
+
+    return Column(
       children: [
-        Expanded(
-          flex: 11,
-          child: Align(
-            alignment: Alignment.topCenter,
-            child: _StoryPhotoStack(photoUrls: photoUrls),
-          ),
-        ),
-        const SizedBox(width: 28),
-        Expanded(
-          flex: 13,
-          child: _StoryTimeline(entries: timeline),
-        ),
-      ],
-    );
-  }
-}
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final width = (constraints.maxWidth * 0.86)
+                .clamp(
+                  250.0,
+                  430.0,
+                )
+                .toDouble();
 
-class _StoryPhotoStack extends StatelessWidget {
-  const _StoryPhotoStack({
-    required this.photoUrls,
-    this.compact = false,
-  });
-
-  final List<String> photoUrls;
-  final bool compact;
-
-  @override
-  Widget build(BuildContext context) {
-    final count = photoUrls.length.clamp(0, _polaroidLayouts.length);
-
-    if (compact) {
-      const photoWidth = 150.0;
-      final slotSize = _PolaroidPhoto.rotatedBounds(
-        width: photoWidth,
-        rotation: 0.06,
-      );
-
-      return SizedBox(
-        height: slotSize.height,
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          clipBehavior: Clip.none,
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          itemCount: count,
-          separatorBuilder: (_, __) => const SizedBox(width: 12),
-          itemBuilder: (context, index) {
-            final layout = _polaroidLayouts[index];
-            return SizedBox(
-              width: slotSize.width,
-              height: slotSize.height,
-              child: Center(
-                child: _PolaroidPhoto(
-                  imageUrl: photoUrls[index],
-                  rotation: layout.rotation,
-                  width: photoWidth,
-                ),
-              ),
+            return _PolaroidPhoto(
+              imageUrl: imageUrl,
+              width: width,
+              rotation: rotation,
             );
           },
         ),
-      );
-    }
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final columnWidth = constraints.maxWidth;
-        final photoWidth = columnWidth.isFinite && columnWidth > 0
-            ? (columnWidth * 0.58).clamp(_basePolaroidWidth, 210.0)
-            : _basePolaroidWidth;
-        final scale = photoWidth / _basePolaroidWidth;
-        final layouts = [
-          for (var i = 0; i < count; i++)
-            PolaroidLayout(
-              top: _polaroidLayouts[i].top * scale,
-              left: _polaroidLayouts[i].left * scale,
-              rotation: _polaroidLayouts[i].rotation,
+        if (title.isNotEmpty) ...[
+          const SizedBox(height: 28),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: context.timelineTitle(),
+          ),
+        ],
+        if (description.isNotEmpty) ...[
+          const SizedBox(height: 10),
+          ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: 560,
             ),
-        ];
-        final stackHeight = _PolaroidPhoto.stackHeight(
-          layouts: layouts,
-          width: photoWidth,
-        );
-        final stackWidth = _PolaroidPhoto.stackWidth(
-          layouts: layouts,
-          width: photoWidth,
-        );
-
-        return SizedBox(
-          height: stackHeight,
-          width: double.infinity,
-          child: Align(
-            alignment: Alignment.topCenter,
-            child: SizedBox(
-              width: stackWidth,
-              height: stackHeight,
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  for (var i = 0; i < count; i++)
-                    Positioned(
-                      top: layouts[i].top,
-                      left: layouts[i].left,
-                      child: _PolaroidPhoto(
-                        imageUrl: photoUrls[i],
-                        rotation: layouts[i].rotation,
-                        width: photoWidth,
-                      ),
-                    ),
-                ],
-              ),
+            child: Text(
+              description,
+              textAlign: TextAlign.center,
+              style: context.timelineBody().copyWith(
+                    height: 1.6,
+                  ),
             ),
           ),
-        );
-      },
+        ],
+      ],
     );
   }
 }
@@ -272,65 +156,13 @@ class _StoryPhotoStack extends StatelessWidget {
 class _PolaroidPhoto extends StatelessWidget {
   const _PolaroidPhoto({
     required this.imageUrl,
+    required this.width,
     required this.rotation,
-    this.width = 168,
   });
 
-  final String imageUrl;
-  final double rotation;
+  final String? imageUrl;
   final double width;
-
-  static Size frameSize(double width) {
-    final imageHeight = width * 0.92;
-    return Size(width, 10 + imageHeight + width * 0.18 + 10);
-  }
-
-  static Size rotatedBounds({
-    required double width,
-    required double rotation,
-  }) {
-    final frame = frameSize(width);
-    const shadowPadding = 16.0;
-    final boundsWidth = frame.width * math.cos(rotation).abs() +
-        frame.height * math.sin(rotation).abs() +
-        shadowPadding;
-    final boundsHeight = frame.width * math.sin(rotation).abs() +
-        frame.height * math.cos(rotation).abs() +
-        shadowPadding;
-    return Size(boundsWidth, boundsHeight);
-  }
-
-  static double stackHeight({
-    required List<PolaroidLayout> layouts,
-    required double width,
-  }) {
-    if (layouts.isEmpty) {
-      return 0;
-    }
-
-    var maxBottom = 0.0;
-    for (final layout in layouts) {
-      final bounds = rotatedBounds(width: width, rotation: layout.rotation);
-      maxBottom = math.max(maxBottom, layout.top + bounds.height);
-    }
-    return maxBottom + 12;
-  }
-
-  static double stackWidth({
-    required List<PolaroidLayout> layouts,
-    required double width,
-  }) {
-    if (layouts.isEmpty) {
-      return 0;
-    }
-
-    var maxRight = 0.0;
-    for (final layout in layouts) {
-      final bounds = rotatedBounds(width: width, rotation: layout.rotation);
-      maxRight = math.max(maxRight, layout.left + bounds.width);
-    }
-    return maxRight + 12;
-  }
+  final double rotation;
 
   @override
   Widget build(BuildContext context) {
@@ -344,111 +176,181 @@ class _PolaroidPhoto extends StatelessWidget {
           color: context.polaroidWhite,
           boxShadow: [
             BoxShadow(
-              color: context.textCharcoal.withValues(alpha: 0.14),
-              blurRadius: 14,
+              color: context.textCharcoal.withValues(
+                alpha: 0.14,
+              ),
+              blurRadius: 16,
               offset: const Offset(0, 6),
             ),
           ],
         ),
-        padding: EdgeInsets.fromLTRB(10, 10, 10, width * 0.18),
-        child: Image.network(
-          imageUrl,
-          width: width - 20,
+        padding: EdgeInsets.fromLTRB(
+          12,
+          12,
+          12,
+          width * 0.17,
+        ),
+        child: SizedBox(
+          width: width - 24,
           height: imageHeight,
-          fit: BoxFit.cover,
-          loadingBuilder: (context, child, progress) {
-            if (progress == null) {
-              return child;
-            }
-            return Container(
-              width: width - 20,
-              height: imageHeight,
-              color: context.creamBackground,
-              alignment: Alignment.center,
-              child: SizedBox(
-                width: 22,
-                height: 22,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: context.colorScheme.tertiary.withValues(alpha: 0.7),
+          child: imageUrl == null
+              ? _StoryImagePlaceholder(
+                  width: width - 24,
+                  height: imageHeight,
+                )
+              : Image.network(
+                  imageUrl ?? '',
+                  width: width - 24,
+                  height: imageHeight,
+                  fit: BoxFit.cover,
+                  loadingBuilder: (
+                    context,
+                    child,
+                    loadingProgress,
+                  ) {
+                    if (loadingProgress == null) {
+                      return child;
+                    }
+
+                    return _StoryImagePlaceholder(
+                      width: width - 24,
+                      height: imageHeight,
+                      loading: true,
+                    );
+                  },
+                  errorBuilder: (
+                    context,
+                    error,
+                    stackTrace,
+                  ) {
+                    return _StoryImagePlaceholder(
+                      width: width - 24,
+                      height: imageHeight,
+                    );
+                  },
                 ),
-              ),
-            );
-          },
-          errorBuilder: (_, __, ___) => Container(
-            width: width - 20,
-            height: imageHeight,
-            color: context.dustyRose.withValues(alpha: 0.35),
-            alignment: Alignment.center,
-            child: Icon(
-              Icons.image_outlined,
-              color: context.colorScheme.primary.withValues(alpha: 0.45),
-            ),
-          ),
         ),
       ),
     );
   }
 }
 
-class _StoryTimeline extends StatelessWidget {
-  const _StoryTimeline({required this.entries});
+class _StoryImagePlaceholder extends StatelessWidget {
+  const _StoryImagePlaceholder({
+    required this.width,
+    required this.height,
+    this.loading = false,
+  });
 
-  final List<StoryTimelineEntry> entries;
+  final double width;
+  final double height;
+  final bool loading;
 
   @override
   Widget build(BuildContext context) {
-    final gold = context.colorScheme.tertiary;
+    return Container(
+      width: width,
+      height: height,
+      color: context.creamBackground,
+      alignment: Alignment.center,
+      child: loading
+          ? SizedBox(
+              width: 24,
+              height: 24,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: context.colorScheme.tertiary.withValues(
+                  alpha: 0.7,
+                ),
+              ),
+            )
+          : Icon(
+              Icons.image_outlined,
+              size: 34,
+              color: context.colorScheme.primary.withValues(
+                alpha: 0.4,
+              ),
+            ),
+    );
+  }
+}
 
-    return Column(
-      children: [
-        for (var i = 0; i < entries.length; i++)
-          IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 28,
-                  child: Column(
-                    children: [
-                      const HeartAccent(),
-                      if (i < entries.length - 1)
-                        Expanded(
-                          child: Container(
-                            width: 1,
-                            margin: const EdgeInsets.symmetric(vertical: 4),
-                            color: gold.withValues(alpha: 0.5),
-                          ),
-                        ),
-                    ],
-                  ),
+class _StoryConnector extends StatelessWidget {
+  const _StoryConnector();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        vertical: 30,
+      ),
+      child: Column(
+        children: [
+          const HeartAccent(),
+          const SizedBox(height: 10),
+          SizedBox(
+            width: 12,
+            height: 76,
+            child: CustomPaint(
+              painter: _DashedStoryLinePainter(
+                color: context.colorScheme.tertiary.withValues(
+                  alpha: 0.55,
                 ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                        bottom: i < entries.length - 1 ? 26 : 0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          entries[i].title,
-                          style: context.timelineTitle(),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          entries[i].description,
-                          style: context.timelineBody(),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
-      ],
+        ],
+      ),
     );
+  }
+}
+
+class _DashedStoryLinePainter extends CustomPainter {
+  const _DashedStoryLinePainter({
+    required this.color,
+  });
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 1.2
+      ..strokeCap = StrokeCap.round;
+
+    const dashHeight = 5.0;
+    const gapHeight = 6.0;
+
+    var y = 0.0;
+
+    while (y < size.height) {
+      final end = (y + dashHeight).clamp(
+        0.0,
+        size.height,
+      );
+
+      canvas.drawLine(
+        Offset(
+          size.width / 2,
+          y,
+        ),
+        Offset(
+          size.width / 2,
+          end,
+        ),
+        paint,
+      );
+
+      y += dashHeight + gapHeight;
+    }
+  }
+
+  @override
+  bool shouldRepaint(
+    covariant _DashedStoryLinePainter oldDelegate,
+  ) {
+    return oldDelegate.color != color;
   }
 }
 
@@ -461,14 +363,16 @@ class _StoryFooter extends StatelessWidget {
       children: [
         const StoryFooterFlourish(),
         const SizedBox(height: 22),
-        Align(
-          alignment: Alignment.center,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 560),
-            child: Text(
-              'From the moment we met, we knew our story was worth writing.',
-              textAlign: TextAlign.center,
-              style: context.scriptHero(fontSize: 30, height: 1.35),
+        ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: 560,
+          ),
+          child: Text(
+            'From the moment we met, we knew our story was worth writing.',
+            textAlign: TextAlign.center,
+            style: context.scriptHero(
+              fontSize: 30,
+              height: 1.35,
             ),
           ),
         ),

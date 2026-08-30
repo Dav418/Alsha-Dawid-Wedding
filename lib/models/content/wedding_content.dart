@@ -1,3 +1,4 @@
+import 'package:alisha_dawid_wedding_website/models/content/hygraph_image.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'our_story_photo.dart';
@@ -26,6 +27,7 @@ class WeddingContent with _$WeddingContent {
     required WeddingPartyRoster weddingParty,
     required List<OurStoryPhoto> ourStoryPhotos,
     required List<WeddingFoodList> food,
+    required List<HygraphImage> gallery
   }) = _WeddingContent;
 
   factory WeddingContent.fromJson(Map<String, dynamic> json) =>

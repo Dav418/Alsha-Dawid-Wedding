@@ -1,6 +1,6 @@
 {
   "dart.flutterSdkPath": ".fvm/versions/3.35.7",
-  "cSpell.words": ["bridesquad"],
+  "cSpell.words": ["bridesquad", "Hygraph"],
   "search.exclude": {
     "**/docs": true
   },

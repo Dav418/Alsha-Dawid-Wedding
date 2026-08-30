@@ -10,7 +10,8 @@ class OurStoryPhoto with _$OurStoryPhoto {
   const OurStoryPhoto._();
 
   const factory OurStoryPhoto({
-    String? blurb,
+    @JsonKey(name: 'blurb') String? title,
+    String? description,
     HygraphImage? image,
   }) = _OurStoryPhoto;
 
@@ -27,5 +28,7 @@ class OurStoryPhoto with _$OurStoryPhoto {
     return value;
   }
 
-  bool get hasBlurb => blurb?.trim().isNotEmpty ?? false;
+  bool get hasTitle => title?.trim().isNotEmpty ?? false;
+
+  bool get hasDescription => description?.trim().isNotEmpty ?? false;
 }

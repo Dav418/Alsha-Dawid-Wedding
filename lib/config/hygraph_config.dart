@@ -110,9 +110,14 @@ query WeddingContent {
 
     ourStoryPhotos {
       blurb
+      description
       image {
         url
       }
+    }
+
+    gallery {
+      url
     }
 
     food {
