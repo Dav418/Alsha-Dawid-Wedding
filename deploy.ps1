@@ -34,20 +34,22 @@ function Convert-ToHtmlText {
 }
 
 function Get-AppTitle {
-    $contentPath = "wedding_content.json"
-
-    if (-not (Test-Path $contentPath)) {
-        Write-Host ""
-        Write-Host "ERROR: $contentPath not found." -ForegroundColor Red
-        exit 1
+    $python = if (Get-Command python -ErrorAction SilentlyContinue) {
+        "python"
+    }
+    elseif (Get-Command py -ErrorAction SilentlyContinue) {
+        "py -3"
+    }
+    else {
+        "python3"
     }
 
-    $content = Get-Content $contentPath -Raw | ConvertFrom-Json
+    $title = Invoke-Expression "$python scripts/fetch_app_title.py"
+    if ($LASTEXITCODE -ne 0) {
+        exit $LASTEXITCODE
+    }
 
-    $partner1First = $content.couple.partner1Name.Split(" ")[0]
-    $partner2First = $content.couple.partner2Name.Split(" ")[0]
-
-    return "$partner1First & $partner2First Wedding"
+    return "$title".Trim()
 }
 
 function Stop-FlutterProcessesForThisRepo {
@@ -251,28 +253,7 @@ function Ensure-Web404Page {
 }
 
 function Assert-BuildConfigReady {
-    if (-not (Test-Path "wedding_content.json")) {
-        Write-Host ""
-        Write-Host "ERROR: wedding_content.json not found." -ForegroundColor Red
-        Write-Host "Copy wedding_content.json.example to wedding_content.json and edit your content." -ForegroundColor Yellow
-        exit 1
-    }
-
-    try {
-        Get-Content "wedding_content.json" -Raw | ConvertFrom-Json | Out-Null
-    }
-    catch {
-        Write-Host ""
-        Write-Host "ERROR: wedding_content.json is not valid JSON." -ForegroundColor Red
-        Write-Host $_.Exception.Message -ForegroundColor Yellow
-        exit 1
-    }
-
     Assert-GoogleMapsSecretsReady
-}
-
-function Merge-DartDefines {
-    Run-Command "Merging secrets and wedding content for Flutter build" "python3 scripts/merge_dart_defines.py"
 }
 
 function Assert-GoogleMapsSecretsReady {
@@ -391,9 +372,7 @@ Run-Command "Running code generation" "dart run build_runner build --delete-conf
 
 Assert-BuildConfigReady
 
-Merge-DartDefines
-
-Run-Command "Building Flutter web for custom domain (with Google Maps key)" "flutter build web --release --base-href '/' --dart-define-from-file=dart_defines.json"
+Run-Command "Building Flutter web for custom domain (with Google Maps key)" "flutter build web --release --base-href '/' --dart-define-from-file=secrets.json"
 
 if (-not (Test-Path "build\web\index.html")) {
     Write-Host ""

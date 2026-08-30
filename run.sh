@@ -7,6 +7,10 @@ else
   FLUTTER="flutter"
 fi
 
-python3 scripts/merge_dart_defines.py
+if [[ ! -f secrets.json ]]; then
+  echo "ERROR: secrets.json not found."
+  echo "Copy secrets.json.example to secrets.json and add your Google Maps API key."
+  exit 1
+fi
 
-exec $FLUTTER run -d chrome --dart-define-from-file=dart_defines.json "$@"
+exec $FLUTTER run -d chrome --dart-define-from-file=secrets.json "$@"

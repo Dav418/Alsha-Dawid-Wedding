@@ -5,23 +5,18 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-$python = if (Get-Command python -ErrorAction SilentlyContinue) {
-    "python"
-} elseif (Get-Command py -ErrorAction SilentlyContinue) {
-    "py -3"
-} else {
-    "python3"
+if (-not (Test-Path "secrets.json")) {
+    Write-Host "ERROR: secrets.json not found." -ForegroundColor Red
+    Write-Host "Copy secrets.json.example to secrets.json and add your Google Maps API key." -ForegroundColor Yellow
+    exit 1
 }
-
-Invoke-Expression "$python scripts/merge_dart_defines.py"
-if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 $flutter = if (Get-Command fvm -ErrorAction SilentlyContinue) { "fvm flutter" } else { "flutter" }
 
 if ($FlutterArgs.Count -gt 0) {
-    Invoke-Expression "$flutter run -d chrome --dart-define-from-file=dart_defines.json $($FlutterArgs -join ' ')"
+    Invoke-Expression "$flutter run -d chrome --dart-define-from-file=secrets.json $($FlutterArgs -join ' ')"
 } else {
-    Invoke-Expression "$flutter run -d chrome --dart-define-from-file=dart_defines.json"
+    Invoke-Expression "$flutter run -d chrome --dart-define-from-file=secrets.json"
 }
 
 exit $LASTEXITCODE

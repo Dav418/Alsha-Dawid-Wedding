@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../models/content/wedding_content.dart';
+import '../../models/content/content.dart';
 import '../../content/repositories/wedding_content_repository.dart';
 import '../../models/app/app_page.dart';
 import '../../router/app_router.gr.dart';

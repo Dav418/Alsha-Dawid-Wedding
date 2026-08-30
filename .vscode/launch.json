@@ -8,9 +8,8 @@
             "name": "Wedding-invoice",
             "request": "launch",
             "type": "dart",
-            "preLaunchTask": "merge-dart-defines",
             "toolArgs": [
-                "--dart-define-from-file=dart_defines.json"
+                "--dart-define-from-file=secrets.json"
             ]
         },
         {
@@ -18,9 +17,8 @@
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile",
-            "preLaunchTask": "merge-dart-defines",
             "toolArgs": [
-                "--dart-define-from-file=dart_defines.json"
+                "--dart-define-from-file=secrets.json"
             ]
         },
         {
@@ -28,9 +26,8 @@
             "request": "launch",
             "type": "dart",
             "flutterMode": "release",
-            "preLaunchTask": "merge-dart-defines",
             "toolArgs": [
-                "--dart-define-from-file=dart_defines.json"
+                "--dart-define-from-file=secrets.json"
             ]
         }
     ]

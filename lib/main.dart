@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'app.dart';
 import 'assets/directory_assets.dart';
-import 'models/content/wedding_content.dart';
+import 'models/content/content.dart';
 import 'content/repositories/wedding_content_repository.dart';
 import 'utils/google_maps_web_loader.dart';
 

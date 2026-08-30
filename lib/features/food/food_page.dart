@@ -1,17 +1,18 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../content/repositories/wedding_content_repository.dart';
 import '../../models/app/app_page.dart';
-import '../../models/food/food_item.dart';
-import '../../models/food/food_menu_data.dart';
+import '../../models/content/content.dart';
 import '../../router/app_router.gr.dart';
+import '../../utils/extension/context_extension.dart';
 import '../../widgets/heart_divider.dart';
 import '../../widgets/page_availability_gate.dart';
-import '../../utils/extension/context_extension.dart';
 
 @RoutePage()
-class FoodPage extends StatelessWidget {
+class FoodPage extends ConsumerWidget {
   const FoodPage({super.key});
 
   static void push(BuildContext context) {
@@ -19,7 +20,9 @@ class FoodPage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final food = ref.watch(weddingContentRepositoryProvider).requireValue.food;
+
     return PageAvailabilityGate(
       page: AppPage.food,
       child: Padding(
@@ -31,7 +34,9 @@ class FoodPage extends StatelessWidget {
             const SizedBox(height: 22),
             const HeartDivider(),
             const SizedBox(height: 22),
-            const _FoodMenuBody(),
+            _FoodMenuBody(
+              food: food,
+            ),
             const SizedBox(height: 32),
           ],
         ),
@@ -50,7 +55,10 @@ class _FoodHeader extends StatelessWidget {
         Text(
           'Food & Menu',
           textAlign: TextAlign.center,
-          style: context.scriptHero(fontSize: 48, height: 1.08),
+          style: context.scriptHero(
+            fontSize: 48,
+            height: 1.08,
+          ),
         ),
         const SizedBox(height: 10),
         Text(
@@ -66,11 +74,36 @@ class _FoodHeader extends StatelessWidget {
 }
 
 class _FoodMenuBody extends HookWidget {
-  const _FoodMenuBody();
+  const _FoodMenuBody({
+    required this.food,
+  });
+
+  final List<WeddingFoodList> food;
 
   @override
   Widget build(BuildContext context) {
-    final culture = useState(FoodCulture.goan);
+    final hasGoan =
+        food.any((foodList) => foodList.parsedCulture == FoodCulture.goan);
+
+    final hasPolish =
+        food.any((foodList) => foodList.parsedCulture == FoodCulture.polish);
+
+    final initialCulture = hasGoan
+        ? FoodCulture.goan
+        : hasPolish
+            ? FoodCulture.polish
+            : FoodCulture.goan;
+
+    final culture = useState(initialCulture);
+
+    WeddingFoodList? selectedFood;
+
+    for (final foodList in food) {
+      if (foodList.parsedCulture == culture.value) {
+        selectedFood = foodList;
+        break;
+      }
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -90,13 +123,28 @@ class _FoodMenuBody extends HookWidget {
           ),
         ),
         const SizedBox(height: 28),
-        for (final (i, course) in FoodCourse.values.indexed) ...[
-          _FoodCourseSection(
-            course: course,
-            culture: culture.value,
-          ),
-          if (i < FoodCourse.values.length - 1) const SizedBox(height: 28),
-        ],
+        if (selectedFood == null)
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 24,
+            ),
+            child: Text(
+              'Menu coming soon.',
+              textAlign: TextAlign.center,
+              style: context.bodySerif(
+                fontSize: 14.5,
+              ),
+            ),
+          )
+        else
+          for (final (index, course) in FoodCourse.values.indexed) ...[
+            _FoodCourseSection(
+              course: course,
+              food: selectedFood,
+            ),
+            if (index < FoodCourse.values.length - 1)
+              const SizedBox(height: 28),
+          ],
       ],
     );
   }
@@ -115,14 +163,20 @@ class _CulturePillSwitch extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: context.creamBackground.withValues(alpha: 0.9),
+        color: context.creamBackground.withValues(
+          alpha: 0.9,
+        ),
         borderRadius: BorderRadius.circular(999),
         border: Border.all(
-          color: context.goldBrass.withValues(alpha: 0.35),
+          color: context.goldBrass.withValues(
+            alpha: 0.35,
+          ),
         ),
         boxShadow: [
           BoxShadow(
-            color: context.textCharcoal.withValues(alpha: 0.05),
+            color: context.textCharcoal.withValues(
+              alpha: 0.05,
+            ),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -137,7 +191,9 @@ class _CulturePillSwitch extends StatelessWidget {
             return Stack(
               children: [
                 AnimatedPositioned(
-                  duration: const Duration(milliseconds: 220),
+                  duration: const Duration(
+                    milliseconds: 220,
+                  ),
                   curve: Curves.easeOut,
                   left: selected == FoodCulture.polish ? 0 : halfWidth,
                   top: 0,
@@ -149,8 +205,9 @@ class _CulturePillSwitch extends StatelessWidget {
                       borderRadius: BorderRadius.circular(999),
                       boxShadow: [
                         BoxShadow(
-                          color: context.colorScheme.primary
-                              .withValues(alpha: 0.25),
+                          color: context.colorScheme.primary.withValues(
+                            alpha: 0.25,
+                          ),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
@@ -201,7 +258,9 @@ class _CulturePillOption extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(999),
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 13),
+            padding: const EdgeInsets.symmetric(
+              vertical: 13,
+            ),
             child: Text(
               label,
               textAlign: TextAlign.center,
@@ -223,15 +282,21 @@ class _CulturePillOption extends StatelessWidget {
 class _FoodCourseSection extends StatelessWidget {
   const _FoodCourseSection({
     required this.course,
-    required this.culture,
+    required this.food,
   });
 
   final FoodCourse course;
-  final FoodCulture culture;
+  final WeddingFoodList food;
 
   @override
   Widget build(BuildContext context) {
-    final items = FoodMenuData.forCultureAndCourse(culture, course);
+    final items = food.items
+        .where(
+          (item) => item.parsedCourse == course,
+        )
+        .toList(
+          growable: false,
+        );
 
     if (items.isEmpty) {
       return const SizedBox.shrink();
@@ -241,7 +306,7 @@ class _FoodCourseSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          _courseLabel(course),
+          course.displayName,
           textAlign: TextAlign.center,
           style: context.cardTitleCaps(
             fontSize: 14,
@@ -251,39 +316,53 @@ class _FoodCourseSection extends StatelessWidget {
         ),
         const SizedBox(height: 14),
         for (var i = 0; i < items.length; i++) ...[
-          _FoodAccordionTile(item: items[i]),
+          _FoodAccordionTile(
+            item: items[i],
+          ),
           if (i < items.length - 1) const SizedBox(height: 12),
         ],
       ],
     );
   }
-
-  String _courseLabel(FoodCourse course) => switch (course) {
-        FoodCourse.starter => 'STARTER',
-        FoodCourse.main => 'MAIN',
-        FoodCourse.dessert => 'DESSERT',
-      };
 }
 
 class _FoodAccordionTile extends HookWidget {
-  const _FoodAccordionTile({required this.item});
+  const _FoodAccordionTile({
+    required this.item,
+  });
 
-  final FoodItem item;
+  final WeddingFoodItem item;
 
   @override
   Widget build(BuildContext context) {
     final expanded = useState(false);
 
+    final description = item.description?.trim() ?? '';
+
+    final contains = item.contains?.trim() ?? '';
+
+    final allergens = item.allergens?.trim() ?? '';
+
+    final spiceLevel = item.spiceLevel?.trim() ?? '';
+
+    final wikipediaUrl = item.wikipediaUrl?.trim() ?? '';
+
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: context.creamBackground.withValues(alpha: 0.85),
+        color: context.creamBackground.withValues(
+          alpha: 0.85,
+        ),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: context.goldBrass.withValues(alpha: 0.22),
+          color: context.goldBrass.withValues(
+            alpha: 0.22,
+          ),
         ),
         boxShadow: [
           BoxShadow(
-            color: context.textCharcoal.withValues(alpha: 0.06),
+            color: context.textCharcoal.withValues(
+              alpha: 0.06,
+            ),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -297,13 +376,20 @@ class _FoodAccordionTile extends HookWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               InkWell(
-                onTap: () => expanded.value = !expanded.value,
+                onTap: () {
+                  expanded.value = !expanded.value;
+                },
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+                  padding: const EdgeInsets.fromLTRB(
+                    14,
+                    14,
+                    14,
+                    14,
+                  ),
                   child: Row(
                     children: [
                       _FoodItemImage(
-                        assetPath: item.imageAsset,
+                        imageUrl: item.imageUrl,
                         width: 64,
                         height: 64,
                         borderRadius: 10,
@@ -311,14 +397,16 @@ class _FoodAccordionTile extends HookWidget {
                       const SizedBox(width: 14),
                       Expanded(
                         child: Text(
-                          item.name,
+                          item.name.trim(),
                           style: context.faqQuestion(),
                         ),
                       ),
                       const SizedBox(width: 8),
                       AnimatedRotation(
                         turns: expanded.value ? 0.125 : 0,
-                        duration: const Duration(milliseconds: 200),
+                        duration: const Duration(
+                          milliseconds: 200,
+                        ),
                         curve: Curves.easeOut,
                         child: Text(
                           '+',
@@ -330,78 +418,113 @@ class _FoodAccordionTile extends HookWidget {
                 ),
               ),
               AnimatedSize(
-                duration: const Duration(milliseconds: 220),
+                duration: const Duration(
+                  milliseconds: 220,
+                ),
                 curve: Curves.easeOut,
                 alignment: Alignment.topCenter,
                 child: expanded.value
                     ? Padding(
-                        padding: const EdgeInsets.fromLTRB(14, 0, 14, 18),
+                        padding: const EdgeInsets.fromLTRB(
+                          14,
+                          0,
+                          14,
+                          18,
+                        ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             _FoodItemImage(
-                              assetPath: item.imageAsset,
+                              imageUrl: item.imageUrl,
                               height: 180,
                               borderRadius: 10,
                             ),
-                            const SizedBox(height: 14),
-                            Text(
-                              item.description,
-                              style: context.faqAnswer(),
-                            ),
-                            const SizedBox(height: 14),
-                            _FoodDetailLine(
-                              label: 'CONTAINS',
-                              value: item.contains,
-                            ),
-                            const SizedBox(height: 10),
-                            _FoodDetailLine(
-                              label: 'ALLERGENS',
-                              value: item.allergens,
-                            ),
-                            const SizedBox(height: 10),
-                            _FoodDetailLine(
-                              label: 'SPICE',
-                              value: item.spiceLevel,
-                            ),
-                            const SizedBox(height: 16),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: TextButton.icon(
-                                onPressed: () async {
-                                  final opened = await context.openExternalUrl(
-                                    Uri.parse(item.wikipediaUrl),
-                                  );
-                                  if (!opened && context.mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                          'Could not open Wikipedia link.',
-                                        ),
-                                        behavior: SnackBarBehavior.floating,
+                            if (description.isNotEmpty) ...[
+                              const SizedBox(
+                                height: 14,
+                              ),
+                              Text(
+                                description,
+                                style: context.faqAnswer(),
+                              ),
+                            ],
+                            if (contains.isNotEmpty) ...[
+                              const SizedBox(
+                                height: 14,
+                              ),
+                              _FoodDetailLine(
+                                label: 'CONTAINS',
+                                value: contains,
+                              ),
+                            ],
+                            if (allergens.isNotEmpty) ...[
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              _FoodDetailLine(
+                                label: 'ALLERGENS',
+                                value: allergens,
+                              ),
+                            ],
+                            if (spiceLevel.isNotEmpty) ...[
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              _FoodDetailLine(
+                                label: 'SPICE',
+                                value: spiceLevel,
+                              ),
+                            ],
+                            if (wikipediaUrl.isNotEmpty) ...[
+                              const SizedBox(
+                                height: 16,
+                              ),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: TextButton.icon(
+                                  onPressed: () async {
+                                    final opened =
+                                        await context.openExternalUrl(
+                                      Uri.parse(
+                                        wikipediaUrl,
                                       ),
                                     );
-                                  }
-                                },
-                                icon: Icon(
-                                  Icons.open_in_new_rounded,
-                                  size: 16,
-                                  color: context.colorScheme.primary,
-                                ),
-                                label: Text(
-                                  'READ MORE ON WIKIPEDIA',
-                                  style: context.capsLabel(
-                                    fontSize: 10.5,
-                                    letterSpacing: 1.6,
+
+                                    if (!opened && context.mounted) {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                            'Could not open Wikipedia link.',
+                                          ),
+                                          behavior: SnackBarBehavior.floating,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  icon: Icon(
+                                    Icons.open_in_new_rounded,
+                                    size: 16,
                                     color: context.colorScheme.primary,
+                                  ),
+                                  label: Text(
+                                    'READ MORE ON WIKIPEDIA',
+                                    style: context.capsLabel(
+                                      fontSize: 10.5,
+                                      letterSpacing: 1.6,
+                                      color: context.colorScheme.primary,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
+                            ],
                           ],
                         ),
                       )
-                    : const SizedBox(width: double.infinity),
+                    : const SizedBox(
+                        width: double.infinity,
+                      ),
               ),
             ],
           ),
@@ -445,21 +568,29 @@ class _FoodDetailLine extends StatelessWidget {
 
 class _FoodItemImage extends StatelessWidget {
   const _FoodItemImage({
-    required this.assetPath,
+    required this.imageUrl,
     this.width,
     required this.height,
     required this.borderRadius,
   });
 
-  final String? assetPath;
+  final String? imageUrl;
   final double? width;
   final double height;
   final double borderRadius;
 
   @override
   Widget build(BuildContext context) {
-    if (assetPath == null) {
-      return _FoodImagePlaceholder(height: height);
+    final url = imageUrl?.trim();
+
+    if (url == null || url.isEmpty) {
+      return SizedBox(
+        width: width,
+        height: height,
+        child: _FoodImagePlaceholder(
+          height: height,
+        ),
+      );
     }
 
     return ClipRRect(
@@ -467,12 +598,31 @@ class _FoodItemImage extends StatelessWidget {
       child: SizedBox(
         width: width,
         height: height,
-        child: Image.asset(
-          assetPath!,
+        child: Image.network(
+          url,
           fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) => _FoodImagePlaceholder(
-            height: height,
-          ),
+          loadingBuilder: (
+            context,
+            child,
+            loadingProgress,
+          ) {
+            if (loadingProgress == null) {
+              return child;
+            }
+
+            return _FoodImagePlaceholder(
+              height: height,
+            );
+          },
+          errorBuilder: (
+            context,
+            error,
+            stackTrace,
+          ) {
+            return _FoodImagePlaceholder(
+              height: height,
+            );
+          },
         ),
       ),
     );
@@ -494,19 +644,27 @@ class _FoodImagePlaceholder extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            context.sageGreen.withValues(alpha: 0.25),
-            context.goldBrass.withValues(alpha: 0.18),
+            context.sageGreen.withValues(
+              alpha: 0.25,
+            ),
+            context.goldBrass.withValues(
+              alpha: 0.18,
+            ),
           ],
         ),
         border: Border.all(
-          color: context.goldBrass.withValues(alpha: 0.2),
+          color: context.goldBrass.withValues(
+            alpha: 0.2,
+          ),
         ),
       ),
       child: Center(
         child: Icon(
           Icons.restaurant_menu_rounded,
           size: height < 100 ? 24 : 36,
-          color: context.colorScheme.primary.withValues(alpha: 0.45),
+          color: context.colorScheme.primary.withValues(
+            alpha: 0.45,
+          ),
         ),
       ),
     );

@@ -2,15 +2,12 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
-import '../assets/wedding_party/wedding_party_assets.dart';
-import '../models/content/wedding_content.dart';
+import '../models/content/content.dart';
 import '../utils/extension/context_extension.dart';
 
-/// Full-screen polaroid detail for a wedding party member portrait.
 void showPartyMemberPolaroid(
   BuildContext context, {
   required WeddingPartyMember member,
-  required WeddingPartySection section,
 }) {
   showGeneralDialog<void>(
     context: context,
@@ -22,10 +19,8 @@ void showPartyMemberPolaroid(
     pageBuilder: (context, animation, secondaryAnimation) {
       return _PartyMemberPolaroidOverlay(
         member: member,
-        section: section,
       );
     },
-    // Animate only the polaroid inside the overlay; backdrop blur is full-screen.
     transitionBuilder: (context, animation, secondaryAnimation, child) => child,
   );
 }
@@ -33,11 +28,9 @@ void showPartyMemberPolaroid(
 class _PartyMemberPolaroidOverlay extends StatelessWidget {
   const _PartyMemberPolaroidOverlay({
     required this.member,
-    required this.section,
   });
 
   final WeddingPartyMember member;
-  final WeddingPartySection section;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +43,7 @@ class _PartyMemberPolaroidOverlay extends StatelessWidget {
     );
     final width = (MediaQuery.sizeOf(context).width * 0.78).clamp(240.0, 300.0);
     final imageHeight = width * 0.92;
-    final displayName = member.hasName ? member.displayName : '?';
+    final photoUrl = member.photoUrl;
     final caption = member.hasBio ? member.bio!.trim() : '';
 
     return Material(
@@ -62,6 +55,7 @@ class _PartyMemberPolaroidOverlay extends StatelessWidget {
             animation: routeAnimation,
             builder: (context, _) {
               final t = Curves.easeOut.transform(routeAnimation.value);
+
               return GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () => Navigator.of(context).pop(),
@@ -80,8 +74,10 @@ class _PartyMemberPolaroidOverlay extends StatelessWidget {
           FadeTransition(
             opacity: polaroidAnimation,
             child: ScaleTransition(
-              scale:
-                  Tween<double>(begin: 0.86, end: 1).animate(polaroidAnimation),
+              scale: Tween<double>(
+                begin: 0.86,
+                end: 1,
+              ).animate(polaroidAnimation),
               child: SafeArea(
                 child: Center(
                   child: GestureDetector(
@@ -91,6 +87,7 @@ class _PartyMemberPolaroidOverlay extends StatelessWidget {
                       builder: (context, _) {
                         final t =
                             Curves.easeOut.transform(routeAnimation.value);
+
                         return Transform.rotate(
                           angle: -0.025,
                           child: Container(
@@ -106,43 +103,67 @@ class _PartyMemberPolaroidOverlay extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            padding:
-                                EdgeInsets.fromLTRB(12, 12, 12, width * 0.14),
+                            padding: EdgeInsets.fromLTRB(
+                              12,
+                              12,
+                              12,
+                              width * 0.14,
+                            ),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(2),
-                                  child: Image.asset(
-                                    WeddingPartyAssets.portrait(
-                                      member: member,
-                                      section: section,
-                                    ),
+                                  child: SizedBox(
                                     width: width - 24,
                                     height: imageHeight,
-                                    fit: BoxFit.cover,
+                                    child: photoUrl == null
+                                        ? const _PolaroidImagePlaceholder()
+                                        : Image.network(
+                                            photoUrl,
+                                            width: width - 24,
+                                            height: imageHeight,
+                                            fit: BoxFit.cover,
+                                            loadingBuilder:
+                                                (context, child, progress) {
+                                              if (progress == null) {
+                                                return child;
+                                              }
+
+                                              return const _PolaroidImagePlaceholder(
+                                                loading: true,
+                                              );
+                                            },
+                                            errorBuilder: (context, error,
+                                                    stackTrace) =>
+                                                const _PolaroidImagePlaceholder(),
+                                          ),
                                   ),
                                 ),
-                                SizedBox(height: width * 0.07),
-                                Text(
-                                  displayName,
-                                  textAlign: TextAlign.center,
-                                  style: context.scriptHero(
-                                    fontSize: 26,
-                                    height: 1.15,
+                                if (member.hasName) ...[
+                                  SizedBox(height: width * 0.07),
+                                  Text(
+                                    member.displayName,
+                                    textAlign: TextAlign.center,
+                                    style: context.scriptHero(
+                                      fontSize: 26,
+                                      height: 1.15,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  caption,
-                                  textAlign: TextAlign.center,
-                                  style: context.timelineBody().copyWith(
-                                    fontSize: 13,
-                                    height: 1.45,
-                                    color: context.textCharcoal
-                                        .withValues(alpha: 0.78),
+                                ],
+                                if (caption.isNotEmpty) ...[
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    caption,
+                                    textAlign: TextAlign.center,
+                                    style: context.timelineBody().copyWith(
+                                          fontSize: 13,
+                                          height: 1.45,
+                                          color: context.textCharcoal
+                                              .withValues(alpha: 0.78),
+                                        ),
                                   ),
-                                ),
+                                ],
                               ],
                             ),
                           ),
@@ -155,6 +176,37 @@ class _PartyMemberPolaroidOverlay extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _PolaroidImagePlaceholder extends StatelessWidget {
+  const _PolaroidImagePlaceholder({
+    this.loading = false,
+  });
+
+  final bool loading;
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: context.creamBackground,
+      child: Center(
+        child: loading
+            ? SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: context.colorScheme.tertiary.withValues(alpha: 0.7),
+                ),
+              )
+            : Icon(
+                Icons.image_outlined,
+                size: 36,
+                color: context.colorScheme.primary.withValues(alpha: 0.4),
+              ),
       ),
     );
   }

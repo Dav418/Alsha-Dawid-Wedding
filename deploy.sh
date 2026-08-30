@@ -30,15 +30,7 @@ html_escape() {
 }
 
 get_app_title() {
-  python3 - <<'PY'
-import json
-from pathlib import Path
-
-content = json.loads(Path("wedding_content.json").read_text())
-p1 = content["couple"]["partner1Name"].split()[0]
-p2 = content["couple"]["partner2Name"].split()[0]
-print(f"{p1} & {p2} Wedding")
-PY
+  python3 scripts/fetch_app_title.py
 }
 
 remove_path_strict() {
@@ -170,25 +162,7 @@ ensure_web404_page() {
 }
 
 assert_build_config_ready() {
-  if [[ ! -f "wedding_content.json" ]]; then
-    echo ""
-    echo "ERROR: wedding_content.json not found."
-    echo "Copy wedding_content.json.example to wedding_content.json and edit your content."
-    exit 1
-  fi
-
-  if ! python3 -c 'import json; json.load(open("wedding_content.json"))' 2>/dev/null; then
-    echo ""
-    echo "ERROR: wedding_content.json is not valid JSON."
-    exit 1
-  fi
-
   assert_google_maps_secrets_ready
-}
-
-merge_dart_defines() {
-  run_cmd "Merging secrets and wedding content for Flutter build" \
-    python3 scripts/merge_dart_defines.py
 }
 
 assert_google_maps_secrets_ready() {
@@ -295,10 +269,8 @@ run_cmd "Running code generation" $DART run build_runner build --delete-conflict
 
 assert_build_config_ready
 
-merge_dart_defines
-
 run_cmd "Building Flutter web for custom domain (with Google Maps key)" \
-  $FLUTTER build web --release --base-href '/' --dart-define-from-file=dart_defines.json
+  $FLUTTER build web --release --base-href '/' --dart-define-from-file=secrets.json
 
 [[ -f build/web/index.html ]] || { echo "ERROR: build/web/index.html was not created."; exit 1; }
 [[ -f build/web/main.dart.js ]] || { echo "ERROR: build/web/main.dart.js was not created."; exit 1; }

@@ -2,15 +2,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../models/content/wedding_content.dart';
 import '../../content/repositories/wedding_content_repository.dart';
 import '../../models/app/app_page.dart';
+import '../../models/content/content.dart';
 import '../../router/app_router.gr.dart';
+import '../../utils/extension/context_extension.dart';
 import '../../widgets/heart_divider.dart';
 import '../../widgets/page_availability_gate.dart';
-import '../../assets/wedding_party/wedding_party_assets.dart';
 import '../../widgets/party_member_polaroid_overlay.dart';
-import '../../utils/extension/context_extension.dart';
 
 @RoutePage()
 class WeddingPartyPage extends ConsumerWidget {
@@ -185,7 +184,6 @@ class _PartySection extends StatelessWidget {
                     height: mainAxisExtent,
                     child: _PartyPortrait(
                       member: member,
-                      section: section,
                     ),
                   ),
               ],
@@ -200,16 +198,14 @@ class _PartySection extends StatelessWidget {
 class _PartyPortrait extends StatelessWidget {
   const _PartyPortrait({
     required this.member,
-    required this.section,
   });
 
   final WeddingPartyMember member;
-  final WeddingPartySection section;
 
   @override
   Widget build(BuildContext context) {
     const portraitSize = 104.0;
-    final displayName = member.hasName ? member.displayName : '?';
+    final photoUrl = member.photoUrl;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -221,7 +217,6 @@ class _PartyPortrait extends StatelessWidget {
             onTap: () => showPartyMemberPolaroid(
               context,
               member: member,
-              section: section,
             ),
             child: Container(
               width: portraitSize,
@@ -241,28 +236,70 @@ class _PartyPortrait extends StatelessWidget {
                 ],
               ),
               child: ClipOval(
-                child: Image.asset(
-                  WeddingPartyAssets.portrait(
-                    member: member,
-                    section: section,
-                  ),
-                  width: portraitSize,
-                  height: portraitSize,
-                  fit: BoxFit.cover,
-                ),
+                child: photoUrl == null
+                    ? const _PartyPortraitPlaceholder()
+                    : Image.network(
+                        photoUrl,
+                        width: portraitSize,
+                        height: portraitSize,
+                        fit: BoxFit.cover,
+                        loadingBuilder: (context, child, progress) {
+                          if (progress == null) {
+                            return child;
+                          }
+
+                          return const _PartyPortraitPlaceholder(
+                            loading: true,
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) =>
+                            const _PartyPortraitPlaceholder(),
+                      ),
               ),
             ),
           ),
         ),
-        const SizedBox(height: 12),
-        Text(
-          displayName,
-          textAlign: TextAlign.center,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          style: context.portraitName(),
-        ),
+        if (member.hasName) ...[
+          const SizedBox(height: 12),
+          Text(
+            member.displayName,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: context.portraitName(),
+          ),
+        ],
       ],
+    );
+  }
+}
+
+class _PartyPortraitPlaceholder extends StatelessWidget {
+  const _PartyPortraitPlaceholder({
+    this.loading = false,
+  });
+
+  final bool loading;
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: context.creamBackground,
+      child: Center(
+        child: loading
+            ? SizedBox(
+                width: 22,
+                height: 22,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: context.colorScheme.tertiary.withValues(alpha: 0.7),
+                ),
+              )
+            : Icon(
+                Icons.image_outlined,
+                color: context.colorScheme.primary.withValues(alpha: 0.4),
+              ),
+      ),
     );
   }
 }

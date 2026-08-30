@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../models/content/wedding_content.dart';
+import '../models/content/content.dart';
 import '../content/repositories/wedding_content_repository.dart';
 import '../models/shell/footer_nav_action.dart';
 import '../features/wedding_details/wedding_details_page.dart';

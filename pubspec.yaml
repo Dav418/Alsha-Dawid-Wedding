@@ -30,6 +30,7 @@ dependencies:
   google_maps_flutter: ^2.12.1
   web: ^1.1.1
   confetti: ^0.8.0
+  http: ^1.6.0
 
 dev_dependencies:
   flutter_test:
@@ -48,8 +49,4 @@ flutter:
     - lib/assets/paws_at_work.png
     - lib/assets/bouncer_dog.png
     - lib/assets/home/
-    - lib/assets/wedding_party/
-    - lib/assets/food/
-    - lib/assets/food/goan/
-    - lib/assets/food/polish/
     - lib/assets/timeline_pins/

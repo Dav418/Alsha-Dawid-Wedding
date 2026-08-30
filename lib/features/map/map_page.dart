@@ -270,8 +270,9 @@ class _MapSetupRequiredPlaceholder extends StatelessWidget {
                     '1. Enable Maps JavaScript API in Google Cloud Console.\n'
                     '2. Copy secrets.json.example to secrets.json and paste your key.\n'
                     '3. Run:\n'
-                    'python3 scripts/merge_dart_defines.py\n'
-                    'flutter run -d chrome --dart-define-from-file=dart_defines.json',
+                    './run.sh\n'
+                    'or\n'
+                    'flutter run -d chrome --dart-define-from-file=secrets.json',
                     textAlign: TextAlign.center,
                     style: context.faqAnswer(),
                   ),

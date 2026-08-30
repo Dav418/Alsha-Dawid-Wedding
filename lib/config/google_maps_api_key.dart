@@ -1,9 +1,9 @@
-/// Google Maps API key for Flutter Web (injected at runtime — not stored in source).
+/// Google Maps API key for Flutter Web (injected at compile time — not stored in source).
 ///
 /// Local run / build:
 /// ```bash
-/// flutter run -d chrome --dart-define-from-file=dart_defines.json
-/// flutter build web --dart-define-from-file=dart_defines.json
+/// flutter run -d chrome --dart-define-from-file=secrets.json
+/// flutter build web --dart-define-from-file=secrets.json
 /// ```
 ///
 /// See [secrets.json.example] at the repo root for the expected JSON shape.
