@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../content/repositories/wedding_content_repository.dart';
@@ -14,17 +12,9 @@ class PageAvailability extends _$PageAvailability {
     final permissions =
         ref.watch(weddingContentRepositoryProvider).requireValue.permissions;
 
-    final json = jsonDecode(permissions);
-
-    if (json is! Map<String, dynamic>) {
-      throw StateError(
-        'Wedding permissions must be a JSON object.',
-      );
-    }
-
     return {
       for (final page in AppPage.values)
-        page: switch (json[page.name]) {
+        page: switch (permissions[page.name]) {
           final bool value => value,
           _ => throw StateError(
               'Missing or invalid permission for "${page.name}".',

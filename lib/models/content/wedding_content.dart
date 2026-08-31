@@ -28,7 +28,7 @@ class WeddingContent with _$WeddingContent {
     required List<OurStoryPhoto> ourStoryPhotos,
     required List<WeddingFoodList> food,
     required List<HygraphImage> gallery,
-    required String permissions,
+    required Map<String, dynamic> permissions,
   }) = _WeddingContent;
 
   factory WeddingContent.fromJson(Map<String, dynamic> json) =>
