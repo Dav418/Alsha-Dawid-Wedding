@@ -44,10 +44,6 @@ class AppRouter extends RootStackRouter {
               path: 'rsvp',
             ),
             _customRoute(
-              page: TravelRoute.page,
-              path: 'travel',
-            ),
-            _customRoute(
               page: VendorsRoute.page,
               path: 'vendors',
             ),
