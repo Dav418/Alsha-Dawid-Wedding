@@ -124,7 +124,7 @@ query WeddingContent {
 
     food {
       culture
-      items {
+      items(first: 100) {
         name
         description
         contains
