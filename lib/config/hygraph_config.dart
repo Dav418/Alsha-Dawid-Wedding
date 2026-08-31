@@ -120,6 +120,8 @@ query WeddingContent {
       url
     }
 
+    permissions
+
     food {
       culture
       items {

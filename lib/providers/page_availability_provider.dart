@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../content/repositories/wedding_content_repository.dart';
 import '../models/app/app_page.dart';
 
 part 'page_availability_provider.g.dart';
@@ -7,7 +10,28 @@ part 'page_availability_provider.g.dart';
 @riverpod
 class PageAvailability extends _$PageAvailability {
   @override
-  Map<AppPage, bool> build() => Map.of(defaultPageAvailability);
+  Map<AppPage, bool> build() {
+    final permissions =
+        ref.watch(weddingContentRepositoryProvider).requireValue.permissions;
+
+    final json = jsonDecode(permissions);
+
+    if (json is! Map<String, dynamic>) {
+      throw StateError(
+        'Wedding permissions must be a JSON object.',
+      );
+    }
+
+    return {
+      for (final page in AppPage.values)
+        page: switch (json[page.name]) {
+          final bool value => value,
+          _ => throw StateError(
+              'Missing or invalid permission for "${page.name}".',
+            ),
+        },
+    };
+  }
 
   void setWorking(AppPage page, bool isWorking) {
     state = {
@@ -17,6 +41,9 @@ class PageAvailability extends _$PageAvailability {
   }
 }
 
-bool isPageWorking(Map<AppPage, bool> availability, AppPage page) {
-  return availability[page] ?? true;
+bool isPageWorking(
+  Map<AppPage, bool> availability,
+  AppPage page,
+) {
+  return availability[page]!;
 }
