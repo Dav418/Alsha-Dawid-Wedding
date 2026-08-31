@@ -9,7 +9,7 @@ import '../../features/home/home_page.dart';
 import '../../features/map/map_page.dart';
 import '../../features/our_story/our_story_page.dart';
 import '../../features/rsvp/rsvp_page.dart';
-import '../../features/travel/travel_page.dart';
+import '../../features/vendors/vendors_page.dart';
 import '../../features/wedding_details/wedding_details_page.dart';
 import '../../features/wedding_party/wedding_party_page.dart';
 import '../../router/app_router.gr.dart';
@@ -55,7 +55,7 @@ extension AppPageX on AppPage {
         AppPage.rsvp => RsvpRoute.name,
         AppPage.faq => FaqRoute.name,
         AppPage.weddingParty => WeddingPartyRoute.name,
-        AppPage.vendors => TravelRoute.name,
+        AppPage.vendors => VendorsRoute.name,
         AppPage.countdown => CountdownRoute.name,
         AppPage.countdownTest => CountdownTestRoute.name,
       };
@@ -70,19 +70,10 @@ extension AppPageX on AppPage {
         AppPage.rsvp => RsvpPage.push(context),
         AppPage.faq => FaqPage.push(context),
         AppPage.weddingParty => WeddingPartyPage.push(context),
-        AppPage.vendors => TravelPage.push(context),
+        AppPage.vendors => VendorsPage.push(context),
         AppPage.countdown => CountdownPage.push(context),
         AppPage.countdownTest => CountdownTestPage.push(context),
       };
-}
-
-AppPage? appPageForRouteName(String routeName) {
-  for (final page in AppPage.values) {
-    if (page.routeName == routeName) {
-      return page;
-    }
-  }
-  return null;
 }
 
 const defaultPageAvailability = <AppPage, bool>{
@@ -95,7 +86,7 @@ const defaultPageAvailability = <AppPage, bool>{
   AppPage.rsvp: true,
   AppPage.faq: true,
   AppPage.weddingParty: true,
-  AppPage.vendors: false,
+  AppPage.vendors: true,
   AppPage.countdown: true,
   AppPage.countdownTest: true,
 };
