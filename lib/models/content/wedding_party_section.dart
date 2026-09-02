@@ -3,6 +3,8 @@ enum WeddingPartySection {
   bridesquad('BRIDE SQUAD'),
   groomsmen('GROOMSMEN'),
   parents('PARENTS'),
+  flowerGirls('FLOWER GIRLS'),
+  pageBoys('PAGE BOYS'),
   maidOfHonor('MAID OF HONOR'),
   bestMan('BEST MAN'),
   dogs('PAWS OF HONOR');

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../models/content/content.dart';
 import '../utils/extension/context_extension.dart';
+import '../utils/extension/string_extension.dart';
 
 void showPartyMemberPolaroid(
   BuildContext context, {
@@ -153,15 +154,17 @@ class _PartyMemberPolaroidOverlay extends StatelessWidget {
                                 ],
                                 if (caption.isNotEmpty) ...[
                                   const SizedBox(height: 8),
-                                  Text(
-                                    caption,
+                                  Text.rich(
+                                    TextSpan(
+                                      style: context.timelineBody().copyWith(
+                                            fontSize: 13,
+                                            height: 1.45,
+                                            color: context.textCharcoal
+                                                .withValues(alpha: 0.78),
+                                          ),
+                                      children: caption.toInlineMarkdownSpans(),
+                                    ),
                                     textAlign: TextAlign.center,
-                                    style: context.timelineBody().copyWith(
-                                          fontSize: 13,
-                                          height: 1.45,
-                                          color: context.textCharcoal
-                                              .withValues(alpha: 0.78),
-                                        ),
                                   ),
                                 ],
                               ],

@@ -11,6 +11,8 @@ class WeddingPartyRoster with _$WeddingPartyRoster {
     required List<WeddingPartyMember> bridesmaids,
     @JsonKey(name: 'brideSquad') required List<WeddingPartyMember> bridesquad,
     required List<WeddingPartyMember> groomsmen,
+    required List<WeddingPartyMember> flowerGirls,
+    required List<WeddingPartyMember> pageBoys,
     required List<WeddingPartyMember> parents,
     required WeddingPartyMember maidOfHonor,
     required WeddingPartyMember bestMan,

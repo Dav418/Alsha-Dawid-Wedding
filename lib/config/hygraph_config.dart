@@ -67,6 +67,26 @@ query WeddingContent {
         }
       }
 
+      flowerGirls {
+        firstName
+        lastName
+        honorific
+        bio
+        photo {
+          url
+        }
+      }
+
+      pageBoys {
+        firstName
+        lastName
+        honorific
+        bio
+        photo {
+          url
+        }
+      }
+
       parents {
         firstName
         lastName

@@ -23,6 +23,8 @@ class WeddingPartyPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final party =
         ref.watch(weddingContentRepositoryProvider).requireValue.weddingParty;
+    final flowerGirls = _visibleMembers(party.flowerGirls);
+    final pageBoys = _visibleMembers(party.pageBoys);
 
     return PageAvailabilityGate(
       page: AppPage.weddingParty,
@@ -44,6 +46,28 @@ class WeddingPartyPage extends ConsumerWidget {
               section: WeddingPartySection.parents,
               members: party.parents,
             ),
+            if (flowerGirls.isNotEmpty || pageBoys.isNotEmpty) ...[
+              const SizedBox(height: 28),
+              const HeartDivider(),
+              const SizedBox(height: 28),
+              if (flowerGirls.isNotEmpty && pageBoys.isNotEmpty)
+                _PartySectionPair(
+                  leftSection: WeddingPartySection.flowerGirls,
+                  rightSection: WeddingPartySection.pageBoys,
+                  leftMembers: flowerGirls,
+                  rightMembers: pageBoys,
+                )
+              else if (flowerGirls.isNotEmpty)
+                _PartySection(
+                  section: WeddingPartySection.flowerGirls,
+                  members: flowerGirls,
+                )
+              else
+                _PartySection(
+                  section: WeddingPartySection.pageBoys,
+                  members: pageBoys,
+                ),
+            ],
             const SizedBox(height: 28),
             const HeartDivider(),
             const SizedBox(height: 28),
@@ -79,6 +103,12 @@ class WeddingPartyPage extends ConsumerWidget {
       ),
     );
   }
+}
+
+List<WeddingPartyMember> _visibleMembers(List<WeddingPartyMember> members) {
+  return members
+      .where((member) => member.hasName || member.photoUrl != null)
+      .toList();
 }
 
 class _PartyHeader extends StatelessWidget {
