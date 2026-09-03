@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import 'hygraph_image.dart';
+import 'cms_image.dart';
 
 part 'wedding_party_member.freezed.dart';
 part 'wedding_party_member.g.dart';
@@ -14,7 +14,9 @@ class WeddingPartyMember with _$WeddingPartyMember {
     required String lastName,
     String? honorific,
     String? bio,
-    HygraphImage? photo,
+    CmsImage? photo,
+    String? role,
+    @Default(0) int sortOrder,
   }) = _WeddingPartyMember;
 
   factory WeddingPartyMember.fromJson(Map<String, dynamic> json) =>
@@ -25,7 +27,7 @@ class WeddingPartyMember with _$WeddingPartyMember {
   bool get hasBio => bio?.trim().isNotEmpty ?? false;
 
   String? get photoUrl {
-    final value = photo?.url.trim();
+    final value = photo?.absoluteUrl.trim();
 
     if (value == null || value.isEmpty) {
       return null;

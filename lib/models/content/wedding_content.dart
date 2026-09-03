@@ -1,6 +1,6 @@
-import 'package:alisha_dawid_wedding_website/models/content/hygraph_image.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'cms_image.dart';
 import 'our_story_photo.dart';
 import 'wedding_contact.dart';
 import 'wedding_couple.dart';
@@ -27,7 +27,7 @@ class WeddingContent with _$WeddingContent {
     required WeddingPartyRoster weddingParty,
     required List<OurStoryPhoto> ourStoryPhotos,
     required List<WeddingFoodList> food,
-    required List<HygraphImage> gallery,
+    required List<CmsImage> gallery,
     required Map<String, dynamic> permissions,
   }) = _WeddingContent;
 

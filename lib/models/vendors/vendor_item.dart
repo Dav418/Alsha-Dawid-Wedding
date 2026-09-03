@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../content/cms_image.dart';
+
 part 'vendor_item.freezed.dart';
+part 'vendor_item.g.dart';
 
 enum VendorCategory {
   photographyFilm('PHOTOGRAPHY & FILM'),
@@ -33,72 +36,105 @@ class VendorLinks with _$VendorLinks {
     String? whatsapp,
   }) = _VendorLinks;
 
-  Uri? get instagramUri {
-    final handle = instagram?.trim().replaceFirst(RegExp(r'^@'), '');
-    return handle?.isEmpty ?? true
-        ? null
-        : Uri.parse('https://www.instagram.com/$handle/');
+  factory VendorLinks.fromJson(Map<String, dynamic> json) =>
+      _$VendorLinksFromJson(json);
+
+  Uri? get instagramUri => _socialUri(
+        instagram,
+        (handle) => 'https://www.instagram.com/$handle/',
+      );
+
+  Uri? get websiteUri => _absoluteUri(website);
+
+  Uri? get facebookUri => _socialUri(
+        facebook,
+        (handle) => 'https://www.facebook.com/$handle/',
+      );
+
+  Uri? get tiktokUri => _socialUri(
+        tiktok,
+        (handle) => 'https://www.tiktok.com/@$handle/',
+      );
+
+  Uri? get youtubeUri => _socialUri(
+        youtube,
+        (handle) => 'https://www.youtube.com/channel/$handle/',
+      );
+
+  Uri? get twitterUri => _socialUri(
+        twitter,
+        (handle) => 'https://www.twitter.com/$handle/',
+      );
+
+  Uri? get linkedinUri => _socialUri(
+        linkedin,
+        (handle) => 'https://www.linkedin.com/in/$handle/',
+      );
+
+  Uri? get pinterestUri => _socialUri(
+        pinterest,
+        (handle) => 'https://www.pinterest.com/$handle/',
+      );
+
+  Uri? get redditUri => _socialUri(
+        reddit,
+        (handle) => 'https://www.reddit.com/user/$handle/',
+      );
+
+  Uri? get telegramUri => _socialUri(
+        telegram,
+        (handle) => 'https://t.me/$handle/',
+      );
+
+  Uri? get whatsappUri => _socialUri(
+        whatsapp,
+        (handle) => 'https://wa.me/$handle/',
+      );
+
+  String? get instagramHandle {
+    final value = instagram?.trim();
+    if (value == null || value.isEmpty) {
+      return null;
+    }
+
+    final uri = Uri.tryParse(value);
+    if (uri != null && uri.hasScheme) {
+      final segments = uri.pathSegments.where((s) => s.isNotEmpty).toList();
+      if (segments.isEmpty) {
+        return null;
+      }
+      return segments.first.replaceFirst(RegExp(r'^@'), '');
+    }
+
+    return value.replaceFirst(RegExp(r'^@'), '');
+  }
+}
+
+Uri? _absoluteUri(String? value) {
+  final trimmed = value?.trim();
+  if (trimmed == null || trimmed.isEmpty) {
+    return null;
   }
 
-  Uri? get websiteUri {
-    return website?.isEmpty ?? true
-        ? null
-        : Uri.parse(website!);
+  return Uri.tryParse(trimmed);
+}
+
+Uri? _socialUri(String? value, String Function(String handle) builder) {
+  final trimmed = value?.trim();
+  if (trimmed == null || trimmed.isEmpty) {
+    return null;
   }
 
-  Uri? get facebookUri {
-    return facebook?.isEmpty ?? true
-        ? null
-        : Uri.parse('https://www.facebook.com/$facebook/');
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+    return Uri.tryParse(trimmed);
   }
 
-  Uri? get tiktokUri {
-    return tiktok?.isEmpty ?? true
-        ? null
-        : Uri.parse('https://www.tiktok.com/@$tiktok/');
+  final handle = trimmed.replaceFirst(RegExp(r'^@'), '');
+  if (handle.isEmpty) {
+    return null;
   }
 
-  Uri? get youtubeUri {
-    return youtube?.isEmpty ?? true
-        ? null
-        : Uri.parse('https://www.youtube.com/channel/$youtube/');
-  }
-
-  Uri? get twitterUri {
-    return twitter?.isEmpty ?? true
-        ? null
-        : Uri.parse('https://www.twitter.com/$twitter/');
-  }
-
-  Uri? get linkedinUri {
-    return linkedin?.isEmpty ?? true
-        ? null
-        : Uri.parse('https://www.linkedin.com/in/$linkedin/');
-  }
-
-  Uri? get pinterestUri {
-    return pinterest?.isEmpty ?? true
-        ? null
-        : Uri.parse('https://www.pinterest.com/$pinterest/');
-  }
-
-  Uri? get redditUri {
-    return reddit?.isEmpty ?? true
-        ? null
-        : Uri.parse('https://www.reddit.com/user/$reddit/');
-  }
-
-  Uri? get telegramUri {
-    return telegram?.isEmpty ?? true
-        ? null
-        : Uri.parse('https://t.me/$telegram/');
-  }
-
-  Uri? get whatsappUri {
-    return whatsapp?.isEmpty ?? true
-        ? null
-        : Uri.parse('https://wa.me/$whatsapp/');
-  }
+  return Uri.parse(builder(handle));
 }
 
 @freezed
@@ -108,7 +144,30 @@ class VendorItem with _$VendorItem {
   const factory VendorItem({
     required String name,
     required VendorCategory category,
+    String? description,
+    CmsImage? logo,
     required VendorLinks links,
-    @Default(Icons.favorite_rounded) IconData icon,
+    @Default(0) int sortOrder,
   }) = _VendorItem;
+
+  factory VendorItem.fromJson(Map<String, dynamic> json) =>
+      _$VendorItemFromJson(json);
+
+  String? get logoUrl {
+    final value = logo?.absoluteUrl.trim();
+
+    if (value == null || value.isEmpty) {
+      return null;
+    }
+
+    return value;
+  }
+
+  IconData get icon => switch (category) {
+        VendorCategory.photographyFilm => Icons.photo_camera_rounded,
+        VendorCategory.floralsStyling => Icons.local_florist_rounded,
+        VendorCategory.foodDrink => Icons.restaurant_rounded,
+        VendorCategory.musicEntertainment => Icons.music_note_rounded,
+        VendorCategory.beauty => Icons.spa_rounded,
+      };
 }

@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'cms_image.dart';
 import 'food_course.dart';
-import 'hygraph_image.dart';
 
 part 'wedding_food_item.freezed.dart';
 part 'wedding_food_item.g.dart';
@@ -12,27 +12,34 @@ class WeddingFoodItem with _$WeddingFoodItem {
 
   const factory WeddingFoodItem({
     required String name,
+    required String culture,
     String? description,
     String? contains,
     String? allergens,
     String? spiceLevel,
     String? wikipediaUrl,
     String? course,
-    HygraphImage? image,
+    CmsImage? image,
+    @Default(0) int sortOrder,
   }) = _WeddingFoodItem;
 
   factory WeddingFoodItem.fromJson(Map<String, dynamic> json) =>
       _$WeddingFoodItemFromJson(json);
 
-  FoodCourse? get parsedCourse => switch (course?.trim().toLowerCase()) {
-        'starter' => FoodCourse.starter,
-        'main' => FoodCourse.main,
-        'dessert' => FoodCourse.dessert,
-        _ => null,
-      };
+  FoodCourse? get parsedCourse {
+    final value = course?.trim().toLowerCase();
+
+    for (final course in FoodCourse.values) {
+      if (course.name.toLowerCase() == value) {
+        return course;
+      }
+    }
+
+    return null;
+  }
 
   String? get imageUrl {
-    final value = image?.url.trim();
+    final value = image?.absoluteUrl.trim();
 
     if (value == null || value.isEmpty) {
       return null;
@@ -40,14 +47,4 @@ class WeddingFoodItem with _$WeddingFoodItem {
 
     return value;
   }
-
-  bool get hasDescription => description?.trim().isNotEmpty ?? false;
-
-  bool get hasContains => contains?.trim().isNotEmpty ?? false;
-
-  bool get hasAllergens => allergens?.trim().isNotEmpty ?? false;
-
-  bool get hasSpiceLevel => spiceLevel?.trim().isNotEmpty ?? false;
-
-  bool get hasWikipediaUrl => wikipediaUrl?.trim().isNotEmpty ?? false;
 }

@@ -9,7 +9,7 @@ part 'wedding_party_roster.g.dart';
 class WeddingPartyRoster with _$WeddingPartyRoster {
   const factory WeddingPartyRoster({
     required List<WeddingPartyMember> bridesmaids,
-    @JsonKey(name: 'brideSquad') required List<WeddingPartyMember> bridesquad,
+    required List<WeddingPartyMember> bridesquad,
     required List<WeddingPartyMember> groomsmen,
     required List<WeddingPartyMember> flowerGirls,
     required List<WeddingPartyMember> pageBoys,

@@ -31,6 +31,7 @@ dependencies:
   web: ^1.1.1
   confetti: ^0.8.0
   http: ^1.6.0
+  dio: ^5.11.0
 
 dev_dependencies:
   flutter_test:

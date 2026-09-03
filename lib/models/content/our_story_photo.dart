@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import 'hygraph_image.dart';
+import 'cms_image.dart';
 
 part 'our_story_photo.freezed.dart';
 part 'our_story_photo.g.dart';
@@ -12,14 +12,15 @@ class OurStoryPhoto with _$OurStoryPhoto {
   const factory OurStoryPhoto({
     @JsonKey(name: 'blurb') String? title,
     String? description,
-    HygraphImage? image,
+    CmsImage? image,
+    @Default(0) int sortOrder,
   }) = _OurStoryPhoto;
 
   factory OurStoryPhoto.fromJson(Map<String, dynamic> json) =>
       _$OurStoryPhotoFromJson(json);
 
   String? get imageUrl {
-    final value = image?.url.trim();
+    final value = image?.absoluteUrl.trim();
 
     if (value == null || value.isEmpty) {
       return null;

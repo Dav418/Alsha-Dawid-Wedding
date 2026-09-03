@@ -1,6 +1,6 @@
+export 'cms_image.dart';
 export 'food_course.dart';
 export 'food_culture.dart';
-export 'hygraph_image.dart';
 export 'our_story_photo.dart';
 export 'wedding_contact.dart';
 export 'wedding_content.dart';

@@ -1,4 +1,4 @@
-import 'package:auto_route/auto_route.dart';
+﻿import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -199,7 +199,7 @@ class _PolaroidPhoto extends StatelessWidget {
                   height: imageHeight,
                 )
               : Image.network(
-                  imageUrl ?? '',
+                  imageUrl!,
                   width: width - 24,
                   height: imageHeight,
                   fit: BoxFit.cover,

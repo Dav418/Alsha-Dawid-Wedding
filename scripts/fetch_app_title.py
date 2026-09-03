@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fetch the site title from Hygraph for deploy metadata."""
+"""Fetch the site title from Strapi for deploy metadata."""
 
 from __future__ import annotations
 
@@ -11,55 +11,49 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-CONFIG_PATH = ROOT / "lib" / "config" / "hygraph_config.dart"
-
-TITLE_QUERY = """
-query WeddingTitle {
-  weddings(first: 1) {
-    couple {
-      partner1Name
-      partner2Name
-    }
-  }
-}
-"""
+CONFIG_PATH = ROOT / "lib" / "config" / "strapi_config.dart"
 
 
-def hygraph_endpoint() -> str:
+def strapi_wedding_url() -> str:
     config = CONFIG_PATH.read_text()
-    match = re.search(r"static const endpoint =\s*'([^']+)'", config)
-    if match is None:
+    base_match = re.search(r"static const baseUrl =\s*'([^']+)'", config)
+    wedding_match = re.search(r"static const wedding =\s*'([^']+)'", config)
+
+    if base_match is None or wedding_match is None:
         raise RuntimeError(
-            f"Could not read Hygraph endpoint from {CONFIG_PATH.name}",
+            f"Could not read Strapi wedding URL from {CONFIG_PATH.name}",
         )
-    return match.group(1)
+
+    return f"{base_match.group(1).rstrip('/')}{wedding_match.group(1)}"
 
 
 def fetch_app_title() -> str:
+    url = f"{strapi_wedding_url()}?populate=*"
     request = urllib.request.Request(
-        hygraph_endpoint(),
-        data=json.dumps({"query": TITLE_QUERY}).encode("utf-8"),
-        headers={"Content-Type": "application/json"},
-        method="POST",
+        url,
+        headers={
+            "Accept": "application/json",
+            "User-Agent": "alisha-dawid-wedding-deploy/1.0",
+        },
+        method="GET",
     )
 
     try:
         with urllib.request.urlopen(request, timeout=30) as response:
             payload = json.load(response)
     except urllib.error.URLError as exc:
-        raise RuntimeError(f"Failed to fetch wedding title from Hygraph: {exc}") from exc
+        raise RuntimeError(f"Failed to fetch wedding title from Strapi: {exc}") from exc
 
-    errors = payload.get("errors")
-    if errors:
-        raise RuntimeError(f"Hygraph returned GraphQL errors: {json.dumps(errors)}")
+    data = payload.get("data")
+    if not isinstance(data, dict):
+        raise RuntimeError("No published Wedding entry was found in Strapi.")
 
-    weddings = (payload.get("data") or {}).get("weddings") or []
-    if not weddings:
-        raise RuntimeError("No published Wedding entry was found in Hygraph.")
+    couple = data.get("couple")
+    if not isinstance(couple, dict):
+        raise RuntimeError("Strapi wedding entry is missing couple data.")
 
-    couple = weddings[0]["couple"]
-    partner1 = couple["partner1Name"].split()[0]
-    partner2 = couple["partner2Name"].split()[0]
+    partner1 = str(couple["partner1Name"]).split()[0]
+    partner2 = str(couple["partner2Name"]).split()[0]
     return f"{partner1} & {partner2} Wedding"
 
 

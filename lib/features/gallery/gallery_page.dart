@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../content/repositories/wedding_content_repository.dart';
 import '../../models/app/app_page.dart';
-import '../../models/content/hygraph_image.dart';
+import '../../models/content/cms_image.dart';
 import '../../router/app_router.gr.dart';
 import '../../utils/extension/context_extension.dart';
 import '../../widgets/page_availability_gate.dart';
@@ -101,7 +101,7 @@ class _ScatteredPolaroidGallery extends StatelessWidget {
     required this.gallery,
   });
 
-  final List<HygraphImage> gallery;
+  final List<CmsImage> gallery;
 
   @override
   Widget build(BuildContext context) {
@@ -212,7 +212,7 @@ class _GalleryPolaroid extends StatelessWidget {
     required this.rotation,
   });
 
-  final HygraphImage image;
+  final CmsImage image;
   final double width;
   final double rotation;
 
@@ -240,7 +240,7 @@ class _GalleryPolaroid extends StatelessWidget {
               secondaryAnimation,
             ) {
               return _GalleryPolaroidOverlay(
-                imageUrl: image.url,
+                imageUrl: image.absoluteUrl,
                 rotation: rotation,
               );
             },
@@ -277,7 +277,7 @@ class _GalleryPolaroid extends StatelessWidget {
             width * 0.16,
           ),
           child: Image.network(
-            image.url,
+            image.absoluteUrl,
             width: width - 16,
             height: imageHeight,
             fit: BoxFit.cover,

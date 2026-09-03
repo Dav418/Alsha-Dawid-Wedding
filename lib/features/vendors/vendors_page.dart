@@ -1,8 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../content/repositories/vendors_repository.dart';
 import '../../models/app/app_page.dart';
-import '../../models/vendors/vendor_data.dart';
 import '../../models/vendors/vendor_item.dart';
 import '../../router/app_router.gr.dart';
 import '../../widgets/heart_divider.dart';
@@ -10,7 +11,7 @@ import '../../widgets/page_availability_gate.dart';
 import '../../utils/extension/context_extension.dart';
 
 @RoutePage()
-class VendorsPage extends StatelessWidget {
+class VendorsPage extends ConsumerWidget {
   const VendorsPage({super.key});
 
   static void push(BuildContext context) {
@@ -18,7 +19,9 @@ class VendorsPage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final vendors = ref.watch(vendorsRepositoryProvider).requireValue;
+
     return PageAvailabilityGate(
       page: AppPage.vendors,
       child: Padding(
@@ -38,7 +41,10 @@ class VendorsPage extends StatelessWidget {
             ),
             const SizedBox(height: 28),
             for (final (i, category) in VendorCategory.values.indexed) ...[
-              _VendorCategorySection(category: category),
+              _VendorCategorySection(
+                category: category,
+                vendors: vendors,
+              ),
               if (i < VendorCategory.values.length - 1)
                 const SizedBox(height: 28),
             ],
@@ -76,13 +82,17 @@ class _VendorsHeader extends StatelessWidget {
 }
 
 class _VendorCategorySection extends StatelessWidget {
-  const _VendorCategorySection({required this.category});
+  const _VendorCategorySection({
+    required this.category,
+    required this.vendors,
+  });
 
   final VendorCategory category;
+  final List<VendorItem> vendors;
 
   @override
   Widget build(BuildContext context) {
-    final vendors = vendorItems.where((v) => v.category == category).toList();
+    final vendors = this.vendors.where((v) => v.category == category).toList();
 
     if (vendors.isEmpty) {
       return const SizedBox.shrink();
@@ -159,7 +169,8 @@ class _VendorTile extends StatelessWidget {
                         if (instagramUri != null)
                           _VendorLinkChip(
                             icon: Icons.camera_alt_rounded,
-                            label: '@${item.links.instagram}',
+                            label:
+                                '@${item.links.instagramHandle ?? 'instagram'}',
                             uri: instagramUri,
                             vendorName: item.name,
                           ),
