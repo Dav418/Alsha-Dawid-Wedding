@@ -95,9 +95,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Create stack directory
-        run: |
-          sudo mkdir -p /opt/stacks/alisha-dawid-wedding
-          sudo chown "$USER:$USER" /opt/stacks/alisha-dawid-wedding
+        run: mkdir -p /opt/stacks/alisha-dawid-wedding
 
       - name: Copy compose file
         run: |
