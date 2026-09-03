@@ -1,0 +1,7 @@
+services:
+  wedding:
+    image: ghcr.io/davboxhome/alsha-dawid-wedding:latest
+    container_name: alisha-dawid-wedding
+    restart: always
+    ports:
+      - "8083:80"

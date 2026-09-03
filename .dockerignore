@@ -1,0 +1,13 @@
+.dart_tool
+.git
+.github
+.idea
+.vscode
+coverage
+docs
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+pubspec_overrides.yaml
+secrets.json
+README.md
